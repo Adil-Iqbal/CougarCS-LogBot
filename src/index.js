@@ -18,6 +18,22 @@ function extract(label, line) {
     return line.substring(label.length + 1);
 }
 
+function getDate(string) {
+    if (!string) return new Date();
+  
+    let [ month, day, year ] = string.split('/');
+  
+    year = Number(year);
+    month = Number(month);
+    day = Number(day);
+  
+    if (isNaN(year)) year = new Date().getFullYear();
+    if (year <= 50) year += 2000;
+    if (year < 100 && year > 50) year += 1900;
+  
+    return new Date(year, month - 1, day);
+  };
+
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -32,14 +48,24 @@ client.on('message', async (msg) => {
         // Parse message content.
         let content = msg.content;
         content = content.split("\n");
+
+        let post = {};
+        let outreach = false;
+        let other = false;
         for (let line of content) {
             for (let label of FORM_LABELS) {
                 if (line.startsWith(`${label}:`)) {
                     let value = extract(label, line);
-                    await msg.reply(value);
+
+                    if (label === "Date") {
+                        post[label.toLowerCase()] = getDate(value.trim());
+                    } else {
+                        post[label.toLowerCase()] = value.trim();
+                    }
                 }
             }
         }
+        msg.reply(JSON.stringify(post, null, 4));
         return;
     }
 });
