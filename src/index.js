@@ -18,6 +18,25 @@ function extract(label, line) {
     return line.substring(label.length + 1);
 }
 
+const convertTime = time => {
+    const tokens = time.split(" ");
+    let output = 0;
+   
+    tokens.forEach( token => {
+      if ( token.indexOf('h') != -1 ) output += parseInt( token.substring( 0, token.indexOf('h') ) );
+   
+      else if ( token.indexOf('m') != -1 ) {
+        let minutes = parseInt( token.substring( 0, token.indexOf('m') ) );
+   
+        while ( minutes >= 60 ) { minutes -= 60; output++; }
+   
+        output += minutes/60;
+      }
+    } );
+   
+    return Number(output.toFixed(2));
+  };
+
 function getDate(string) {
     if (!string) return new Date();
   
@@ -55,12 +74,14 @@ client.on('message', async (msg) => {
         for (let line of content) {
             for (let label of FORM_LABELS) {
                 if (line.startsWith(`${label}:`)) {
-                    let value = extract(label, line);
-
+                    let value = extract(label, line).trim();
                     if (label === "Date") {
-                        post[label.toLowerCase()] = getDate(value.trim());
+                        post[label.toLowerCase()] = getDate(value);
+                    }
+                    else if (label === "Duration") {
+                            post[label.toLowerCase()] = convertTime(value);
                     } else {
-                        post[label.toLowerCase()] = value.trim();
+                        post[label.toLowerCase()] = value;
                     }
                 }
             }
