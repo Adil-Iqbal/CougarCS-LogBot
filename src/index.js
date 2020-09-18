@@ -1,3 +1,6 @@
+// Once live, change DEBUG to false.
+const DEBUG = true;
+
 require('dotenv').config();
 const _ = require('lodash');
 
@@ -7,7 +10,7 @@ const chatChannelId = process.env.CHAT_CHANNEL_ID;
 const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const discordClient = new Discord.Client();
 
 const FORM_LABELS = [
     "Name",
@@ -18,6 +21,7 @@ const FORM_LABELS = [
 ]
 
 let t = 0;
+let tipRate = 0.15;
 const proTips = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
@@ -30,6 +34,7 @@ const proTips = [
     `You can help make me better by contributing on the <#${builderChannelId}> channel! Any time spent contributing can be logged for credit.`,
     "When I react to a log request with :white_check_mark:, it means that the request was successfully logged.",
     "When I react to a log request with :warning:, it means that the log request was denied. If your log request is ever denied, check your direct messages for more info.",
+    `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
 ]
 
 function extract(label, line) {
@@ -75,12 +80,20 @@ const roll = function(n) {
     return !!n && Math.random() <= n;
 };
 
+const truncateString = ( message, length ) => {
+    if ( message.length <= length - 3 ) return message;
+    else if ( length < 4 && length < message.length ) throw "truncateString was asked to perform a truncation to a length less than 4."; 
+    else return message.substring( 0, length - 3 ) + "...";
+  }
 
-client.once('ready', () => {
+
+
+
+discordClient.once('ready', () => {
 	console.log('Ready!');
 });
 
-client.on('message', async (msg) => {
+discordClient.on('message', async (msg) => {
 
     // Restrict bot to specific discord server and specific channel.
     if (msg.guild.id === guildId && 
@@ -88,8 +101,10 @@ client.on('message', async (msg) => {
         !msg.author.bot &&
         !msg.content.startsWith("//")) {
         
+        // TODO: Add superuser commands. 
+        
         // Tips are sent on average every 1/5 log requests.
-        if (roll(0.2)) {
+        if (roll(tipRate)) {
             if (t > proTips.length - 1) t = 0;
             await msg.channel.send(`**Pro tip!** ${proTips[t]}`);
             t++;
@@ -143,6 +158,8 @@ return; }
                     }
                     else if (label === "Duration") {
                             post[label.toLowerCase()] = convertTime(value);
+                    } else if (label === "Comment") {
+                        post[label.toLowerCase()] = truncateString(value, 140);
                     } else {
                         post[label.toLowerCase()] = value;
                     }
@@ -155,11 +172,25 @@ return; }
             await msg.react('⚠️');
             return; 
         }
+
+        // TODO: Validate post
         
-        // msg.reply(JSON.stringify(post, null, 4));
+        // Add metadata.
+        post.metadata = {
+            "timestamp": new Date(),
+            "discord_id": DEBUG ? "hidden" : msg.author.id,
+            "username": msg.author.username,
+            "discriminator": msg.author.discriminator,
+        }
+
+        // TODO: Insert into database.
+
+        // TODO: Send confirmation receipt.
+
+        msg.reply(JSON.stringify(post, null, 4));
         await msg.react("✅");
         return;
     }
 });
 
-client.login(process.env.BOT_TOKEN);
+discordClient.login(process.env.BOT_TOKEN);
