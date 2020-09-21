@@ -2,6 +2,9 @@
 const DEBUG = true;
 
 require('dotenv').config();
+require('./util');
+require('./fields');
+
 const _ = require('lodash');
 
 const guildId = process.env.GUILD_ID;
@@ -35,59 +38,8 @@ const proTips = [
     "When I react to a log request with :white_check_mark:, it means that the request was successfully logged.",
     "When I react to a log request with :warning:, it means that the log request was denied. If your log request is ever denied, check your direct messages for more info.",
     `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
+    "The `Duration` field accept the standard `Xh Ym` format *or* the reversed `Ym Xh` format (where X and Y are integers representing hours and minutes respectively). You can also use the terms alone; the entries `Duration: 55m` and `Duration: 3h` are both acceptable.",
 ]
-
-function extract(label, line) {
-    return line.substring(label.length + 1).trim();
-}
-
-const convertTime = time => {
-    const tokens = time.split(" ");
-    let output = 0;
-   
-    tokens.forEach( token => {
-      if ( token.indexOf('h') != -1 ) output += parseInt( token.substring( 0, token.indexOf('h') ) );
-   
-      else if ( token.indexOf('m') != -1 ) {
-        let minutes = parseInt( token.substring( 0, token.indexOf('m') ) );
-   
-        while ( minutes >= 60 ) { minutes -= 60; output++; }
-   
-        output += minutes/60;
-      }
-    } );
-   
-    return Number(output.toFixed(2));
-  };
-
-function getDate(string) {
-    if (!string) return new Date();
-  
-    let [ month, day, year ] = string.split('/');
-  
-    year = Number(year);
-    month = Number(month);
-    day = Number(day);
-  
-    if (isNaN(year) || (year < 1000 && year >= 100)) year = new Date().getFullYear();
-    if (year <= 50) year += 2000;
-    if (year < 100 && year > 50) year += 1900;
-  
-    return new Date(year, month - 1, day);
-  };
-
-const roll = function(n) {
-    return !!n && Math.random() <= n;
-};
-
-const truncateString = ( message, length ) => {
-    if ( message.length <= length - 3 ) return message;
-    else if ( length < 4 && length < message.length ) throw "truncateString was asked to perform a truncation to a length less than 4."; 
-    else return message.substring( 0, length - 3 ) + "...";
-  }
-
-
-
 
 discordClient.once('ready', () => {
 	console.log('Ready!');
