@@ -1,2 +1,2 @@
-FLASK_APP=src/backend/app.py
+FLASK_APP=src/runserver
 FLASK_ENV=development
