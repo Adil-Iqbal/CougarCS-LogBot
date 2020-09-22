@@ -45,4 +45,4 @@ exports.truncateString = ( message, length ) => {
     if ( message.length <= length - 3 ) return message;
     else if ( length < 4 && length < message.length ) throw "truncateString was asked to perform a truncation to a length less than 4."; 
     else return message.substring( 0, length - 3 ) + "...";
-  }
+}

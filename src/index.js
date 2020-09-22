@@ -15,6 +15,27 @@ const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
 const Discord = require('discord.js');
 const discordClient = new Discord.Client();
+const buildReceipt = (post, response) => {
+    return new Discord.MessageEmbed()
+        .setColor('#c8102e')
+        .setTitle('Confirmation Receipt')
+        .setDescription('Your request has been successfully logged. Thank you for offering your time!')
+        .setThumbnail('https://i.imgur.com/dGfZBJE.png')
+        .addFields(
+            { name: 'Confirmation Number', value: response.id  },
+            { name: 'Name', value: post.name, inline: true },
+            { name: 'Discord ID', value: post.metadata.discord_id, inline: true },
+            { name: 'Date', value: post.date.toDateString(), inline: true },
+            { name: 'Duration', value: `${post.duration} hours`, inline: true },
+            { name: 'Volunteer Type', value: post["volunteer type"], inline: true },
+            { name: '\u200B', value: '\u200B', inline: true },
+            { name: 'Comment', value: post.comment  },
+        )
+//        .setImage('https://i.imgur.com/grRexyv.png')
+        .setTimestamp()
+        .setFooter(`CougarCS reserves the right to alter or remove logs at will.`);
+}
+
 
 const FORM_LABELS = [
     "Name",
@@ -49,8 +70,7 @@ discordClient.once('ready', () => {
 discordClient.on('message', async (msg) => {
 
     // Restrict bot to specific discord server and specific channel.
-    if (msg.guild.id === guildId && 
-        msg.channel.id === channelId && 
+    if (msg.channel.id === channelId &&
         !msg.author.bot &&
         !msg.content.startsWith("//")) {
         
@@ -136,15 +156,20 @@ return; }
             "discriminator": msg.author.discriminator,
         }
 
-        // TODO: Post to server.
+        // Post to server.
         const payload = {
             method: "POST",
             body: JSON.stringify(post),
             headers: { 'Content-Type': 'application/json' }
         };
-        fetch('http://127.0.0.1:5000/logs', payload).then(resp => console.log(resp.json())).catch(err => console.err(err));
 
-        // TODO: Send confirmation receipt.
+        const respObj = await fetch('http://127.0.0.1:5000/logs', payload);
+        const response = await respObj.json();
+        console.log(`${post.metadata.timestamp} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`);
+
+        // Send confirmation receipt.
+        const receipt = buildReceipt(post, response);
+        await msg.author.send(receipt);
 
         msg.reply(JSON.stringify(post, null, 4));
         await msg.react("✅");

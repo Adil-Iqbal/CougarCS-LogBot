@@ -1,9 +1,17 @@
-from flask import Blueprint, jsonify, request
-from .extensions import mongo
+import json
+from flask import Blueprint, request
+from .extensions import mongo, SerializeMongo
 
 app = Blueprint('main', __name__)
 
+
 @app.route('/logs', methods=['POST'])
-def log():
+def log_request():
     if request.method == 'POST':
-        return {'message': 'recieved'}
+        post = request.json
+        collection = mongo.db.logs
+        result = collection.insert_one(post)
+        return SerializeMongo().encode({
+            "id": result.inserted_id,
+            "inserted": result.acknowledged
+        })
