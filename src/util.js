@@ -1,8 +1,8 @@
-function extract(label, line) {
+exports.extract = (label, line) => {
     return line.substring(label.length + 1).trim();
 }
 
-const convertTime = time => {
+exports.convertTime = time => {
     const tokens = time.split(" ");
     let output = 0;
    
@@ -21,7 +21,7 @@ const convertTime = time => {
     return Number(output.toFixed(2));
   };
 
-function getDate(string) {
+exports.getDate = (string) => {
     if (!string) return new Date();
   
     let [ month, day, year ] = string.split('/');
@@ -37,11 +37,11 @@ function getDate(string) {
     return new Date(year, month - 1, day);
   };
 
-const roll = function(n) {
+exports.roll = function(n) {
     return !!n && Math.random() <= n;
 };
 
-const truncateString = ( message, length ) => {
+exports.truncateString = ( message, length ) => {
     if ( message.length <= length - 3 ) return message;
     else if ( length < 4 && length < message.length ) throw "truncateString was asked to perform a truncation to a length less than 4."; 
     else return message.substring( 0, length - 3 ) + "...";

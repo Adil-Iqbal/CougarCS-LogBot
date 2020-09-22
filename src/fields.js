@@ -1,6 +1,6 @@
 
 
-const FIELDS = [
+exports.fields = [
     {
         label: "name",
         prepare(value) {

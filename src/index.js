@@ -1,11 +1,12 @@
 // Once live, change DEBUG to false.
-const DEBUG = true;
+const DEBUG = false;
 
-require('dotenv').config();
-require('./util');
-require('./fields');
-
+const fetch = require('node-fetch');
 const _ = require('lodash');
+require('dotenv').config();
+
+const { extract, convertTime, getDate, roll, truncateString } = require('./util');
+//const { fields } = require('./fields');
 
 const guildId = process.env.GUILD_ID;
 const channelId = process.env.CHANNEL_ID;
@@ -135,7 +136,13 @@ return; }
             "discriminator": msg.author.discriminator,
         }
 
-        // TODO: Insert into database.
+        // TODO: Post to server.
+        const payload = {
+            method: "POST",
+            body: JSON.stringify(post),
+            headers: { 'Content-Type': 'application/json' }
+        };
+        fetch('http://127.0.0.1:5000/logs', payload).then(resp => console.log(resp.json())).catch(err => console.err(err));
 
         // TODO: Send confirmation receipt.
 

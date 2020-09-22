@@ -7,5 +7,5 @@ def create_app(config_object='runserver.settings'):
     app = Flask(__name__)
     app.config.from_object(config_object)
     mongo.init_app(app)
-    app.reginster_blueprint(_app)
+    app.register_blueprint(_app)
     return app
