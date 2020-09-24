@@ -1,5 +1,5 @@
 exports.extract = (label, line) => {
-    return line.substring(label.length + 1).trim();
+    return line.substring(label.length + 1);
 }
 
 exports.convertTime = time => {
@@ -7,9 +7,9 @@ exports.convertTime = time => {
     let output = 0;
    
     tokens.forEach( token => {
-      if ( token.indexOf('h') != -1 ) output += parseInt( token.substring( 0, token.indexOf('h') ) );
+      if ( token.indexOf('h') !== -1 ) output += parseInt( token.substring( 0, token.indexOf('h') ) );
    
-      else if ( token.indexOf('m') != -1 ) {
+      else if ( token.indexOf('m') !== -1 ) {
         let minutes = parseInt( token.substring( 0, token.indexOf('m') ) );
    
         while ( minutes >= 60 ) { minutes -= 60; output++; }
@@ -46,3 +46,5 @@ exports.truncateString = ( message, length ) => {
     else if ( length < 4 && length < message.length ) throw "truncateString was asked to perform a truncation to a length less than 4."; 
     else return message.substring( 0, length - 3 ) + "...";
 }
+
+exports.capitalStr = str => str.replace(/\b(\w)/gi, c => c.toUpperCase());

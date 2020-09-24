@@ -1,21 +1,22 @@
-// Once live, change DEBUG to false.
-const DEBUG = false;
+const DEBUG = true;
+const TIP_RATE = 0.15;
 
 const fetch = require('node-fetch');
 const _ = require('lodash');
 require('dotenv').config();
 
-const { extract, convertTime, getDate, roll, truncateString } = require('./util');
-//const { fields } = require('./fields');
+const { roll, capitalStr } = require('./util');
+const { fields } = require('./fields');
 
-const guildId = process.env.GUILD_ID;
 const channelId = process.env.CHANNEL_ID;
 const chatChannelId = process.env.CHAT_CHANNEL_ID;
 const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
 const Discord = require('discord.js');
 const discordClient = new Discord.Client();
+
 const buildReceipt = (post, response) => {
+    let duration = post.duration ? post.duration + " hours" : "Exempt";
     return new Discord.MessageEmbed()
         .setColor('#c8102e')
         .setTitle('Confirmation Receipt')
@@ -26,27 +27,16 @@ const buildReceipt = (post, response) => {
             { name: 'Name', value: post.name, inline: true },
             { name: 'Discord ID', value: post.metadata.discord_id, inline: true },
             { name: 'Date', value: post.date.toDateString(), inline: true },
-            { name: 'Duration', value: `${post.duration} hours`, inline: true },
+            { name: 'Duration', value: duration, inline: true },
             { name: 'Volunteer Type', value: post["volunteer type"], inline: true },
             { name: '\u200B', value: '\u200B', inline: true },
             { name: 'Comment', value: post.comment  },
         )
-//        .setImage('https://i.imgur.com/grRexyv.png')
         .setTimestamp()
         .setFooter(`CougarCS reserves the right to alter or remove logs at will.`);
 }
 
-
-const FORM_LABELS = [
-    "Name",
-    "Date",
-    "Volunteer Type",
-    "Duration",
-    "Comment",
-]
-
 let t = 0;
-let tipRate = 0.15;
 const proTips = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
@@ -64,27 +54,28 @@ const proTips = [
 ]
 
 discordClient.once('ready', () => {
+
+    // TODO: Import settings from API.
+
 	console.log('Ready!');
 });
 
 discordClient.on('message', async (msg) => {
 
-    // Restrict bot to specific discord server and specific channel.
-    if (msg.channel.id === channelId &&
-        !msg.author.bot &&
-        !msg.content.startsWith("//")) {
+    // Restrict bot to specific discord channel, ignore bot posts and user comments.
+    if (msg.channel.id !== channelId || msg.author.bot || msg.content.startsWith("//")) return;
         
-        // TODO: Add superuser commands. 
-        
-        // Tips are sent on average every 1/5 log requests.
-        if (roll(tipRate)) {
-            if (t > proTips.length - 1) t = 0;
-            await msg.channel.send(`**Pro tip!** ${proTips[t]}`);
-            t++;
-        }
+    // TODO: Add superuser commands.
 
-        // Send basic instructions.
-        if (msg.content === "?") { await msg.author.send(`**How To Log Your Hours**
+    // Tips are sent randomly.
+    if (roll(TIP_RATE)) {
+        t += 1;
+        if (t > proTips.length - 1) t = 0;
+        await msg.channel.send(`**Pro tip!** ${proTips[t]}`);
+    }
+
+    // User has requested instructions.
+    if (msg.content === "?") { await msg.author.send(`**How To Log Your Hours**
 
 Copy the template below and paste it into <#${channelId}>. Update all the info for your use case:
 \`\`\`
@@ -100,8 +91,8 @@ Comment: declared independence
 - If the \`Date\` field is omitted, the log request will assume today's date.
 - All requests must have a \`Volunteer Type\` field.
 - The \`Volunteer Type\` field should contain one of the following words: text, voice, group, outreach, other.
-    - An "other" request *must* have a \`Comment\` field.
-    - An "outreach" request does *not* need a \`Duration\` field.
+- An "other" request *must* have a \`Comment\` field.
+- An "outreach" request does *not* need a \`Duration\` field.
 - The \`Duration\` field should be in the format "Xh Ym" with X and Y being an integer of hours and minutes respectively.
 - The value of the \`Comment\` field will always be truncated to 140 characters.
 
@@ -113,68 +104,99 @@ Comment: declared independence
 
 Thank you so much for your time! <3
 `); 
-await msg.react("👍");
-return; }
-
-        // Parse message content.
-        let content = msg.content;
-        content = content.split("\n");
-
-        let post = {};
-
-        for (let line of content) {
-            for (let label of FORM_LABELS) {
-                if (line.startsWith(`${label}:`)) {
-                    let value = extract(label, line);
-                    if (label === "Date") {
-                        post[label.toLowerCase()] = getDate(value);
-                    }
-                    else if (label === "Duration") {
-                            post[label.toLowerCase()] = convertTime(value);
-                    } else if (label === "Comment") {
-                        post[label.toLowerCase()] = truncateString(value, 140);
-                    } else {
-                        post[label.toLowerCase()] = value;
-                    }
-                }
-            }
-        }
-
-        if (_.isEmpty(post)) {
-            await msg.reply(`*Hmm... that doesn't look like a log request.* Send the message "?" and I'll privately message you some instructions on how to log your hours.\n\n**Pro tip!** If you start your message with two forward slashes, I'll ignore the message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`);
-            await msg.react('⚠️');
-            return; 
-        }
-
-        // TODO: Validate post
-        
-        // Add metadata.
-        post.metadata = {
-            "timestamp": new Date(),
-            "discord_id": DEBUG ? "hidden" : msg.author.id,
-            "username": msg.author.username,
-            "discriminator": msg.author.discriminator,
-        }
-
-        // Post to server.
-        const payload = {
-            method: "POST",
-            body: JSON.stringify(post),
-            headers: { 'Content-Type': 'application/json' }
-        };
-
-        const respObj = await fetch('http://127.0.0.1:5000/logs', payload);
-        const response = await respObj.json();
-        console.log(`${post.metadata.timestamp} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`);
-
-        // Send confirmation receipt.
-        const receipt = buildReceipt(post, response);
-        await msg.author.send(receipt);
-
-        msg.reply(JSON.stringify(post, null, 4));
-        await msg.react("✅");
+        await msg.react("👍");
         return;
     }
+
+    let post = {};
+    const errors = [];
+
+    // Parse log request from #logging.
+    for (let line of msg.content.split("\n")) {
+        for (let field of fields) {
+            const { label, prepare, validate, process, error } = field;
+            if (line.startsWith(capitalStr(label) + ':')) {
+                let value = prepare(line);
+                if (validate(value)) post[label] = process(value);
+                else errors.push(error);
+                break;
+            }
+        }
+    }
+
+    if (_.isEmpty(post)) {
+        await msg.reply(`*Hmm... that doesn't look like a log request.* Send the message "?" and I'll privately message you some instructions on how to log your hours.\n\n**Pro tip!** If you start your message with two forward slashes, I'll ignore the message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`);
+        await msg.react('⚠️');
+        return;
+    }
+
+    // Validate post structure...
+
+    // Must have name:
+    if (!post.hasOwnProperty("name"))
+        errors.push("Your log request must have a `Name` field.", )
+
+    // If no date is provided, today's date will be used.
+    if (!post.hasOwnProperty("date"))
+        post.date = new Date();
+
+    // Must have volunteer type.
+    if (!post.hasOwnProperty("volunteer type"))
+        errors.push("Your log request must have a `Volunteer Type` field.");
+
+    // If post is of type outreach, duration is ignored.
+    if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "outreach")
+        post.duration = null;
+
+    // If post is not of type outreach, must have duration.
+    if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))
+        errors.push("A log request that is not of type \"outreach\" must have a `Duration` field.");
+
+    // If post is of type other, must have comment.
+    if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "other" && !post.hasOwnProperty("comment"))
+        errors.push("A log request of type \"other\" must have a `Comment` field.")
+
+    // Error handling. (Reply in channel so others can learn).
+    if (errors.length) {
+        let reply = "*I had some trouble parsing your log request.* Keep in mind:";
+        for (let i = 0; i < errors.length; i++)
+            errors[i] = "  - " + errors[i];
+
+        reply += "\n" + errors.join("\n");
+        await msg.reply(reply);
+        await msg.react('⚠️');
+        return;
+    };
+
+
+    // Add metadata.
+    post.metadata = {
+        "timestamp": new Date(),
+        "discord_id": DEBUG ? "*".repeat(msg.author.id.length) : msg.author.id,
+        "username": msg.author.username,
+        "discriminator": msg.author.discriminator,
+    }
+
+    // Post data to server.
+    const payload = {
+        method: "POST",
+        body: JSON.stringify(post),
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    const respObj = await fetch('http://127.0.0.1:5000/logs', payload);
+    const response = await respObj.json();
+    if (DEBUG)
+        console.log(`${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`);
+
+    // Send confirmation receipt.
+    const receipt = buildReceipt(post, response);
+    await msg.author.send(receipt);
+
+    if (DEBUG)
+        msg.reply("```json\n" + JSON.stringify(post, null, 4) + "\n```");
+    await msg.react("✅");
+    return;
 });
 
 discordClient.login(process.env.BOT_TOKEN);
