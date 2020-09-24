@@ -1,2 +1,2 @@
-FLASK_APP=runserver
+FLASK_APP=api
 FLASK_ENV=development

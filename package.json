@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node src/index.js",
+    "run": "node bot/index.js",
     "serve": "flask run"
   },
   "keywords": [],
