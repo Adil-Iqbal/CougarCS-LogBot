@@ -1,5 +1,9 @@
 {
-  "DEBUG": true,
-  "LOCK": false,
-  "MAX_HOURS": 12,
-  "TIP_RATE": 0.15,
+  "debug": true,
+  "lock": false,
+  "maxHours": 12,
+  "tipRate": 0.15,
+  "prefix": "$",
+  "commentPrefix": "//",
+  "host": "127.0.0.1:5000"
+}

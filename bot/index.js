@@ -1,22 +1,29 @@
+// Environment variables.
+require('dotenv').config();
+const channelId = process.env.CHANNEL_ID;
+
 // Configuration Options.
-const DEBUG = true;
-const TIP_RATE = 0.15;
-const MAX_HOURS = 12;
+let config = require('./config.json');
 
 // Node Packages.
 const _ = require('lodash');
-require('dotenv').config();
+const fs = require('fs');
 const Discord = require('discord.js');
 
 // Utilities.
 const { roll, capitalStr } = require('./util');
 const { fields } = require('./fields');
-const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, buildReceipt, serverLog, safeFetch } = require('./copy');
-
-// Environment variables.
-const channelId = process.env.CHANNEL_ID;
+const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, safeFetch, debugText } = require('./copy');
 
 const discordClient = new Discord.Client();
+
+// Retrieve commands.
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
 
 discordClient.once('ready', () => {
 
@@ -25,21 +32,75 @@ discordClient.once('ready', () => {
 	console.log('Ready!');
 });
 
-discordClient.on('message', async (msg) => {
+discordClient.on('message', async (message) => {
 
-    // Restrict bot to specific discord channel, ignore bot posts and user comments.
-    if (msg.channel.id !== channelId || msg.author.bot || msg.content.startsWith("//")) return;
-        
-    // TODO: Add superuser commands.
+    // Restrict bot to specific discord channel, ignore bot posts, and ignore comments.
+    if (message.channel.id !== channelId || message.author.bot || message.content.startsWith(config.commentPrefix)) return;
+
+    // Parse commands.
+    if (message.content.startsWith(config.prefix)) {
+        const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+        const commandName = args.shift().toLowerCase();
+
+        // Command not found.
+        if (!client.commands.has(commandName)) {
+            await message.react('⚠️');
+            await message.reply("*I don't know that command.*");
+            return;
+        };
+
+        try {
+            // Retrieve command.
+            const command = client.commands.get(commandName);
+
+            // Superuser verification.
+            if (command.superuserOnly && config.superusers && !config.superusers.include(message.author.id)) {
+                await message.react('⚠️');
+                await message.reply(PERMISSION_DENIED);
+                return;
+            }
+
+            // Freeze status verification.
+            if (command.unfrozenOnly && config.frozen && config.frozen.includes(message.author.id)) {
+                await message.react('⚠️');
+                await message.reply(PERMISSION_DENIED);
+                return;
+            }
+
+            // Required argument verification.
+            if (command.args && !args.length) {
+                let reply = "*You didn't provide any arguments.*"
+                if (command.usage) reply += `The proper usage is: ${config.prefix}${command.name} ${command.usage}`;
+                await message.react('⚠️');
+                await message.reply(reply);
+                return;
+            }
+                
+            // Execute command.
+            command.execute(message, config, args);
+        } catch (error) {
+            await message.react('⚠️');
+            if (config.config.debug) await message.reply(debugText("Javascript Error", e.toString()));
+            else await message.reply('*I had trouble trying to execute that command.*');
+            return;
+        }
+    }
+
+    // When bot is locked, 
+    if (config.lock) {
+        await message.react('⚠️');
+        await message.reply(LOCKED);
+        return;
+    }
 
     // Tips are sent randomly.
-    if (roll(TIP_RATE)) {
-        await msg.channel.send(`**Pro tip!** ${_.sample(PRO_TIPS)}`);
+    if (roll(config.tipRate)) {
+        await message.channel.send(`**Pro tip!** ${_.sample(PRO_TIPS)}`);
     }
 
     // User has requested instructions.
-    if (msg.content === "?") { await msg.author.send(HELP_MESSAGE);
-        await msg.react("👍");
+    if (message.content === "?") { await message.author.send(HELP_MESSAGE);
+        await message.react("👍");
         return;
     }
 
@@ -47,7 +108,7 @@ discordClient.on('message', async (msg) => {
     const errors = [];
 
     // Parse log request from #logging.
-    for (let line of msg.content.split("\n")) {
+    for (let line of message.content.split("\n")) {
         for (let field of fields) {
             const { label, prepare, validate, process, error } = field;
             if (line.startsWith(capitalStr(label) + ':')) {
@@ -60,10 +121,10 @@ discordClient.on('message', async (msg) => {
         }
     }
 
-    // Improper chatting.
+    // Illegal chatting.
     if (_.isEmpty(post)) {
-        await msg.reply(NOT_A_REQUEST);
-        await msg.react('⚠️');
+        await message.reply(NOT_A_REQUEST);
+        await message.react('⚠️');
         return;
     }
 
@@ -83,8 +144,8 @@ discordClient.on('message', async (msg) => {
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "outreach")
         post.duration = null;
 
-    if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > MAX_HOURS)
-        errors.push(`You cannot log more than ${MAX_HOURS} in a single post.`);
+    if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > config.maxHours)
+        errors.push(`You cannot log more than ${config.maxHours} in a single post.`);
 
     // If post is not of type outreach, must have duration.
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))
@@ -101,17 +162,17 @@ discordClient.on('message', async (msg) => {
             errors[i] = "  - " + errors[i];
 
         reply += "\n" + errors.join("\n");
-        await msg.reply(reply);
-        await msg.react('⚠️');
+        await message.reply(reply);
+        await message.react('⚠️');
         return;
     }
 
     // Add metadata.
     post.metadata = {
         "timestamp": new Date(),
-        "discord_id": msg.author.id,
-        "username": msg.author.username,
-        "discriminator": msg.author.discriminator,
+        "discord_id": message.author.id,
+        "username": message.author.username,
+        "discriminator": message.author.discriminator,
     }
 
     // Post data payload to server.
@@ -121,56 +182,57 @@ discordClient.on('message', async (msg) => {
         headers: { 'Content-Type': 'application/json' }
     };
 
-    const [ respObj, response ] = safeFetch(msg, 'http://127.0.0.1:5000/logs', payload);
-    if (respObj === null && response === null) return;
+    if (config.debug) {
+        post.metadata.discord_id = "*".repeat(message.author.id.length);
+        await message.reply(debugText("Request Body", JSON.stringify(post, null, 4), "json"))
+    }
+
+    // const [ respObj, response ] = await safeFetch(message, 'http://127.0.0.1:5000/logs', payload);
+    // if (respObj === null && response === null) return;
 
 
     // let respObj, response;
     // try {
-    //
+    
     //     // Send post request to API.
     //     respObj = await fetch('http://127.0.0.1:5000/logs', payload);
-    //
+    
     //     if (respObj.status === 401) {
-    //         await msg.react('⚠️');
-    //         await msg.reply(PERMISSION_DENIED);
+    //         await message.react('⚠️');
+    //         await message.reply(PERMISSION_DENIED);
     //         return;
     //     }
-    //
+    
     //     response = await respObj.json();
-    //
+    
     //     // Server responds with a server error.
     //     if (response.server_error) {
-    //         await msg.react('⚠️');
-    //         if (DEBUG) await msg.reply("*Server Error*\n```\n" + response.server_error + "\n```");
-    //         else await msg.reply(API_DOWN);
+    //         await message.react('⚠️');
+    //         if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
+    //         else await message.reply(API_DOWN);
     //         return;
     //     }
-    //
+    
     // // Server does not respond.
     // } catch (e) {
-    //     await msg.react('⚠️');
-    //     if (DEBUG) {
-    //         await msg.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
-    //         if (respObj && respObj.status) await msg.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
+    //     await message.react('⚠️');
+    //     if (config.debug) {
+    //         await message.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
+    //         if (respObj && respObj.status) await message.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
     //     } else
-    //         await msg.reply(API_DOWN);
+    //         await message.reply(API_DOWN);
     //     return;
     // }
 
     // Log all requests sent to bot console.
-    if (DEBUG)
+    if (config.debug)
         console.log(serverLog(post, response));
 
     // Send confirmation receipt.
     const receipt = buildReceipt(post, response);
-    await msg.author.send(receipt);
+    await message.author.send(receipt);
 
-    if (DEBUG) {
-        post.metadata.discord_id = "*".repeat(msg.author.id.length);
-        msg.reply("```json\n" + JSON.stringify(post, null, 4) + "\n```");
-    }
-    await msg.react("✅");
+    await message.react("✅");
     return;
 });
 

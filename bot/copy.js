@@ -63,6 +63,7 @@ exports.API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again
 
 exports.PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
 
+exports.LOCKED = "*I'm not allowed to do that! I've been locked.* You'll have to ask one of the head honchos to unlock before I can take any requests. You can still use commands.";
 
 exports.buildReceipt = (post, response) => {
     let duration = post.duration ? post.duration + " hours" : "Exempt";
