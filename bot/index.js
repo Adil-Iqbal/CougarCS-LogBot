@@ -1,9 +1,9 @@
 // Configuration Options.
 const DEBUG = true;
 const TIP_RATE = 0.15;
+const MAX_HOURS = 12;
 
 // Node Packages.
-const fetch = require('node-fetch');
 const _ = require('lodash');
 require('dotenv').config();
 const Discord = require('discord.js');
@@ -11,7 +11,7 @@ const Discord = require('discord.js');
 // Utilities.
 const { roll, capitalStr } = require('./util');
 const { fields } = require('./fields');
-const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, buildReceipt, serverLog } = require('./copy');
+const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, buildReceipt, serverLog, safeFetch } = require('./copy');
 
 // Environment variables.
 const channelId = process.env.CHANNEL_ID;
@@ -51,6 +51,7 @@ discordClient.on('message', async (msg) => {
         for (let field of fields) {
             const { label, prepare, validate, process, error } = field;
             if (line.startsWith(capitalStr(label) + ':')) {
+                post[label] = undefined;
                 let value = prepare(line);
                 if (validate(value)) post[label] = process(value);
                 else errors.push(error);
@@ -81,6 +82,9 @@ discordClient.on('message', async (msg) => {
     // If post is of type outreach, duration is ignored.
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "outreach")
         post.duration = null;
+
+    if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > MAX_HOURS)
+        errors.push(`You cannot log more than ${MAX_HOURS} in a single post.`);
 
     // If post is not of type outreach, must have duration.
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))
@@ -116,8 +120,45 @@ discordClient.on('message', async (msg) => {
         body: JSON.stringify(post),
         headers: { 'Content-Type': 'application/json' }
     };
-    const respObj = await fetch('http://127.0.0.1:5000/logs', payload);
-    const response = await respObj.json();
+
+    const [ respObj, response ] = safeFetch(msg, 'http://127.0.0.1:5000/logs', payload);
+    if (respObj === null && response === null) return;
+
+
+    // let respObj, response;
+    // try {
+    //
+    //     // Send post request to API.
+    //     respObj = await fetch('http://127.0.0.1:5000/logs', payload);
+    //
+    //     if (respObj.status === 401) {
+    //         await msg.react('⚠️');
+    //         await msg.reply(PERMISSION_DENIED);
+    //         return;
+    //     }
+    //
+    //     response = await respObj.json();
+    //
+    //     // Server responds with a server error.
+    //     if (response.server_error) {
+    //         await msg.react('⚠️');
+    //         if (DEBUG) await msg.reply("*Server Error*\n```\n" + response.server_error + "\n```");
+    //         else await msg.reply(API_DOWN);
+    //         return;
+    //     }
+    //
+    // // Server does not respond.
+    // } catch (e) {
+    //     await msg.react('⚠️');
+    //     if (DEBUG) {
+    //         await msg.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
+    //         if (respObj && respObj.status) await msg.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
+    //     } else
+    //         await msg.reply(API_DOWN);
+    //     return;
+    // }
+
+    // Log all requests sent to bot console.
     if (DEBUG)
         console.log(serverLog(post, response));
 

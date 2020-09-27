@@ -1,0 +1,5 @@
+{
+  "DEBUG": true,
+  "LOCK": false,
+  "MAX_HOURS": 12,
+  "TIP_RATE": 0.15,

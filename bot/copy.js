@@ -58,6 +58,12 @@ exports.NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the
 
 **Pro tip!** If you start your message with two forward slashes, I'll ignore the message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;
 
+exports.API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`
+
+
+exports.PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
+
+
 exports.buildReceipt = (post, response) => {
     let duration = post.duration ? post.duration + " hours" : "Exempt";
     return new Discord.MessageEmbed()
@@ -80,3 +86,5 @@ exports.buildReceipt = (post, response) => {
 }
 
 exports.serverLog = async (post, response) => `${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`;
+
+exports.debugText = (title, source, lang="") => `*${title}*\n\`\`\`${lang}\n${source}\n\`\`\``;
