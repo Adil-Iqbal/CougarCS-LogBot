@@ -54,20 +54,6 @@ client.on('message', async (message) => {
             // Retrieve command.
             const command = client.commands.get(commandName);
 
-            // Superuser verification.
-            if (command.superuserOnly && config.superusers && !config.superusers.include(message.author.id)) {
-                await message.react('⚠️');
-                await message.reply(PERMISSION_DENIED);
-                return;
-            }
-
-            // Freeze status verification.
-            if (command.unfrozenOnly && config.frozen && config.frozen.includes(message.author.id)) {
-                await message.react('⚠️');
-                await message.reply(PERMISSION_DENIED);
-                return;
-            }
-
             // Required argument verification.
             if (command.args && !args.length) {
                 let reply = "*You didn't provide any arguments.*"

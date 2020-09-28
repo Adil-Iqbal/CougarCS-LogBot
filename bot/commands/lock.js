@@ -1,13 +1,10 @@
 const { safeFetch } = require("../util");
-const { debugText } = require("../copy");
 
 module.exports = {
 	name: 'lock',
     description: 'prevent bot from taking log requests.',
     args: false,
     usage: '',
-    superuserOnly: true,
-    unfrozenOnly: true,
 
 	execute: async (message, _, config) => {
         config.lock = !config.lock;
