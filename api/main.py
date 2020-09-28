@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, request
 from flask_api import status as s
 from .extensions import mongo
-from .util import json_response, forward_error, encode, freeze_if_frozen
+from .util import json_response, forward_error, encode, freeze_if_frozen, superuser_only
 
 app = Blueprint('main', __name__)
 
@@ -11,7 +11,6 @@ app = Blueprint('main', __name__)
 @app.route('/logs', methods=['POST'])
 @forward_error
 def log_request():
-    2/0
     response_obj = {}
     if request.method == 'POST':
 
@@ -79,3 +78,14 @@ def log_request():
 
     # Return response.
     return json_response(response_obj)
+
+
+@app.route('/config', methods=['UPDATE'])
+@forward_error
+@superuser_only
+def configuration():
+    # config_col = mongo.db.config
+    if request.method == "UPDATE":
+        data = request.json
+        # config = request.json["config"]
+        return data, s.HTTP_200_OK

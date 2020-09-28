@@ -59,7 +59,10 @@ def superuser_only(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user_col = mongo.db.users
-        discord_id = request.json["metadata"]["discord_id"]
+        try:
+            discord_id = request.json["discord_id"]
+        except KeyError:
+            discord_id = request.json["metadata"]["discord_id"]
         existing_user_query = {"_id": {"$eq": discord_id}}
         existing_user = user_col.find_one(existing_user_query)
         if not existing_user or not existing_user["superuser"]:

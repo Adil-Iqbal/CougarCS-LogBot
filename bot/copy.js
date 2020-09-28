@@ -1,4 +1,5 @@
 require('dotenv').config();
+const _ = require('lodash');
 const Discord = require('discord.js');
 
 // Environment variables.
@@ -88,4 +89,7 @@ exports.buildReceipt = (post, response) => {
 
 exports.serverLog = async (post, response) => `${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`;
 
-exports.debugText = (title, source, lang="") => `*${title}*\n\`\`\`${lang}\n${source}\n\`\`\``;
+exports.debugText = (title, source, lang="") => {
+    if (lang == 'json' && _.isObject(source)) source = JSON.stringify(source, null, 4); 
+    return `*${title}*\n\`\`\`${lang}\n${source}\n\`\`\``;;
+}

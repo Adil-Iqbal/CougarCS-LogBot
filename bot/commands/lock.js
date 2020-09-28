@@ -1,3 +1,6 @@
+const { safeFetch } = require("../util");
+const { debugText } = require("../copy");
+
 module.exports = {
 	name: 'lock',
     description: 'prevent bot from taking log requests.',
@@ -5,15 +8,21 @@ module.exports = {
     usage: '',
     superuserOnly: true,
     unfrozenOnly: true,
-	execute: async (message, config) => {
+
+	execute: async (message, _, config) => {
         config.lock = !config.lock;
 
         // TODO: Finish this request on bot end and api end.
-        await fetch(`${config.host}/config`, config);
+        const payload = {
+            method: "UPDATE",
+            body: JSON.stringify({ "config": config, "discord_id": message.author.id }),
+            headers: { 'Content-Type': 'application/json' }
+        }
+        const [ respObj, response ] = await safeFetch(message, config, `${config.host}/config`, payload);
+        if (!respObj && !response) return;
 
-        // Message
         let reply = "I will no longer be taking requests. Though, you can still use commands!";
-        if (!config.lock) replay = "Ladies and gentlemen, we're back in business! Request away.";
+        if (!config.lock) reply = "Ladies and gentlemen, we're back in business! Request away.";
         await message.reply(reply);
 	},
 };

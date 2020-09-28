@@ -1,6 +1,7 @@
 const { PERMISSION_DENIED, API_DOWN, debugText } = require("./copy");
-const { debug } = require("./index");
 const fetch = require('node-fetch');
+const { s } = require('./httpStatusCodes');
+
 
 
 exports.extract = (label, line) => {
@@ -55,43 +56,54 @@ exports.truncateString = ( message, length ) => {
 exports.capitalStr = str => str.replace(/\b(\w)/gi, c => c.toUpperCase());
 
 
-// exports.safeFetch = async (message, ...args) => {
-//     let respObj, response;
-//     try {
-//         respObj = await fetch(...args);
+exports.safeFetch = async (message, config, ...args) => {
+    let respObj, response;
+    try {
+        respObj = await fetch(...args);
 
-//         // Permission denied.
-//         if (await respObj && respObj.status === 401) {
-//             await message.react('⚠️');
-//             await message.reply(PERMISSION_DENIED);
-//             return [null, null];
-//         }
+        // Permission denied.
+        if (respObj.status === s.HTTP_401_UNAUTHORIZED) {
+            await message.react('⚠️');
+            await message.reply(PERMISSION_DENIED);
+            return [null, null];
+        }
 
-//         response = respObj.json();
+        response = await respObj.json();
 
-//         // Server responds with a server error.
-//         if (response.server_error) {
-//             await message.react('⚠️');
-//             if (debug)
-//                 await message.reply(debugText("Internal Server Error", response.server_error));
-//             else
-//                 await message.reply(API_DOWN);
-//             return [null, null];
-//         }
+        // (debug mode) If server error occurred, print it in chat.
+        if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR) {
+            await message.react('⚠️');
+            if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
+            else await message.reply(API_DOWN);
+            return [null, null];
+        }
 
-//         return [respObj, await response];
-//     } catch (e) {
-//         await message.react('⚠️');
-//         if (debug) {
-//             await message.reply(debugText("Javascript Error", e.toString()));
-//             if (await respObj && respObj.status)
-//                 await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`));
-//         } else {
-//             await message.reply(API_DOWN);
-//         }
-//         return [null, null];
-//     }
-// };
+        // (debug mode) If server error did not occur, print the server's response.
+        if (config.debug && respObj.status !== s.HTTP_500_INTERNAL_SERVER_ERROR) {
+            await message.reply(debugText("Response Body", response, "json"));
+            return [null, null];
+        } 
+
+        return [respObj, response];
+
+    } catch (e) {
+        await message.react('⚠️');
+
+        // (debug mode) If an unforeseen error occurred, print whatever we can.
+        if (config.debug) {
+            await message.reply(debugText("Javascript Error", e.stack));
+
+            if (respObj && respObj.status)
+                await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`));
+            
+            if (response) 
+                await message.reply(debugText("Response Body", response, "json"));
+        } else {
+            await message.reply(API_DOWN);
+        }
+        return [null, null];
+    }
+};
 /*
 let respObj, response;
     try {
@@ -110,7 +122,7 @@ let respObj, response;
         // Server responds with a server error.
         if (response.server_error) {
             await message.react('⚠️');
-            if (debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
+            if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
             else await message.reply(API_DOWN);
             return;
         }
@@ -118,7 +130,7 @@ let respObj, response;
     // Server does not respond.
     } catch (e) {
         await message.react('⚠️');
-        if (debug) {
+        if (config.debug) {
             await message.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
             if (respObj && respObj.status) await message.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
         } else

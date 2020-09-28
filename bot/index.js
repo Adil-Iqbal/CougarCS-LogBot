@@ -6,6 +6,7 @@ const channelId = process.env.CHANNEL_ID;
 let config = require('./config.json');
 
 // Node Packages.
+const path = require("path");
 const _ = require('lodash');
 const fs = require('fs');
 const Discord = require('discord.js');
@@ -15,27 +16,27 @@ const { roll, capitalStr } = require('./util');
 const { fields } = require('./fields');
 const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, safeFetch, debugText } = require('./copy');
 
-const discordClient = new Discord.Client();
+const client = new Discord.Client();
 
 // Retrieve commands.
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(path.resolve(__dirname, "./commands")).filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
 
-discordClient.once('ready', () => {
+client.once('ready', () => {
 
     // TODO: Import settings from API.
 
 	console.log('Ready!');
 });
 
-discordClient.on('message', async (message) => {
+client.on('message', async (message) => {
 
-    // Restrict bot to specific discord channel, ignore bot posts, and ignore comments.
-    if (message.channel.id !== channelId || message.author.bot || message.content.startsWith(config.commentPrefix)) return;
+    // Restrict bot to specific discord channel, ignore bot posts, ignore comments, and ignore commands.
+    if (message.channel.id !== channelId || message.author.bot || message.content.startsWith(config.commentPrefix) ) return;
 
     // Parse commands.
     if (message.content.startsWith(config.prefix)) {
@@ -77,10 +78,11 @@ discordClient.on('message', async (message) => {
             }
                 
             // Execute command.
-            command.execute(message, config, args);
+            command.execute(message, args, config);
+            return;
         } catch (error) {
             await message.react('⚠️');
-            if (config.config.debug) await message.reply(debugText("Javascript Error", e.toString()));
+            if (config.config.debug) await message.reply(debugText("Javascript Error", e.stack));
             else await message.reply('*I had trouble trying to execute that command.*');
             return;
         }
@@ -191,38 +193,39 @@ discordClient.on('message', async (message) => {
     // if (respObj === null && response === null) return;
 
 
-    // let respObj, response;
-    // try {
+    let respObj, response;
+    try {
     
-    //     // Send post request to API.
-    //     respObj = await fetch('http://127.0.0.1:5000/logs', payload);
+        // Send post request to API.
+        respObj = await fetch('http://127.0.0.1:5000/logs', payload);
     
-    //     if (respObj.status === 401) {
-    //         await message.react('⚠️');
-    //         await message.reply(PERMISSION_DENIED);
-    //         return;
-    //     }
+        if (respObj.status === 401) {
+            await message.react('⚠️');
+            await message.reply(PERMISSION_DENIED);
+            return;
+        }
     
-    //     response = await respObj.json();
+        response = await respObj.json();
     
-    //     // Server responds with a server error.
-    //     if (response.server_error) {
-    //         await message.react('⚠️');
-    //         if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
-    //         else await message.reply(API_DOWN);
-    //         return;
-    //     }
+        // Server responds with a server error.
+        if (response.server_error) {
+            await message.react('⚠️');
+            if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
+            else await message.reply(API_DOWN);
+            return;
+        }
     
-    // // Server does not respond.
-    // } catch (e) {
-    //     await message.react('⚠️');
-    //     if (config.debug) {
-    //         await message.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
-    //         if (respObj && respObj.status) await message.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
-    //     } else
-    //         await message.reply(API_DOWN);
-    //     return;
-    // }
+    // Server does not respond.
+    } catch (e) {
+        await message.react('⚠️');
+        if (config.debug) {
+            await message.reply(debugText("Javascript Error", e.stack));
+            if (respObj && respObj.status) 
+                await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`));
+        } else
+            await message.reply(API_DOWN);
+        return;
+    }
 
     // Log all requests sent to bot console.
     if (config.debug)
@@ -236,4 +239,4 @@ discordClient.on('message', async (message) => {
     return;
 });
 
-discordClient.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN);
