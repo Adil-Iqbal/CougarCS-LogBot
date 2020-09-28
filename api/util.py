@@ -4,7 +4,7 @@ import traceback
 import functools
 from bson import ObjectId
 from flask import request
-from flask_api import status
+from flask_api import status as s
 from .extensions import mongo
 
 
@@ -27,9 +27,11 @@ def json_response(source):
     destination = {
         "inserted_user": False,
         "updated_user": False,
+        "updated_config": False,
         "inserted_log": False,
         "user_id": None,
         "log_id": None,
+        "config": None,
         "server_error": None,
         "message": None,
     }
@@ -47,7 +49,7 @@ def forward_error(func):
         except Exception:
             exc_type, exc_value, exc_tb = sys.exc_info()
             traceback_string = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-            return json_response({"server_error": traceback_string})
+            return json_response({"server_error": traceback_string}), s.HTTP_500_INTERNAL_SERVER_ERROR
 
     return wrapper
 
@@ -59,14 +61,11 @@ def superuser_only(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user_col = mongo.db.users
-        try:
-            discord_id = request.json["discord_id"]
-        except KeyError:
-            discord_id = request.json["metadata"]["discord_id"]
+        discord_id = request.json["metadata"]["discord_id"]
         existing_user_query = {"_id": {"$eq": discord_id}}
         existing_user = user_col.find_one(existing_user_query)
         if not existing_user or not existing_user["superuser"]:
-            return encode({"message", "Permission denied."}), status.HTTP_401_UNAUTHORIZED
+            return encode({"message": "Permission denied."}), s.HTTP_401_UNAUTHORIZED
         return func(*args, **kwargs)
 
     return wrapper
@@ -83,7 +82,7 @@ def freeze_if_frozen(func):
         existing_user_query = {"_id": {"$eq": discord_id}}
         existing_user = user_col.find_one(existing_user_query)
         if existing_user and existing_user["frozen"]:
-            return encode({"message", "Permission denied."}), status.HTTP_401_UNAUTHORIZED
+            return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
         return func(*args, **kwargs)
 
     return wrapper

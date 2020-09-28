@@ -12,9 +12,9 @@ const fs = require('fs');
 const Discord = require('discord.js');
 
 // Utilities.
-const { roll, capitalStr } = require('./util');
+const { roll, capitalStr, safeFetch } = require('./util');
 const { fields } = require('./fields');
-const { HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, safeFetch, debugText } = require('./copy');
+const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText } = require('./copy');
 
 const client = new Discord.Client();
 
@@ -29,7 +29,8 @@ for (const file of commandFiles) {
 client.once('ready', () => {
 
     // TODO: Import settings from API.
-
+    const channel = client.channels.cache.get(String(channelId));
+    channel.send(WELCOME);
 	console.log('Ready!');
 });
 
@@ -155,14 +156,6 @@ client.on('message', async (message) => {
         return;
     }
 
-    // Add metadata.
-    post.metadata = {
-        "timestamp": new Date(),
-        "discord_id": message.author.id,
-        "username": message.author.username,
-        "discriminator": message.author.discriminator,
-    }
-
     // Post data payload to server.
     const payload = {
         method: "POST",
@@ -170,55 +163,49 @@ client.on('message', async (message) => {
         headers: { 'Content-Type': 'application/json' }
     };
 
-    if (config.debug) {
-        post.metadata.discord_id = "*".repeat(message.author.id.length);
-        await message.reply(debugText("Request Body", JSON.stringify(post, null, 4), "json"))
-    }
+    const [ respObj, response, _post ] = await safeFetch(message, config, "/logs", payload);
+    if (respObj === null && response === null) return;
 
-    // const [ respObj, response ] = await safeFetch(message, 'http://127.0.0.1:5000/logs', payload);
-    // if (respObj === null && response === null) return;
-
-
-    let respObj, response;
-    try {
+    // let respObj, response;
+    // try {
     
-        // Send post request to API.
-        respObj = await fetch('http://127.0.0.1:5000/logs', payload);
+    //     // Send post request to API.
+    //     respObj = await fetch('http://127.0.0.1:5000/logs', payload);
     
-        if (respObj.status === 401) {
-            await message.react('⚠️');
-            await message.reply(PERMISSION_DENIED);
-            return;
-        }
+    //     if (respObj.status === 401) {
+    //         await message.react('⚠️');
+    //         await message.reply(PERMISSION_DENIED);
+    //         return;
+    //     }
     
-        response = await respObj.json();
+    //     response = await respObj.json();
     
-        // Server responds with a server error.
-        if (response.server_error) {
-            await message.react('⚠️');
-            if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
-            else await message.reply(API_DOWN);
-            return;
-        }
+    //     // Server responds with a server error.
+    //     if (response.server_error) {
+    //         await message.react('⚠️');
+    //         if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
+    //         else await message.reply(API_DOWN);
+    //         return;
+    //     }
     
-    // Server does not respond.
-    } catch (e) {
-        await message.react('⚠️');
-        if (config.debug) {
-            await message.reply(debugText("Javascript Error", e.stack));
-            if (respObj && respObj.status) 
-                await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`));
-        } else
-            await message.reply(API_DOWN);
-        return;
-    }
+    // // Server does not respond.
+    // } catch (e) {
+    //     await message.react('⚠️');
+    //     if (config.debug) {
+    //         await message.reply(debugText("Javascript Error", e.stack));
+    //         if (respObj && respObj.status) 
+    //             await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`));
+    //     } else
+    //         await message.reply(API_DOWN);
+    //     return;
+    // }
 
     // Log all requests sent to bot console.
     if (config.debug)
-        console.log(serverLog(post, response));
+        console.log(serverLog(_post, response));
 
     // Send confirmation receipt.
-    const receipt = buildReceipt(post, response);
+    const receipt = buildReceipt(_post, response);
     await message.author.send(receipt);
 
     await message.react("✅");

@@ -7,6 +7,10 @@ const channelId = process.env.CHANNEL_ID;
 const chatChannelId = process.env.CHAT_CHANNEL_ID;
 const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
+exports.WELCOME = `\n\n**CougarCS Log Bot** (version 1.0.0)\n© 2020 Adil Iqbal. All Rights Reserved.
+
+Greetings! All posts in this thread are considered 'log requests.' Try typing something!`;
+
 exports.PRO_TIPS = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",

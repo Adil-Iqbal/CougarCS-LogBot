@@ -2,18 +2,18 @@ const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
 
 module.exports = {
-	name: 'lock',
-    description: 'prevent bot from taking log requests.',
+	name: 'unlock',
+    description: 'allow bot to take log requests.',
     args: false,
     usage: '',
 	execute: async (message, _, config) => {
-        if (config.lock === true) {
+        if (config.lock === false) {
             await message.react('⚠️');
-            await message.reply("*I'm already locked.*");
+            await message.reply("*I'm already unlocked.*");
             return;
         }
 
-        config.lock = true;
+        config.lock = false;
 
         const payload = {
             method: "UPDATE",
@@ -23,13 +23,13 @@ module.exports = {
 
         const [ respObj, response ] = await safeFetch(message, config, "/config", payload);
         if (!respObj && !response) {
-            config.lock = false;
+            config.lock = true;
             return;
         };
 
         if (respObj.status == s.HTTP_200_OK) {
             await message.react("✅");
-            let content = "@here, Until further notice, I will no longer be taking requests. Though, you can still use commands.";
+            let content = "@here, Ladies and gentlemen, we're back in business. Request away!";
             await message.channel.send(content);
         }
 	},

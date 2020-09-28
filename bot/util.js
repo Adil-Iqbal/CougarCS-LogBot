@@ -56,16 +56,43 @@ exports.truncateString = ( message, length ) => {
 exports.capitalStr = str => str.replace(/\b(\w)/gi, c => c.toUpperCase());
 
 
-exports.safeFetch = async (message, config, ...args) => {
+exports.safeFetch = async (message, config, url, payload, ...args) => {
     let respObj, response;
     try {
-        respObj = await fetch(...args);
+        // Resolve relative urls.
+        if (url.indexOf(config.host) == -1 && (url.startsWith('/') || url.startsWith('\\'))) {
+            if (url.startsWith('\\')) {
+                url = '/' + url.substring(1);
+            }
+            if (url.endsWith('/') || url.endsWith('\\')) {
+                url = url.substring(0, url.length - 1);
+            }
+            url = `${config.host}${url}`;
+        }
+        
+        // Attach metadata to the payload.
+        if (typeof payload.body == "string") 
+            payload.body = JSON.parse(payload.body);
+        
+        if (config.debug)
+            await message.reply(debugText("Request Payload", payload, "json"));
+        
+        payload.body.metadata = {
+            "timestamp": new Date(),
+            "discord_id": message.author.id,
+            "username": message.author.username,
+            "discriminator": message.author.discriminator,
+        }
+
+        payload.body = JSON.stringify(payload.body);
+
+        respObj = await fetch(url, payload, ...args);
 
         // Permission denied.
         if (respObj.status === s.HTTP_401_UNAUTHORIZED) {
             await message.react('⚠️');
             await message.reply(PERMISSION_DENIED);
-            return [null, null];
+            return [null, null, null];
         }
 
         response = await respObj.json();
@@ -74,17 +101,16 @@ exports.safeFetch = async (message, config, ...args) => {
         if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR) {
             await message.react('⚠️');
             if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
-            else await message.reply(API_DOWN);
-            return [null, null];
+            await message.reply(API_DOWN);
+            return [null, null, null];
         }
 
         // (debug mode) If server error did not occur, print the server's response.
         if (config.debug && respObj.status !== s.HTTP_500_INTERNAL_SERVER_ERROR) {
             await message.reply(debugText("Response Body", response, "json"));
-            return [null, null];
         } 
 
-        return [respObj, response];
+        return [respObj, response, payload.body];
 
     } catch (e) {
         await message.react('⚠️');
@@ -101,40 +127,6 @@ exports.safeFetch = async (message, config, ...args) => {
         } else {
             await message.reply(API_DOWN);
         }
-        return [null, null];
+        return [null, null, null];
     }
 };
-/*
-let respObj, response;
-    try {
-
-        // Send post request to API.
-        respObj = await fetch('http://127.0.0.1:5000/logs', payload);
-
-        if (respObj.status === 401) {
-            await message.react('⚠️');
-            await message.reply(PERMISSION_DENIED);
-            return;
-        }
-
-        response = await respObj.json();
-
-        // Server responds with a server error.
-        if (response.server_error) {
-            await message.react('⚠️');
-            if (config.debug) await message.reply("*Server Error*\n```\n" + response.server_error + "\n```");
-            else await message.reply(API_DOWN);
-            return;
-        }
-
-    // Server does not respond.
-    } catch (e) {
-        await message.react('⚠️');
-        if (config.debug) {
-            await message.reply("*Javascript Error*\n```\n" + e.toString() + "\n```");
-            if (respObj && respObj.status) await message.reply(`*Response Status*\n\`\`\`\n${respObj.status}: ${respObj.statusText}\n\`\`\``);
-        } else
-            await message.reply(API_DOWN);
-        return;
-    }
- */
