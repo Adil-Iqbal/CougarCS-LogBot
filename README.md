@@ -61,7 +61,7 @@ Once you have a mongo database in your cluster, you'll need to create a collecti
 
 Since your collection is currently empty, you'll have to create it manually through Mongo Atlas. Once the document is made, place the `ObjectId` for that document in your `.env` file under `CONFIG_OBJECT_ID`.
 
-### HOST
+### Host
 
 For the time being, you can set the `HOST` in your `.env` to your local host. No slashes at the end! Here's an example:
 
@@ -71,11 +71,16 @@ HOST='http://12.0.0.1:5000'
 
 ## Usage
 
+### Inviting the Bot to your Server
 Sign in to discord.
 
-Invite the bot to your discord channel by clicking on the link below and following discord's instructions:
+You'll need a link to invite the bot to your server. Use the client ID you got during the Setup section above and insert it into the link below:
 
-https://discord.com/oauth2/authorize?client_id=755311394844311593&scope=bot&permissions=261185
+https://discord.com/oauth2/authorize?client_id=**<CLIENT ID>**&scope=bot&permissions=261185
+
+Now click on the link with the client ID and follow discord's instructions. 
+
+### Running the Bot
 
 The bot and the API run in two separate terminal sessions. You can run the bot via the following command:
 
