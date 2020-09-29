@@ -2,7 +2,7 @@ const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
 
 module.exports = {
-	name: 'tipRate',
+	name: 'tiprate',
     description: 'change the rate the bot provides random tips.',
     args: true,
     usage: '<float rate>',
@@ -22,15 +22,14 @@ module.exports = {
             headers: { 'Content-Type': 'application/json' }
         }
 
+        config.tipRate = prevRate;
         const [ respObj, response ] = await safeFetch(message, config, "/config", payload);
-        if (!respObj && !response) {
-            config.tipRate = prevRate;
-            return;
-        };
+        if (!respObj && !response) return;
 
         if (respObj.status == s.HTTP_200_OK) {
+            config.tipRate = newRate;
             await message.react("✅");
-            let content = `The new tip rate has been set to ${newRate * 100}.`;
+            let content = `Every post now has a ${newRate * 100}% chance to spawn a pro tip.`;
             await message.channel.send(content);
         }
 	},

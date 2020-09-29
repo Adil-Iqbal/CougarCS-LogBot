@@ -2,7 +2,8 @@ const { PERMISSION_DENIED, API_DOWN, debugText } = require("./copy");
 const fetch = require('node-fetch');
 const { s } = require('./httpStatusCodes');
 
-
+require('dotenv').config();
+const host = process.env.HOST;
 
 exports.extract = (label, line) => {
     return line.substring(label.length + 1);
@@ -60,14 +61,14 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
     let respObj, response;
     try {
         // Resolve relative urls.
-        if (url.indexOf(config.host) == -1 && (url.startsWith('/') || url.startsWith('\\'))) {
+        if (url.indexOf(host) == -1 && (url.startsWith('/') || url.startsWith('\\'))) {
             if (url.startsWith('\\')) {
                 url = '/' + url.substring(1);
             }
             if (url.endsWith('/') || url.endsWith('\\')) {
                 url = url.substring(0, url.length - 1);
             }
-            url = `${config.host}${url}`;
+            url = `${host}${url}`;
         }
         
         // Attach metadata to the payload.

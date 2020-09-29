@@ -143,6 +143,10 @@ client.on('message', async (message) => {
     // If post is of type other, must have comment.
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "other" && !post.hasOwnProperty("comment"))
         errors.push("A log request of type \"other\" must have a `Comment` field.")
+    
+    // If post is not of type other and comment is empty, add a dummy comment field.
+    if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "other" && !post.hasOwnProperty("comment"))
+        post.comment = "No comment.";
 
     // Error handling. (Reply in channel so others can learn).
     if (errors.length) {

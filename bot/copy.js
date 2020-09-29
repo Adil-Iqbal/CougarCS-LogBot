@@ -14,7 +14,7 @@ Greetings! All posts in this thread are considered 'log requests.' Try typing so
 exports.PRO_TIPS = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
-    "If your log request is of type \"other\", you must have a \`Comment\`.",
+    "If your log request is of type \"other\", you must have a \`Comment\` field.",
     "If you send a message with just a question mark and nothing else, I'll send you a direct message with detailed instructions on how to log your hours.",
     "My code is open source, and you can see it here: https://github.com/Adil-Iqbal/CougarCS-LogBot",
     "Keeping the \`Name\` field consistent across all your log requests makes it easier to credit you for your work.",
@@ -59,12 +59,9 @@ Comment: declared independence
 Thank you so much for your time! :heart:
 `;
 
-exports.NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" and I'll privately message you some instructions on how to log your hours.
-
-**Pro tip!** If you start your message with two forward slashes, I'll ignore the message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;
+exports.NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;
 
 exports.API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`
-
 
 exports.PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
 
@@ -78,7 +75,7 @@ exports.buildReceipt = (post, response) => {
         .setDescription('Your request has been successfully logged. Thank you for offering your time!')
         .setThumbnail('https://i.imgur.com/dGfZBJE.png')
         .addFields(
-            { name: 'Confirmation Number', value: response.id  },
+            { name: 'Confirmation Number', value: response.log_id  },
             { name: 'Name', value: post.name, inline: true },
             { name: 'Discord ID', value: post.metadata.discord_id, inline: true },
             { name: 'Date', value: post.date.toDateString(), inline: true },

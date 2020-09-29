@@ -21,13 +21,12 @@ module.exports = {
             headers: { 'Content-Type': 'application/json' }
         }
 
+        config.lock = true;
         const [ respObj, response ] = await safeFetch(message, config, "/config", payload);
-        if (!respObj && !response) {
-            config.lock = true;
-            return;
-        };
+        if (!respObj && !response) return;
 
         if (respObj.status == s.HTTP_200_OK) {
+            config.lock = false;
             await message.react("✅");
             let content = "@here, Ladies and gentlemen, we're back in business. Request away!";
             await message.channel.send(content);
