@@ -219,3 +219,65 @@ Comment: Helped some1 with linked lists
 
 ✅
 ```
+
+Evaluates to `outreach`.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach group voice text other
+Duration: 1h 30m
+Comment: Helped some1 with linked lists
+
+✅
+```
+
+## The `Duration` field
+
+The `Duration` field requires `Xh Ym` format.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 1 hour and 30 minutes
+Comment: Helped some1 with linked lists
+
+⚠️
+```
+
+The `Duration` field converts to a decimal representing hours. The following is 1.5 hours.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped some1 with linked lists
+
+✅
+```
+
+The `Duration` field can handled flipped minutes and hours. The following is 1.5 hours.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 30m 1h
+Comment: Helped some1 with linked lists
+
+✅
+```
+
+The `Duration` field can handle over-clocked minutes. The following is 1.5 hours.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 90m
+Comment: Helped some1 with linked lists
+
+✅
+```
