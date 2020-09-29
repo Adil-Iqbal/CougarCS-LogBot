@@ -4,7 +4,7 @@ CougarCS-LogBot is an Discord bot that helps CougarCS volunteers log their hours
 
 ## Installation
 
-You'll need to have NodeJS and Python 3.7+  to edit or run this project. You can get those here:
+You'll need to have NodeJS and Python 3.7+ to edit or run this project. You can get those here:
 
 * https://www.python.org/downloads/
 * https://nodejs.org/en/
@@ -15,12 +15,11 @@ Download this repo by navigating to your desired destination via your terminal, 
 git clone https://github.com/Adil-Iqbal/CougarCS-LogBot.git
 ```
 
-Navigate into the directory, create a virtual environment, and activate it.
+Navigate into the directory and create a virtual environment. You can name it whatever you like, I've named it `venv` in the example below.
 
 ```
 cd CougarCS-LogBot
 python -m venv venv
-venv\\Scripts\\Activate
 ```
 
 Install python and node dependencies:
@@ -30,7 +29,23 @@ pip install -r requirements.txt
 npm install
 ```
 
-At this point, you're almost ready to run this file. You'll need a `.env` file that follows the format of the `.env.sample` file in the root directory of the project. 
+## Setup
+This entire setup section is here because you'll need a `.env` file that follows the structure in the `.env.sample` file in the root project directory. The `.env` file contains a ton of sensitive information, so I can't share it with you. However, you can create your own `.env` file if you'd like to run this bot elsewhere.
+
+### Bot Token
+
+### Channel IDs
+This bot references a few Discord channels, and to use this bot yourself you'll need to have the ID for those channels. 
+
+### Mongo URI
+You'll need a MongoDB account which you can get for free with 500 MB of storage (at the time of this writing). You can get that here: https://www.mongodb.com/try
+
+Log into your account, create a cluster, and retrieve the Mongo URI. When retrieving the URI, select "Python" for the driver and "3.4 or later" for the version. Copy the URI and place it in your `.env` file under `MONGO_URI`.
+
+### Configuration ID
+Once you have a mongo database in your cluster, you'll need to create a collection called `config`. This collection will hold exactly 1 document. That document should look exactly like the `./bot/config.json` file. 
+
+Since your collection is currently empty, you'll have to create it manually through Mongo Atlas. Once the document is made, place the `ObjectId` for that document in your `.env` file under `CONFIG_OBJECT_ID`.
 
 ## Usage
 
@@ -40,14 +55,24 @@ Invite the bot to your discord channel by clicking on the link below and followi
 
 https://discord.com/oauth2/authorize?client_id=755311394844311593&scope=bot&permissions=261185
 
-The bot and the API run in two seperate terminal sessions. You can run the bot via the following command:
+The bot and the API run in two separate terminal sessions. You can run the bot via the following command:
 
 ```
 node bot/index.js
 ```
-You can run the API using the following command.
+You can run the API by first activating your virtual environment, and then running flask. Since I named my virtual environments `venv`, that's what I'll be using below, if your virtual environment has a different name, us that instead.
+
+Windows OS:
 
 ```
+venv/Scripts/activate
+flask run
+```
+
+Linux and Mac OS:
+
+```
+venv/bin/activate
 flask run
 ```
 
