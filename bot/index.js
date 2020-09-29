@@ -149,7 +149,7 @@ client.on('message', async (message) => {
         post.duration = null;
 
     if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > config.maxHours)
-        errors.push(`The `Duration` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
+        errors.push(`The \`Duration\` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
 
     // If post is not of type outreach, must have duration.
     if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))
