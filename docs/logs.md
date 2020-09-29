@@ -360,3 +360,9 @@ Comment: Man, I tutored a kid that has no business being a comp sci major. But I
 
 ✅
 ```
+
+## Best Practices
+
+* Always keep the `Name` field consistent across all of your log requests.
+* Never put in a log request for someone else!
+* If someone helped you, remind them to put in their own log request.
