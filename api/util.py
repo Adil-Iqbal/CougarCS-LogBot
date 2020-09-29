@@ -54,6 +54,24 @@ def forward_error(func):
     return wrapper
 
 
+def has_metadata(func):
+    """ If we do not know who the user is, refuse service. """
+
+    # noinspection PyBroadException
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        data = request.json
+        if "metadata" not in data.keys():
+            return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+        required_keys = ("discord_id", "username", "discriminator", "timestamp")
+        for key in required_keys:
+            if key not in data["metadata"].keys():
+                return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 def superuser_only(func):
     """ If user is not a superuser, refuse service. """
 

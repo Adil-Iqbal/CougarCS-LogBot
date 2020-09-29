@@ -2,18 +2,19 @@ const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
 
 module.exports = {
-	name: 'lock',
-    description: 'prevent bot from taking log requests.',
-    args: false,
-    usage: '',
+	name: 'tipRate',
+    description: 'change the rate the bot provides random tips.',
+    args: true,
+    usage: '<float rate>',
 	execute: async (message, args, config) => {
-        if (config.lock === true) {
+        const newRate = Number(Number(args[0]).toFixed(3));
+        if (newRate < 0 || newRate > 1) {
             await message.react('⚠️');
-            await message.reply("*I'm already locked.*");
+            await message.reply("*The argument should be between 0 and 1 (inclusive).*");
             return;
         }
-
-        config.lock = true;
+        const prevRate = newRate;
+        config.tipRate = newRate;
 
         const payload = {
             method: "UPDATE",
@@ -23,13 +24,13 @@ module.exports = {
 
         const [ respObj, response ] = await safeFetch(message, config, "/config", payload);
         if (!respObj && !response) {
-            config.lock = false;
+            config.tipRate = prevRate;
             return;
         };
 
         if (respObj.status == s.HTTP_200_OK) {
             await message.react("✅");
-            let content = "@here, Until further notice, I will no longer be taking requests. Though, you can still use commands.";
+            let content = `The new tip rate has been set to ${newRate * 100}.`;
             await message.channel.send(content);
         }
 	},

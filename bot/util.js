@@ -74,15 +74,11 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         if (typeof payload.body == "string") 
             payload.body = JSON.parse(payload.body);
         
+        if (!payload.body.hasOwnProperty('metadata'))
+            payload.body = stampPost(message, payload.body);
+        
         if (config.debug)
             await message.reply(debugText("Request Payload", payload, "json"));
-        
-        payload.body.metadata = {
-            "timestamp": new Date(),
-            "discord_id": message.author.id,
-            "username": message.author.username,
-            "discriminator": message.author.discriminator,
-        }
 
         payload.body = JSON.stringify(payload.body);
 
@@ -92,7 +88,7 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         if (respObj.status === s.HTTP_401_UNAUTHORIZED) {
             await message.react('⚠️');
             await message.reply(PERMISSION_DENIED);
-            return [null, null, null];
+            return [null, null];
         }
 
         response = await respObj.json();
@@ -102,7 +98,7 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
             await message.react('⚠️');
             if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
             await message.reply(API_DOWN);
-            return [null, null, null];
+            return [null, null];
         }
 
         // (debug mode) If server error did not occur, print the server's response.
@@ -110,7 +106,7 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
             await message.reply(debugText("Response Body", response, "json"));
         } 
 
-        return [respObj, response, payload.body];
+        return [respObj, response];
 
     } catch (e) {
         await message.react('⚠️');
@@ -127,6 +123,18 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         } else {
             await message.reply(API_DOWN);
         }
-        return [null, null, null];
+        return [null, null];
     }
 };
+
+function stampPost(message, post) {
+    post.metadata = {
+        "timestamp": new Date(),
+        "discord_id": message.author.id,
+        "username": message.author.username,
+        "discriminator": message.author.discriminator,
+    };
+    return post;
+}
+
+exports.stampPost = stampPost;

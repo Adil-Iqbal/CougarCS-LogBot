@@ -12,7 +12,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 
 // Utilities.
-const { roll, capitalStr, safeFetch } = require('./util');
+const { roll, capitalStr, safeFetch, stampPost } = require('./util');
 const { fields } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText } = require('./copy');
 
@@ -156,6 +156,8 @@ client.on('message', async (message) => {
         return;
     }
 
+    post = stampPost(message, post);
+
     // Post data payload to server.
     const payload = {
         method: "POST",
@@ -163,7 +165,7 @@ client.on('message', async (message) => {
         headers: { 'Content-Type': 'application/json' }
     };
 
-    const [ respObj, response, _post ] = await safeFetch(message, config, "/logs", payload);
+    const [ respObj, response ] = await safeFetch(message, config, "/logs", payload);
     if (respObj === null && response === null) return;
 
     // let respObj, response;
@@ -202,10 +204,10 @@ client.on('message', async (message) => {
 
     // Log all requests sent to bot console.
     if (config.debug)
-        console.log(serverLog(_post, response));
+        console.log(serverLog(post, response));
 
     // Send confirmation receipt.
-    const receipt = buildReceipt(_post, response);
+    const receipt = buildReceipt(post, response);
     await message.author.send(receipt);
 
     await message.react("✅");

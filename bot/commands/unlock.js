@@ -6,7 +6,7 @@ module.exports = {
     description: 'allow bot to take log requests.',
     args: false,
     usage: '',
-	execute: async (message, _, config) => {
+	execute: async (message, args, config) => {
         if (config.lock === false) {
             await message.react('⚠️');
             await message.reply("*I'm already unlocked.*");

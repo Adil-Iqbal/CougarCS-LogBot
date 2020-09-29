@@ -4,13 +4,14 @@ from flask import Blueprint, request, current_app
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import json_response, forward_error, encode, freeze_if_frozen, superuser_only
+from .util import json_response, forward_error, encode, freeze_if_frozen, superuser_only, has_metadata
 
 app = Blueprint('main', __name__)
 
 
 @app.route('/logs', methods=['POST'])
 @forward_error
+@has_metadata
 def log_request():
 
     response_obj = {}
@@ -84,22 +85,31 @@ def log_request():
 
 @app.route('/config', methods=['UPDATE'])
 @forward_error
+@has_metadata
 @superuser_only
 def configuration():
     config_col = mongo.db.config
     response_obj = {}
 
     if request.method == "UPDATE":
+        # Get and clean new config data.
         updated_config = request.json
         del updated_config['metadata']
+
+        # Retrieve database config ID.
         config_id = ObjectId(current_app.config['CONFIG_ID'])
         config_query = {"_id": {"$eq": config_id}}
 
+        # Update database config info.
         up_res = config_col.update_one(config_query, {"$set": updated_config})
         if up_res.modified_count == 1:
             response_obj["updated_config"] = up_res.acknowledged
             response_obj["message"] = "config was updated"
-        return json_response(response_obj), s.HTTP_200_OK
+            return json_response(response_obj), s.HTTP_200_OK
+        
+        # Expectation failed.
+        response_obj["message"] = "db failed to update"
+        return json_response(response_obj), s.HTTP_417_EXPECTATION_FAILED
 
 
 @app.route('/config', methods=['GET'])
@@ -116,3 +126,53 @@ def initialize():
         response_obj['config'] = config
         response_obj['message'] = 'config retrieved'
         return json_response(response_obj), s.HTTP_200_OK
+
+
+@app.route('/users', methods=['GET'])
+@forward_error
+@freeze_if_frozen
+def get_user_data():
+    user_col = mongo.db.users
+    response_obj = {}
+
+    if request.method == "GET":
+        data = request.json
+        discord_id = data["metadata"]["discord_id"]
+
+        # Commands.
+        if "command" in data.keys():
+
+            # User stats.
+            if data["command"] == "stats":
+
+                # Retrieve user.
+                discord_id = request.json["metadata"]["discord_id"]
+                existing_user_query = {"_id": {"$eq": discord_id}}
+                existing_user = user_col.find_one(existing_user_query)
+
+                # Check if user exists.
+                if not existing_user:
+                    json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
+                
+
+                days = int(data["args"][0])
+
+                # TODO: If no or big num entry, then use user data.
+
+                # TODO: Find start date.
+                end_date = existing_user["last_updated"]
+
+                # TODO: All else, query for entries between gte start date.
+                
+                # TODO: Calculate cum_hours and outreach count.
+
+                # TODO: Return 200 response.
+
+
+    discord_id = request.json["metadata"]["discord_id"]
+    existing_user_query = {"_id": {"$eq": discord_id}}
+    existing_user = user_col.find_one(existing_user_query)
+
+    if not existing_user:
+        json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
+    
