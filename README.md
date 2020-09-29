@@ -33,6 +33,11 @@ npm install
 This entire setup section is here because you'll need a `.env` file that follows the structure in the `.env.sample` file in the root project directory. The `.env` file contains a ton of sensitive information, so I can't share it with you. However, you can create your own `.env` file if you'd like to run this bot elsewhere.
 
 ### Bot Token
+You'll need a bot token, as this is where your bot that will inherit the code. To get a token, you can follow this guide:
+
+https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot
+
+Once you have the token, it goes in your `.env` file under `BOT_TOKEN`.
 
 ### Channel IDs
 This bot references a few Discord channels, and to use this bot yourself you'll need to have the IDs for those channels. In discord, on the bottom right hand corner, click the cog wheel next to your name to take you to your User Settings page.
@@ -55,6 +60,14 @@ Log into your account, create a cluster, and retrieve the Mongo URI. When retrie
 Once you have a mongo database in your cluster, you'll need to create a collection called `config`. This collection will hold exactly 1 document. That document should look exactly like the `./bot/config.json` file. 
 
 Since your collection is currently empty, you'll have to create it manually through Mongo Atlas. Once the document is made, place the `ObjectId` for that document in your `.env` file under `CONFIG_OBJECT_ID`.
+
+### HOST
+
+For the time being, you can set the `HOST` in your `.env` to your local host. No slashes at the end! Here's an example:
+
+```
+HOST='http://12.0.0.1:5000'
+```
 
 ## Usage
 
