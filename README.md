@@ -35,7 +35,16 @@ This entire setup section is here because you'll need a `.env` file that follows
 ### Bot Token
 
 ### Channel IDs
-This bot references a few Discord channels, and to use this bot yourself you'll need to have the ID for those channels. 
+This bot references a few Discord channels, and to use this bot yourself you'll need to have the IDs for those channels. In discord, on the bottom right hand corner, click the cog wheel next to your name to take you to your User Settings page.
+
+![discord user settings](https://i.imgur.com/IKTpOjd.png)
+
+On the side menu, scroll *all the way down*. Near the bottom of the side menu, you'll see an "Appearance" tab. Click it and scroll *all the way down* until you see the option for developer mode. Turn that slider on. 
+
+![discord dev mode](https://i.imgur.com/JLUw7bO.png)
+
+Now go back to normal discord. Whenever you right-click on a user, server, or channel, you should now see the option 'Copy ID' in red. Place the ID's for three channels in your `.env` file for `CHANNEL_ID`, `BOT_BUILDER_CHANNEL_ID`, and `CHAT_CHANNEL_ID`. The `CHANNEL_ID` will be the target channel that your bot will live in.
+
 
 ### Mongo URI
 You'll need a MongoDB account which you can get for free with 500 MB of storage (at the time of this writing). You can get that here: https://www.mongodb.com/try
