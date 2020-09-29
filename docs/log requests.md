@@ -12,12 +12,25 @@ Helped some1 with linked lists
 ✅
 ```
 
-If the `Name` field should not exceed 100 characters.
+The `Name` field should not exceed 100 characters.
 
-> Name: Daniel Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth Loyd Martin Nero Oliver Jones Reed
-> Date: 8/12/2020
-> Volunteer Type: text
-> Duration: 1h 30m
-> Comment: Helped some1 with linked lists
+```
+Name: Daniel Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth Loyd Martin Nero Oliver Jones Reed
+Date: 8/12/2020
+Volunteer Type: text
+Duration: 1h 30m
+Helped some1 with linked lists
+
 ⚠️
+```
 
+The `Name` field should not be omitted.
+
+```
+Date: 8/12/2020
+Volunteer Type: text
+Duration: 1h 30m
+Helped some1 with linked lists
+
+⚠️
+```
