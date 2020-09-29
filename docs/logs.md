@@ -281,3 +281,48 @@ Comment: Helped some1 with linked lists
 
 ✅
 ```
+
+The `Duration` field has a maximum hours cap set by moderators.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 69h 420m 
+Comment: Helped some1 with linked lists
+
+⚠️
+```
+
+The `Duration` field can be omitted if the `Volunteer Type` field is of type "outreach".
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Comment: Helped some1 with linked lists
+
+✅
+```
+
+The `Duration` field should *not* be omitted for any other volunteer type.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Comment: Helped some1 with linked lists
+
+⚠️
+```
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: group
+Comment: Helped some1 with linked lists
+
+⚠️
+```
+
+## The `Comment` field
