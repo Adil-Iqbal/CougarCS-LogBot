@@ -30,7 +30,7 @@ npm install
 ```
 
 ## Setup
-This entire setup section is here because you'll need a `.env` file that follows the structure in the `.env.sample` file in the root project directory. The `.env` file contains a ton of sensitive information, so I can't share it with you. However, you can create your own `.env` file if you'd like to run this bot elsewhere.
+This entire setup section is here because you'll need a `.env` file that follows the structure in the `.env.sample` file in the root project directory. The `.env` file contains a ton of sensitive information, so I can't share it with you. However, you can create your own `.env` file if you'd like to run this bot elsewhere. Place the `.env` in the same directory as the `.env.sample` file.
 
 ### Bot Token & Client ID
 You'll need a bot token, this token will tell your bot to run the code in this repo. You will also need a client ID so you can invite the bot to run on your Discord server. To get a token & client ID, you can follow this guide:
@@ -63,7 +63,7 @@ Since your collection is currently empty, you'll have to create it manually thro
 
 ### Host
 
-For the time being, you can set the `HOST` in your `.env` to your local host. No slashes at the end! Here's an example:
+Set the `HOST` in your `.env` to your local host. No slashes at the end! Here's an example:
 
 ```
 HOST='http://12.0.0.1:5000'
