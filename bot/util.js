@@ -95,7 +95,8 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         response = await respObj.json();
 
         // (debug mode) If server error occurred, print it in chat.
-        if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR) {
+        if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR ||
+            respObj.status === s.HTTP_417_EXPECTATION_FAILED) {
             await message.react('⚠️');
             if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
             await message.reply(API_DOWN);

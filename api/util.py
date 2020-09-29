@@ -22,6 +22,7 @@ def encode(value):
 
 
 def json_response(source):
+    """ Standardize JSON response."""
     if type(source) is not dict:
         raise TypeError
     destination = {
@@ -31,7 +32,7 @@ def json_response(source):
         "inserted_log": False,
         "user_id": None,
         "log_id": None,
-        "config": None,
+        "body": None,
         "server_error": None,
         "message": None,
     }
@@ -55,7 +56,7 @@ def forward_error(func):
 
 
 def has_metadata(func):
-    """ If we do not know who the user is, refuse service. """
+    """ If user is unknown, refuse service. """
 
     # noinspection PyBroadException
     @functools.wraps(func)

@@ -7,7 +7,7 @@ Name: John Doe
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -16,7 +16,7 @@ The order of the fields do not matter.
 
 ```
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 Date: 03/08/2020
 Volunteer Type: text
 Name: John Doe
@@ -33,7 +33,7 @@ The `Name` field should not be omitted.
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Helped some1 with linked lists
+Helped someone with linked lists.
 
 ⚠️
 ```
@@ -45,7 +45,7 @@ Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth 
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Helped some1 with linked lists
+Helped someone with linked lists.
 
 ⚠️
 ```
@@ -59,7 +59,7 @@ Name: John Doe
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -71,7 +71,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -83,19 +83,19 @@ Name: John Doe
 Date: 3/8/20
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
 
-The `Date` field assumes current year when the year is omitted.
+The `Date` field assumes *current year* when the year is omitted.
 
 ```
 Name: John Doe
 Date: 3/8
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -106,19 +106,19 @@ The `Date` field assumes *today* when its omitted entirely.
 Name: John Doe
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
 
-The `Date` field requires that `/` separate days, months, and years.
+The `Date` field requires that  a forward slash (`/`) separate days, months, and years.
 
 ```
 Name: John Doe
 Date: 3-8-20
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -131,7 +131,7 @@ The `Volunteer Type` field should not be omitted.
 Name: John Doe
 Date: 3/8/2020
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -143,7 +143,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: I did a group chat
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -153,12 +153,12 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: tutoring
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
 
-### The `Volunteer Type` field can handle multiple keywords. 
+#### The `Volunteer Type` field can handle multiple keywords. 
 
 Evaluates to `text`.
 
@@ -167,7 +167,19 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: other text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+Evaluates to `text`.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text other
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -179,7 +191,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text voice
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -189,9 +201,9 @@ Evaluates to `group`.
 ```
 Name: John Doe
 Date: 3/8/2020
-Volunteer Type: voice group
+Volunteer Type: group voice
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -203,7 +215,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: group outreach
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -215,7 +227,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: other text voice group outreach
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -227,21 +239,21 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach group voice text other
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
 
 ## The `Duration` field
 
-The `Duration` field requires `Xh Ym` format.
+The `Duration` field requires `Xh Ym` format. (X and Y are whole numbers representing hours and minutes respectively)
 
 ```
 Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 1 hour and 30 minutes
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -253,7 +265,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 1h 30m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -265,7 +277,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 30m 1h
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -277,7 +289,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 90m
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
@@ -289,29 +301,29 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
 Duration: 69h 420m 
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
 
-The `Duration` field can be omitted if the `Volunteer Type` field is of type "outreach".
+The `Duration` field can be omitted if the `Volunteer Type` field evaluates to "outreach".
 
 ```
 Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ✅
 ```
 
-The `Duration` field should *not* be omitted for the rest of the volunteer types.
+The `Duration` field should *not* be omitted for volunteer types that do *not* evaluate to "outreach".
 
 ```
 Name: John Doe
 Date: 3/8/2020
 Volunteer Type: text
-Comment: Helped some1 with linked lists
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -319,8 +331,8 @@ Comment: Helped some1 with linked lists
 ```
 Name: John Doe
 Date: 3/8/2020
-Volunteer Type: group
-Comment: Helped some1 with linked lists
+Volunteer Type: I did a group chat
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -338,7 +350,7 @@ Duration: 1h 30m
 ✅
 ```
 
-The `Comment` field is mandatory if the `Volunteer Type` field is of type "other".
+The `Comment` field is mandatory if the `Volunteer Type` field evaluates to "other".
 
 ```
 Name: John Doe

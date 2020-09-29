@@ -25,38 +25,48 @@ exports.PRO_TIPS = [
     "When I react to a log request with a warning emoji, it means that there was a problem with the log request. If your log request has a problem, I'll reply with helpful details!",
     `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
     "Did you know that the `Duration` field is converted to a decimal representing the logged hours? The following examples all evaluate to 1.5 hours:\n```\nDuration: 1h 30m\nDuration: 30m 1h\nDuration: 90m\n```",
+    "You can get more detailed information about log requests by reading the documentation. Link: https://tinyurl.com/logdocs1",
 ]
 
 exports.HELP_MESSAGE = `**DO NOT REPLY**
 
 **How To Log Your Hours**
 
-Copy the template below and paste it into <#${channelId}>. Update all the info for your use case:
+Copy the template below and paste it into <#${channelId}>. 
+*IMPORTANT: Remember to update the info for your situation!*
+
 \`\`\`
-Name: Thomas Jefferson
-Date: 7/4/1776
-Volunteer Type: group
-Duration: 1h 45m
-Comment: declared independence
+Name: John Doe
+Date: 8/3/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: helped someone with linked lists.
 \`\`\`
-**Rules**
-- All requests must have a \`Name\` field.
-- The \`Date\` field accepts the following formats: MM/DD/YYYY, MM/DD/YY, MM/DD
-- If the \`Date\` field is omitted, the log request will assume today's date.
-- All requests must have a \`Volunteer Type\` field.
-- The \`Volunteer Type\` field should contain one of the following words: text, voice, group, outreach, other.
-- An "other" request *must* have a \`Comment\` field.
-- An "outreach" request does *not* need a \`Duration\` field.
-- The \`Duration\` field should be in the format "Xh Ym" with X and Y being an integer of hours and minutes respectively.
-- The value of the \`Comment\` field will always be truncated to 140 characters.
 
 **Best Practices**
 - Keep the value of the \`Name\` field consistent across all your requests.
 - Never submit a log request for someone other than yourself.
-- If anyone helped you in your task, they should submit their own request.
+- If anyone helped you in your task, remind them that they should submit their own log request.
 - Try to limit conversation in <#${channelId}>.
 
-Thank you so much for your time! :heart:
+**Cliff Notes on Log Requests:**
+- The \`Name\` field should not be omitted.
+- The \`Name\` field should not exceed 100 characters.
+- The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`
+- The \`Date\` field assumes *current year* when the year is omitted.
+- The \`Date\` field assumes *today* when its omitted entirely.
+- The \`Date\` field requires that a forward slash (`/`) separate days, months, and years.
+- The \`Volunteer Type\` field should not be omitted.
+- The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.
+- The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)
+- The \`Duration\` field can be omitted if the \`Volunteer Type\` field evaluates to "outreach".
+- The \`Duration\` field should *not* be omitted for volunteer types that do *not* evaluate to \"outreach\".
+- The \`Comment\` field is optional for most volunteer types.
+- The \`Comment\` field is mandatory if the \`Volunteer Type\` field evaluates to "other".
+- The \`Comment\` field is *always* truncated to 140 characters.
+
+You can get more details about log requests (with examples) by reading the documentation.
+Documentation: https://tinyurl.com/logdocs1
 `;
 
 exports.NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;

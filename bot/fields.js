@@ -12,7 +12,7 @@ exports.fields = [
         process(value) {
             return value;
         },
-        error: "The `Name` field should be (at most) 100 characters.",
+        error: "The \`Name\` field should not exceed 100 characters.",
     },
     {
         label: "date",
@@ -25,7 +25,7 @@ exports.fields = [
         process(value) {
             return getDate(value);
         },
-        error: "The `Date` field should be in one of the following formats: mm/dd, mm/dd/yy, mm/dd/yyyy",
+        error: "The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`",
     },
     {
         label: "volunteer type",
@@ -66,7 +66,7 @@ exports.fields = [
                     return "other";
             }
         },
-        error: "The `Volunteer Type` field should contain one of these words: text, voice, group, outreach, other",
+        error: "The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.",
     },
     {
         label: "duration",
@@ -79,7 +79,7 @@ exports.fields = [
         process(value) {
             return convertTime(value);
         },
-        error: "The `Duration` field should be in the `Xh Ym` format (where X and Y are integers representing hours and minutes respectively).",
+        error: "The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)",
     },
     {
         label: "comment",

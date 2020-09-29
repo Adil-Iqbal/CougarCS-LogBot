@@ -117,19 +117,26 @@ def configuration():
 def initialize():
     config_col = mongo.db.config
     response_obj = {}
+
     if request.method == "GET":
+
+        # Get and existing config.
         config_id = ObjectId(current_app.config['CONFIG_ID'])
         config_query = {"_id": {"$eq": config_id}}
         config = config_col.find_one(config_query)
+
+        # Remove sensitive data.
         del config['_id']
-        del config['host']
-        response_obj['config'] = config
+
+        # Send config.
+        response_obj['body'] = config
         response_obj['message'] = 'config retrieved'
         return json_response(response_obj), s.HTTP_200_OK
 
 
 @app.route('/users', methods=['GET'])
 @forward_error
+@has_metadata
 @freeze_if_frozen
 def get_user_data():
     user_col = mongo.db.users
