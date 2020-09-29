@@ -32,12 +32,12 @@ npm install
 ## Setup
 This entire setup section is here because you'll need a `.env` file that follows the structure in the `.env.sample` file in the root project directory. The `.env` file contains a ton of sensitive information, so I can't share it with you. However, you can create your own `.env` file if you'd like to run this bot elsewhere.
 
-### Bot Token
-You'll need a bot token, as this is where your bot that will inherit the code. To get a token, you can follow this guide:
+### Bot Token & Client ID
+You'll need a bot token, this token will tell your bot to run the code in this repo. You will also need a client ID so you can invite the bot to run on your Discord server. To get a token & client ID, you can follow this guide:
 
 https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot
 
-Once you have the token, it goes in your `.env` file under `BOT_TOKEN`.
+Once you have the token, it goes in your `.env` file under `BOT_TOKEN`.  Save the Client ID! We'll need it in the 'Usage' section.
 
 ### Channel IDs
 This bot references a few Discord channels, and to use this bot yourself you'll need to have the IDs for those channels. In discord, on the bottom right hand corner, click the cog wheel next to your name to take you to your User Settings page.
