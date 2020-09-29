@@ -76,7 +76,7 @@ Sign in to discord.
 
 You'll need a link to invite the bot to your server. Use the client ID you got during the Setup section above and insert it into the link below:
 
-https://discord.com/oauth2/authorize?client_id=**<CLIENT ID>**&scope=bot&permissions=261185
+https://discord.com/oauth2/authorize?client_id=**\\\\CLIENT ID GOES HERE //**&scope=bot&permissions=261185
 
 Now click on the link with the client ID and follow discord's instructions. 
 
