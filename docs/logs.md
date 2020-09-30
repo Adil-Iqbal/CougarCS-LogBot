@@ -317,7 +317,7 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
-The `Duration` field should *not* be omitted for volunteer types that do *not* evaluate to "outreach".
+The `Duration` field should *not* be omitted if the `Volunteer Type` field does not evaluate to "outreach".
 
 ```
 Name: John Doe

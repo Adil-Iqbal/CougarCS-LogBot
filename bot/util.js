@@ -1,4 +1,4 @@
-const { PERMISSION_DENIED, API_DOWN, debugText } = require("./copy");
+const { PERMISSION_DENIED, API_DOWN, debugText, DATABASE_DOWN } = require("./copy");
 const fetch = require('node-fetch');
 const { s } = require('./httpStatusCodes');
 
@@ -94,9 +94,14 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
 
         response = await respObj.json();
 
+        if (respObj.status === s.HTTP_417_EXPECTATION_FAILED) {
+            await message.react('⚠️');
+            await message.reply(DATABASE_DOWN);
+            return [null, null];
+        }
+
         // (debug mode) If server error occurred, print it in chat.
-        if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR ||
-            respObj.status === s.HTTP_417_EXPECTATION_FAILED) {
+        if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR) {
             await message.react('⚠️');
             if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
             await message.reply(API_DOWN);

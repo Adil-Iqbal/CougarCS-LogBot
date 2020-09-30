@@ -7,11 +7,11 @@ const channelId = process.env.CHANNEL_ID;
 const chatChannelId = process.env.CHAT_CHANNEL_ID;
 const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
-exports.WELCOME = `\n\n**CougarCS Log Bot** (version 1.0.0)\n© 2020 Adil Iqbal. All Rights Reserved.
+const WELCOME = `\n\n**CougarCS Log Bot** (version 1.0.0)\n© 2020 Adil Iqbal. All Rights Reserved.
 
 Greetings! All posts in this thread are considered 'log requests.' Try typing something!`;
 
-exports.PRO_TIPS = [
+const PRO_TIPS = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
     "If your log request is of type \"other\", you must have a \`Comment\` field.",
@@ -28,7 +28,7 @@ exports.PRO_TIPS = [
     "You can get more detailed information about log requests by reading the documentation. Link: https://tinyurl.com/logdocs1",
 ]
 
-exports.HELP_MESSAGE = `**DO NOT REPLY**
+const HELP_MESSAGE = `**DO NOT REPLY**
 
 **How To Log Your Hours**
 
@@ -55,12 +55,12 @@ Comment: helped someone with linked lists.
 - The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`
 - The \`Date\` field assumes *current year* when the year is omitted.
 - The \`Date\` field assumes *today* when its omitted entirely.
-- The \`Date\` field requires that a forward slash (`/`) separate days, months, and years.
+- The \`Date\` field requires that a forward slash (\`/\`) separate days, months, and years.
 - The \`Volunteer Type\` field should not be omitted.
 - The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.
 - The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)
 - The \`Duration\` field can be omitted if the \`Volunteer Type\` field evaluates to "outreach".
-- The \`Duration\` field should *not* be omitted for volunteer types that do *not* evaluate to \"outreach\".
+- The \`Duration\` field should *not* be omitted if the \`Volunteer Type\` field does not evaluate to "outreach".
 - The \`Comment\` field is optional for most volunteer types.
 - The \`Comment\` field is mandatory if the \`Volunteer Type\` field evaluates to "other".
 - The \`Comment\` field is *always* truncated to 140 characters.
@@ -69,15 +69,17 @@ You can get more details about log requests (with examples) by reading the docum
 Documentation: https://tinyurl.com/logdocs1
 `;
 
-exports.NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;
+const NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;
 
-exports.API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`
+const API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`
 
-exports.PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
+const DATABASE_DOWN = `*Oops! The database is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`;
 
-exports.LOCKED = "*I'm not allowed to do that! I've been locked.* You'll have to ask one of the head honchos to unlock before I can take any requests. You can still use commands.";
+const PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
 
-exports.buildReceipt = (post, response) => {
+const LOCKED = "*I'm not allowed to do that! I've been locked.* You'll have to ask one of the head honchos to unlock before I can take any requests. You can still use commands.";
+
+const buildReceipt = (post, response) => {
     let duration = post.duration ? post.duration + " hours" : "Exempt";
     return new Discord.MessageEmbed()
         .setColor('#c8102e')
@@ -98,9 +100,23 @@ exports.buildReceipt = (post, response) => {
         .setFooter(`CougarCS reserves the right to alter or remove logs at will.`);
 }
 
-exports.serverLog = async (post, response) => `${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`;
+const serverLog = async (post, response) => `${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`;
 
-exports.debugText = (title, source, lang="") => {
+const debugText = (title, source, lang="") => {
     if (lang == 'json' && _.isObject(source)) source = JSON.stringify(source, null, 4); 
     return `*${title}*\n\`\`\`${lang}\n${source}\n\`\`\``;;
+}
+
+module.exports = {
+    WELCOME,
+    PRO_TIPS,
+    HELP_MESSAGE,
+    NOT_A_REQUEST,
+    API_DOWN,
+    DATABASE_DOWN,
+    PERMISSION_DENIED,
+    LOCKED,
+    buildReceipt,
+    serverLog,
+    debugText,
 }
