@@ -75,15 +75,19 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         if (typeof payload.body == "string") 
             payload.body = JSON.parse(payload.body);
         
-        if (!payload.body.hasOwnProperty('metadata'))
+        if (payload.method != "GET" && !payload.body.hasOwnProperty('metadata'))
             payload.body = stampPost(message, payload.body);
         
         if (config.debug)
             await message.reply(debugText("Request Payload", payload, "json"));
 
-        payload.body = JSON.stringify(payload.body);
+        if (payload.method != "GET")
+            payload.body = JSON.stringify(payload.body);
 
         respObj = await fetch(url, payload, ...args);
+
+        if (config.debug)
+            await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`))
 
         // Permission denied.
         if (respObj.status === s.HTTP_401_UNAUTHORIZED) {

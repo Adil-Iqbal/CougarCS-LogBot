@@ -2,19 +2,20 @@ const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
 
 module.exports = {
-	name: 'unlock',
-    description: 'allow bot to take log requests.',
-    args: false,
-    usage: '',
-    superuserOnly: true,
+	name: 'cooldown',
+    description: 'change the default cooldown rate of commands.',
+    args: true,
+    usage: '<int seconds>',
 	execute: async (message, args, config) => {
-        if (config.lock === false) {
+        const newValue = parseInt(args[0]);
+        if (isNaN(newValue) || newValue < 0 || newValue > 86400) {
             await message.react('⚠️');
-            await message.reply("*I'm already unlocked.*");
+            await message.reply("*The argument should be a whole number between 0 and 86400 (inclusive).*");
             return;
         }
 
-        config.lock = false;
+        const prev = newValue;
+        config.cooldown = newValue;
 
         const payload = {
             method: "UPDATE",
@@ -22,14 +23,14 @@ module.exports = {
             headers: { 'Content-Type': 'application/json' }
         }
 
-        config.lock = true;
+        config.cooldown = prev;
         const [ respObj, response ] = await safeFetch(message, config, "/config", payload);
         if (!respObj && !response) return;
 
         if (respObj.status == s.HTTP_200_OK) {
-            config.lock = false;
+            config.cooldown = newValue;
             await message.react("✅");
-            let content = "@here, Ladies and gentlemen, we're back in business. Request away!";
+            let content = `The default cooldown for commands has been changed to ${newValue} second(s).`;
             await message.channel.send(content);
         }
 	},

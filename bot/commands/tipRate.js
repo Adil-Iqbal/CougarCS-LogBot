@@ -6,14 +6,17 @@ module.exports = {
     description: 'change the rate the bot provides random tips.',
     args: true,
     usage: '<float rate>',
+    superuserOnly: true,
 	execute: async (message, args, config) => {
-        const newRate = Number(Number(args[0]).toFixed(3));
-        if (newRate < 0 || newRate > 1) {
+        let newRate = Number(args[0]);
+        if (isNaN(newRate) || newRate < 0 || newRate > 1) {
             await message.react('⚠️');
-            await message.reply("*The argument should be between 0 and 1 (inclusive).*");
+            await message.reply("*The argument should be a decimal between 0 and 1 (inclusive).*");
             return;
         }
-        const prevRate = newRate;
+
+        newRate = Number(newRate.toFixed(3));
+        const prevRate = config.tipRate;
         config.tipRate = newRate;
 
         const payload = {

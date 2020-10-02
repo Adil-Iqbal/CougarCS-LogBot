@@ -33,7 +33,7 @@ The `Name` field should not be omitted.
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Helped someone with linked lists.
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```
@@ -45,7 +45,7 @@ Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth 
 Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
-Helped someone with linked lists.
+Comment: Helped someone with linked lists.
 
 ⚠️
 ```

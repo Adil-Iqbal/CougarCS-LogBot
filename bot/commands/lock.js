@@ -6,10 +6,11 @@ module.exports = {
     description: 'prevent bot from taking log requests.',
     args: false,
     usage: '',
+    superuserOnly: true,
 	execute: async (message, args, config) => {
         if (config.lock === true) {
             await message.react('⚠️');
-            await message.reply("*I'm already locked.*");
+            await message.reply("*I'm already locked.* Did you mean to use `$unlock`?");
             return;
         }
 

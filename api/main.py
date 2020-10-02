@@ -4,7 +4,7 @@ from flask import Blueprint, request, current_app
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import json_response, forward_error, encode, freeze_if_frozen, superuser_only, has_metadata
+from .util import json_response, forward_error, encode, superuser_only, has_metadata
 
 app = Blueprint('main', __name__)
 
@@ -80,7 +80,7 @@ def log_request():
             response_obj["user_id"] = discord_id
 
     # Return response.
-    return json_response(response_obj)
+    return json_response(response_obj), s.HTTP_200_OK
 
 
 @app.route('/config', methods=['UPDATE'])
@@ -134,52 +134,24 @@ def initialize():
         return json_response(response_obj), s.HTTP_200_OK
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/users/stats/<string:discord_id>', methods=['GET'])
 @forward_error
-@has_metadata
-@freeze_if_frozen
-def get_user_data():
+def get_user_stats(discord_id):
     user_col = mongo.db.users
     response_obj = {}
 
     if request.method == "GET":
-        data = request.json
-        discord_id = data["metadata"]["discord_id"]
+        existing_user_query = {"_id": {"$eq": discord_id}}
+        existing_user = user_col.find_one(existing_user_query)
 
-        # Commands.
-        if "command" in data.keys():
+        # User not found in database.
+        if not existing_user:
+            json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
 
-            # User stats.
-            if data["command"] == "stats":
+        response_obj["data_retrieved"] = True
+        response_obj["body"] = [
+            existing_user["cumulative_hours"],
+            existing_user["outreach_count"]
+        ]
 
-                # Retrieve user.
-                discord_id = request.json["metadata"]["discord_id"]
-                existing_user_query = {"_id": {"$eq": discord_id}}
-                existing_user = user_col.find_one(existing_user_query)
-
-                # Check if user exists.
-                if not existing_user:
-                    json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
-                
-
-                days = int(data["args"][0])
-
-                # TODO: If no or big num entry, then use user data.
-
-                # TODO: Find start date.
-                end_date = existing_user["last_updated"]
-
-                # TODO: All else, query for entries between gte start date.
-                
-                # TODO: Calculate cum_hours and outreach count.
-
-                # TODO: Return 200 response.
-
-
-    discord_id = request.json["metadata"]["discord_id"]
-    existing_user_query = {"_id": {"$eq": discord_id}}
-    existing_user = user_col.find_one(existing_user_query)
-
-    if not existing_user:
-        json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
-    
+        return json_response(response_obj), s.HTTP_200_OK

@@ -28,6 +28,8 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
+const cooldowns = new Discord.Collection();
+
 client.once('ready', async () => {
     const payload = {
         method: "GET",
@@ -62,6 +64,7 @@ client.on('message', async (message) => {
         if (message.content.startsWith(config.prefix)) {
             const args = message.content.slice(config.prefix.length).trim().split(/ +/);
             const commandName = args.shift().toLowerCase();
+            const command = client.commands.get(commandName);
 
             // Command not found.
             if (!client.commands.has(commandName)) {
@@ -70,13 +73,34 @@ client.on('message', async (message) => {
                 return;
             };
 
+            if (!cooldowns.has(command.name)) {
+                cooldowns.set(command.name, new Discord.Collection());
+            }
+            
+            const now = Date.now();
+            const timestamps = cooldowns.get(command.name);
+            const cooldownAmount = (command.cooldown || config.cooldown) * 1000;
+            
+            if (timestamps.has(message.author.id)) {
+                const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+                if (now < expirationTime) {
+                    const timeLeft = (expirationTime - now) / 1000;
+                    await message.react('⚠️');
+                    return await message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+                }
+            }
+
+            timestamps.set(message.author.id, now);
+            setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
             try {
                 // Retrieve command.
                 const command = client.commands.get(commandName);
 
                 // Required argument verification.
                 if (command.args && !args.length) {
-                    let reply = "*You didn't provide any arguments.*"
+                    let reply = "*You didn't provide any arguments.* "
                     if (command.usage) reply += `The proper usage is: \n\`\`\`\n${config.prefix}${command.name} ${command.usage}\n\`\`\``;
                     await message.react('⚠️');
                     await message.reply(reply);
@@ -84,12 +108,13 @@ client.on('message', async (message) => {
                 }
                     
                 // Execute command.
-                command.execute(message, args, config);
+                await command.execute(message, args, config);
                 return;
-            } catch (error) {
+            } catch (e) {
                 await message.react('⚠️');
                 if (config.debug) await message.reply(debugText("Javascript Error", e.stack));
                 else await message.reply('*I had trouble trying to execute that command.*');
+                console.error(e.stack);
                 return;
             }
         }
@@ -208,6 +233,7 @@ client.on('message', async (message) => {
     } catch (e) {
         if (config.debug) await message.reply(debugText("Javascript Error", e.stack));
         console.error(e.stack);
+        return;
     }
 });
 

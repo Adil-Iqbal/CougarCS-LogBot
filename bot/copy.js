@@ -75,9 +75,13 @@ const API_DOWN = `*Oops! The API is acting weird.* Would you mind trying again l
 
 const DATABASE_DOWN = `*Oops! The database is acting weird.* Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`;
 
+const UNKNOWN_ISSUE = `*Oops! Something went wrong.*  Would you mind trying again later? Also, informing the folks at <#${builderChannelId}> might speed things along.`;
+
 const PERMISSION_DENIED = `*I'm not allowed to do that! Your credentials don't check out.* Your next step is to check with the folks at  <#${builderChannelId}>. They may not be able to change your credentials, but they can give you more info than I can.`;
 
 const LOCKED = "*I'm not allowed to do that! I've been locked.* You'll have to ask one of the head honchos to unlock before I can take any requests. You can still use commands.";
+
+const USER_NOT_FOUND = "*We didn't find you in our records.* We create a record for users when they make their first log request. You might try making a log request and running this command again."
 
 const buildReceipt = (post, response) => {
     let duration = post.duration ? post.duration + " hours" : "Exempt";
@@ -116,6 +120,7 @@ module.exports = {
     DATABASE_DOWN,
     PERMISSION_DENIED,
     LOCKED,
+    USER_NOT_FOUND,
     buildReceipt,
     serverLog,
     debugText,

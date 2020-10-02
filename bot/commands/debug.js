@@ -7,6 +7,7 @@ module.exports = {
     description: 'toggle debug mode.',
     args: false,
     usage: '',
+    superuserOnly: true,
 	execute: async (message, args, config) => {
 
         const prev = config.debug;

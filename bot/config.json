@@ -4,5 +4,6 @@
   "maxHours": 12,
   "tipRate": 0.15,
   "prefix": "$",
-  "commentPrefix": "//"
+  "commentPrefix": "//",
+  "cooldown": 3
 }
