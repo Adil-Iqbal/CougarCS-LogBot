@@ -197,15 +197,14 @@ def delete_log(discord_id, conf_num):
         result = log_col.delete_one(existing_log_query)
         if result.deleted_count == 1:
             response_obj["deleted_log"] = True
-            response_obj["log_id"] = conf_num
-            response_obj["user_id"] = existing_user["discord_id"]
+            response_obj["log_id"] = str(existing_log["_id"])
             response_obj["message"] = "log was deleted"
 
             # Update user stats.
             up_res = user_col.update_one(existing_user_query, {"$set": existing_user})
             if up_res.modified_count == 1:
                 response_obj["updated_user"] = True
-                response_obj["user_id"] = existing_user["discord_id"]
+                response_obj["user_id"] = existing_user["_id"]
                 response_obj["message"] += " and user was updated."
             else:
                 response_obj["message"] += " and user was NOT updated."

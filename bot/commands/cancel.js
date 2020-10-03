@@ -1,12 +1,11 @@
 const { safeFetch } = require("../util");
-const { UNKNOWN_ISSUE, LOG_NOT_FOUND, builderChannelId, USER_NOT_FOUND } = require("../copy");
-const 
+const { UNKNOWN_ISSUE } = require("../copy");
 const { s } = require('../httpStatusCodes');
-const bigNumber = 1_000_000;
+const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
 module.exports = {
 	name: 'cancel',
-    description: 'cancel a log request.',
+    description: 'cancel an existing log request.',
     args: true,
     usage: '<string: confirmation number>',
 	execute: async (message, args, config) => {
@@ -23,8 +22,8 @@ module.exports = {
         if (!respObj && !response) return;
         
         if (respObj.status == s.HTTP_200_OK && response.updated_user && response.deleted_log) {
-            const { log_id, user_id } = response.body;
-            const content = `The following log was successfully cancelled for <@${user_id}>: ${log_id}`;
+            const { log_id, user_id } = response;
+            const content = `The log with the confirmation number \`${log_id}\` has been cancelled. If this was done in error, <@${user_id}> will have to post another log request.`;
             await message.channel.send(content);
             await message.react("✅");
             return;

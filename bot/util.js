@@ -1,4 +1,4 @@
-const { PERMISSION_DENIED, API_DOWN, debugText, DATABASE_DOWN } = require("./copy");
+const { PERMISSION_DENIED, API_DOWN, USER_NOT_FOUND, LOG_NOT_FOUND, debugText, DATABASE_DOWN } = require("./copy");
 const fetch = require('node-fetch');
 const { s } = require('./httpStatusCodes');
 
@@ -92,6 +92,8 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
         if (config.debug)
             await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`))
 
+        response = await respObj.json();
+        
         if (respObj.status === s.HTTP_401_UNAUTHORIZED) {
             await message.react('⚠️');
             await message.reply(PERMISSION_DENIED);
@@ -117,8 +119,6 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
             await message.reply(API_DOWN);
             return [null, null];
         }
-
-        response = await respObj.json();
 
         // (debug mode) If server error did not occur, print the server's response.
         if (config.debug && respObj.status !== s.HTTP_500_INTERNAL_SERVER_ERROR) {
