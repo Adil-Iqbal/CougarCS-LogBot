@@ -5,7 +5,7 @@ module.exports = {
 	name: 'tiprate',
     description: 'change the rate the bot provides random tips.',
     args: true,
-    usage: '<float rate>',
+    usage: '<float: rate>',
     superuserOnly: true,
 	execute: async (message, args, config) => {
         let newRate = Number(args[0]);

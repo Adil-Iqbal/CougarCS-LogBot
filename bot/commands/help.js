@@ -2,7 +2,7 @@ module.exports = {
 	name: 'help',
 	description: 'List all of my commands or info about a specific command.',
 	aliases: ['commands'],
-	usage: '[command name]',
+	usage: '<string: command name>',
 	cooldown: 5,
 	execute: async (message, args, config) => {
 		const data = [];

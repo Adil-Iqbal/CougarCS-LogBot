@@ -5,7 +5,7 @@ module.exports = {
 	name: 'cooldown',
     description: 'change the default cooldown rate of commands.',
     args: true,
-    usage: '<int seconds>',
+    usage: '<int: seconds>',
     superuserOnly: true,
 	execute: async (message, args, config) => {
         const newValue = parseInt(args[0]);

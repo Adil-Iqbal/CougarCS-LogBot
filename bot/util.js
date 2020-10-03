@@ -70,33 +70,40 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
             }
             url = `${host}${url}`;
         }
-        
-        // Attach metadata to the payload.
-        if (typeof payload.body == "string") 
-            payload.body = JSON.parse(payload.body);
-        
-        if (payload.method != "GET" && !payload.body.hasOwnProperty('metadata'))
-            payload.body = stampPost(message, payload.body);
-        
-        if (config.debug)
-            await message.reply(debugText("Request Payload", payload, "json"));
 
-        if (payload.method != "GET")
-            payload.body = JSON.stringify(payload.body);
+        const exemptMethods = ['GET', 'DELETE'];
+        
+        if (!exemptMethods.includes(payload.method)) {
+            if (typeof payload.body == "string") 
+                payload.body = JSON.parse(payload.body);    
+        
+            if (!payload.body.hasOwnProperty('metadata'))
+                payload.body = stampPost(message, payload.body);
+            
+            if (config.debug)
+                await message.reply(debugText("Request Payload", payload, "json"));
+
+            if (typeof payload.body != "string")
+                payload.body = JSON.stringify(payload.body);
+        }
 
         respObj = await fetch(url, payload, ...args);
 
         if (config.debug)
             await message.reply(debugText("Response Status", `${respObj.status}: ${respObj.statusText}`))
 
-        // Permission denied.
         if (respObj.status === s.HTTP_401_UNAUTHORIZED) {
             await message.react('⚠️');
             await message.reply(PERMISSION_DENIED);
             return [null, null];
         }
 
-        response = await respObj.json();
+        if (respObj.status == s.HTTP_404_NOT_FOUND) {
+            await message.react("⚠️");
+            if (response.message == "user not found") await message.reply(USER_NOT_FOUND);
+            if (response.message == "log not found") await message.reply(LOG_NOT_FOUND);
+            return [null, null];
+        }
 
         if (respObj.status === s.HTTP_417_EXPECTATION_FAILED) {
             await message.react('⚠️');
@@ -104,13 +111,14 @@ exports.safeFetch = async (message, config, url, payload, ...args) => {
             return [null, null];
         }
 
-        // (debug mode) If server error occurred, print it in chat.
         if (respObj.status === s.HTTP_500_INTERNAL_SERVER_ERROR) {
             await message.react('⚠️');
             if (config.debug) await message.reply(debugText("Internal Server Error", response.server_error));
             await message.reply(API_DOWN);
             return [null, null];
         }
+
+        response = await respObj.json();
 
         // (debug mode) If server error did not occur, print the server's response.
         if (config.debug && respObj.status !== s.HTTP_500_INTERNAL_SERVER_ERROR) {

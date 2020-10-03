@@ -5,7 +5,7 @@ module.exports = {
 	name: 'maxhours',
     description: 'change the maximum number of hours that can be logged at once.',
     args: true,
-    usage: '<int hours>',
+    usage: '<int: hours>',
     superuserOnly: true,
 	execute: async (message, args, config) => {
         const newHours = parseInt(args[0]);
