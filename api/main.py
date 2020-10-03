@@ -1,10 +1,11 @@
 import dateutil.parser
 from datetime import datetime
 from flask import Blueprint, request, current_app
+from flask import json
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import json_response, forward_error, encode, superuser_only, has_metadata
+from .util import freeze_if_frozen, json_response, forward_error, encode, superuser_only, has_metadata
 
 app = Blueprint('main', __name__)
 
@@ -40,8 +41,9 @@ def log_request():
             "submitted": dateutil.parser.isoparse(data["metadata"]["timestamp"]),
         }
         result = log_col.insert_one(log)
-        response_obj["inserted_log"] = result.acknowledged
-        response_obj["log_id"] = result.inserted_id
+        if result.acknowledged:
+            response_obj["inserted_log"] = result.acknowledged
+            response_obj["log_id"] = result.inserted_id
 
         # Retrieve existing user, if any.
         existing_user_query = {"_id": {"$eq": discord_id}}
@@ -146,12 +148,70 @@ def get_user_stats(discord_id):
 
         # User not found in database.
         if not existing_user:
-            json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
+            return json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
 
         response_obj["data_retrieved"] = True
         response_obj["body"] = [
             existing_user["cumulative_hours"],
             existing_user["outreach_count"]
         ]
+
+        return json_response(response_obj), s.HTTP_200_OK
+
+@app.route('/logs/<string:discord_id>/<string:conf_num>', methods=['DELETE'])
+@forward_error
+def delete_log(discord_id, conf_num):
+    log_col = mongo.db.logs
+    user_col = mongo.db.users
+    response_obj = {}
+
+    if request.method == "DELETE":
+        existing_user_query = {"_id": {"$eq": discord_id}}
+        existing_user = user_col.find_one(existing_user_query)
+
+        # User not found in database.
+        if not existing_user:
+            return json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
+
+        # Prevent frozen users from altering database.
+        if not existing_user["superuser"]:
+            if existing_user["frozen"]:
+                return json_response({"message": "Permission Denied"}), s.HTTP_401_UNAUTHORIZED
+        
+        existing_log_query = {"_id": {"$eq": ObjectId(conf_num)}}
+        existing_log = log_col.find_one(existing_log_query)
+
+        if not existing_log:
+            return json_response({"message": "log not found"}), s.HTTP_404_NOT_FOUND
+        
+        # Prevent a user who does not own this log from deleting it.
+        if not existing_user["superuser"]:
+            if existing_log["discord_id"] != existing_user["discord_id"]:
+                return json_response({"message": "Permission Denied"}), s.HTTP_401_UNAUTHORIZED
+        
+        # Prime user object to update stats.
+        existing_user["cumulative_hours"] -= existing_log["duration"]
+        existing_user["outreach_count"] -= 1 if existing_log["volunteer type"] == "outreach" else 0
+
+        # Delete log.
+        result = log_col.delete_one(existing_log_query)
+        if result.deleted_count == 1:
+            response_obj["deleted_log"] = True
+            response_obj["log_id"] = conf_num
+            response_obj["user_id"] = existing_user["discord_id"]
+            response_obj["message"] = "log was deleted"
+
+            # Update user stats.
+            up_res = user_col.update_one(existing_user_query, {"$set": existing_user})
+            if up_res.modified_count == 1:
+                response_obj["updated_user"] = True
+                response_obj["user_id"] = existing_user["discord_id"]
+                response_obj["message"] += " and user was updated."
+            else:
+                response_obj["message"] += " and user was NOT updated."
+                return json_response(response_obj), s.HTTP_417_EXPECTATION_FAILED
+        else:
+            response_obj["message"] = "nothing was changed."
+            return json_response(response_obj), s.HTTP_417_EXPECTATION_FAILED
 
         return json_response(response_obj), s.HTTP_200_OK

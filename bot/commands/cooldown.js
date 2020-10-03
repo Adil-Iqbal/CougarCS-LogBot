@@ -6,6 +6,7 @@ module.exports = {
     description: 'change the default cooldown rate of commands.',
     args: true,
     usage: '<int seconds>',
+    superuserOnly: true,
 	execute: async (message, args, config) => {
         const newValue = parseInt(args[0]);
         if (isNaN(newValue) || newValue < 0 || newValue > 86400) {

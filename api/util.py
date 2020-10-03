@@ -30,6 +30,7 @@ def json_response(source):
         "updated_user": False,
         "updated_config": False,
         "inserted_log": False,
+        "deleted_log": False,
         "data_retrieved": False,
         "user_id": None,
         "log_id": None,
