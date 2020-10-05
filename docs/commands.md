@@ -10,6 +10,7 @@ $help
 **When calling the help command without arguments, it will print an up-to-date list of commands.**
 
 > $help
+
 *Here's a list of my command names:*
 ```
 cancel, cooldown, debug, help, lock, maxhours, ping, stats, tiprate, unlock
