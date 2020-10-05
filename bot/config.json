@@ -5,5 +5,6 @@
   "tipRate": 0.15,
   "prefix": "$",
   "commentPrefix": "//",
+  "requestHelp": "?",
   "cooldown": 3
 }

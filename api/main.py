@@ -186,7 +186,7 @@ def delete_log(discord_id, conf_num):
         
         # Prevent a user who does not own this log from deleting it.
         if not existing_user["superuser"]:
-            if existing_log["discord_id"] != existing_user["discord_id"]:
+            if existing_log["discord_id"] != existing_user["_id"]:
                 return json_response({"message": "Permission Denied"}), s.HTTP_401_UNAUTHORIZED
         
         # Prime user object to update stats.
@@ -204,7 +204,7 @@ def delete_log(discord_id, conf_num):
             up_res = user_col.update_one(existing_user_query, {"$set": existing_user})
             if up_res.modified_count == 1:
                 response_obj["updated_user"] = True
-                response_obj["user_id"] = existing_user["_id"]
+                response_obj["user_id"] = existing_log["discord_id"]
                 response_obj["message"] += " and user was updated."
             else:
                 response_obj["message"] += " and user was NOT updated."

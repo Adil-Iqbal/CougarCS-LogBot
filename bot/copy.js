@@ -26,7 +26,17 @@ const PRO_TIPS = [
     `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
     "Did you know that the `Duration` field is converted to a decimal representing the logged hours? The following examples all evaluate to 1.5 hours:\n```\nDuration: 1h 30m\nDuration: 30m 1h\nDuration: 90m\n```",
     "You can get more detailed information about log requests by reading the documentation. Link: https://tinyurl.com/logdocs1",
+    "Whenever you post a successful log request, you are given a receipt that has a confirmation number. Did you know that you can cancel that request by using the `cancel` command? For example, if your confirmation number is `5f78dfc4bfc4ed66e5c321e3`, than you can cancel that log request using the following command:\n```\n$cancel 5f78dfc4bfc4ed66e5c321e3\n```",
+    "There are certain commands you can run in this channel. Type `$help` and I'll reply with a list of those commands.",
+    "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
+    "You'll never win if you're too busy counting the ways you'll lose.",
 ]
+
+const LR_TEMPLATE = `Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.`
 
 const HELP_MESSAGE = `**DO NOT REPLY**
 
@@ -36,11 +46,7 @@ Copy the template below and paste it into <#${channelId}>.
 *IMPORTANT: Remember to update the info for your situation!*
 
 \`\`\`
-Name: John Doe
-Date: 8/3/2020
-Volunteer Type: text
-Duration: 1h 30m
-Comment: helped someone with linked lists.
+${LR_TEMPLATE}
 \`\`\`
 
 **Best Practices**
@@ -116,6 +122,7 @@ const debugText = (title, source, lang="") => {
 module.exports = {
     WELCOME,
     PRO_TIPS,
+    LR_TEMPLATE,
     HELP_MESSAGE,
     NOT_A_REQUEST,
     API_DOWN,

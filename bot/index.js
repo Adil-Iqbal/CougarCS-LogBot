@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 // Utilities.
 const { roll, capitalStr, safeFetch, stampPost } = require('./util');
 const { fields } = require('./fields');
-const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText } = require('./copy');
+const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE } = require('./copy');
 
 const client = new Discord.Client();
 
@@ -73,6 +73,7 @@ client.on('message', async (message) => {
                 return;
             };
 
+            // Create command cooldown.
             if (!cooldowns.has(command.name)) {
                 cooldowns.set(command.name, new Discord.Collection());
             }
@@ -113,7 +114,7 @@ client.on('message', async (message) => {
             } catch (e) {
                 await message.react('⚠️');
                 if (config.debug) await message.reply(debugText("Javascript Error", e.stack));
-                else await message.reply('*I had trouble trying to execute that command.*');
+                await message.reply('*I had trouble trying to execute that command.*');
                 console.error(e.stack);
                 return;
             }
@@ -127,7 +128,7 @@ client.on('message', async (message) => {
         }
 
         // User has requested instructions.
-        if (message.content === "?") { 
+        if (message.content === config.requestHelp) { 
             await message.react("✅");
             await message.author.send(HELP_MESSAGE);
             return;
@@ -135,6 +136,9 @@ client.on('message', async (message) => {
 
         let post = {};
         const errors = [];
+
+        if (message.content === LR_TEMPLATE && !config.debug) 
+            errors.push("The template should be updated with your info.");
 
         // Parse log request from #logging.
         for (let line of message.content.split("\n")) {
