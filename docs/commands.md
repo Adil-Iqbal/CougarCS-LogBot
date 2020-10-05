@@ -10,22 +10,12 @@ $help
 **When calling the help command without arguments, it will print an up-to-date list of commands.**
 
 > $help
-
-> *Here's a list of my command names:*
-```
-cancel, cooldown, debug, help, lock, maxhours, ping, stats, tiprate, unlock
-```
-You can send `$help <command name>` to get info on a specific command!
+✅
 
 **When calling the help command with a command name will print the details of that command.**
 
 > $help cancel
 ✅
-
-> **Command Name:** cancel
-**Description:** cancel an existing log request.
-**Usage:** `$cancel <string: confirmation number>`
-**Cooldown:** 3 second(s)
 
 **You can ask the `help` command to print its own details!**
 
