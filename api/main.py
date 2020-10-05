@@ -5,7 +5,7 @@ from flask import json
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import freeze_if_frozen, json_response, forward_error, encode, superuser_only, has_metadata
+from .util import json_response, forward_error, encode, superuser_only, has_metadata
 
 app = Blueprint('main', __name__)
 
