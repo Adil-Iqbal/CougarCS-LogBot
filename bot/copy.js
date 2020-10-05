@@ -7,10 +7,6 @@ const channelId = process.env.CHANNEL_ID;
 const chatChannelId = process.env.CHAT_CHANNEL_ID;
 const builderChannelId = process.env.BOT_BUILDER_CHANNEL_ID;
 
-const WELCOME = `\n\n**CougarCS Log Bot** (version 1.0.0)\n© 2020 Adil Iqbal. All Rights Reserved.
-
-Greetings! All posts in this thread are considered 'log requests.' Try typing something!`;
-
 const PRO_TIPS = [
     "If you start any message with two forward slashes, I'll ignore that message completely.",
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
@@ -26,6 +22,7 @@ const PRO_TIPS = [
     `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
     "Did you know that the `Duration` field is converted to a decimal representing the logged hours? The following examples all evaluate to 1.5 hours:\n```\nDuration: 1h 30m\nDuration: 30m 1h\nDuration: 90m\n```",
     "You can get more detailed information about log requests by reading the documentation. Link: https://tinyurl.com/logdocs1",
+    "You can get more detailed information about command requests by reading the documentation. Link: https://tinyurl.com/cmddocs1",
     "Whenever you post a successful log request, you are given a receipt that has a confirmation number. Did you know that you can cancel that request by using the `cancel` command? For example, if your confirmation number is `5f78dfc4bfc4ed66e5c321e3`, than you can cancel that log request using the following command:\n```\n$cancel 5f78dfc4bfc4ed66e5c321e3\n```",
     "There are certain commands you can run in this channel. Type `$help` and I'll reply with a list of those commands.",
     "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
@@ -37,6 +34,19 @@ Date: 03/08/2020
 Volunteer Type: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.`
+
+const WELCOME = `(version 1.0.0-BETA)
+Copyright © 2020 All Rights Reserved.
+
+**How To Log Your Hours**
+
+Copy the template below and paste it into the chat. 
+*IMPORTANT: Remember to update the info for your situation!*
+
+\`\`\`
+${LR_TEMPLATE}
+\`\`\`
+*This is a BETA test. Make sure to log your hours in <#${754386732312559676}>*`;
 
 const HELP_MESSAGE = `**DO NOT REPLY**
 
