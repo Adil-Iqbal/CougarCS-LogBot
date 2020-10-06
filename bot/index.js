@@ -21,10 +21,15 @@ const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, se
 const client = new Discord.Client();
 
 // Retrieve commands.
+const LR_CMD_NAME = 'log request';
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync(path.resolve(__dirname, "./commands")).filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
+    const command = require(`./commands/${file}`);
+    if (command.name == LR_CMD_NAME) {
+        console.error(`A command cannot be named "${LR_CMD_NAME}" since that is reserved for log requests. Your "${LR_CMD_NAME}" command has been ignored.`);
+        continue;
+    }
 	client.commands.set(command.name, command);
 }
 
@@ -204,6 +209,28 @@ client.on('message', async (message) => {
             await message.react('⚠️');
             return;
         }
+
+        // Log request cooldowns.
+        if (!cooldowns.has(LR_CMD_NAME)) {
+            cooldowns.set(LR_CMD_NAME, new Discord.Collection());
+        }
+        
+        const now = Date.now();
+        const timestamps = cooldowns.get(LR_CMD_NAME);
+        const cooldownAmount = (config.cooldown) * 1000;
+        
+        if (timestamps.has(message.author.id)) {
+            const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+            if (now < expirationTime) {
+                const timeLeft = (expirationTime - now) / 1000;
+                await message.react('⚠️');
+                return await message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before logging a request.`);
+            }
+        }
+
+        timestamps.set(message.author.id, now);
+        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         post = stampPost(message, post);
 

@@ -52,6 +52,7 @@ def forward_error(func):
         except Exception:
             exc_type, exc_value, exc_tb = sys.exc_info()
             traceback_string = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+            print(traceback_string)
             return json_response({"server_error": traceback_string}), s.HTTP_500_INTERNAL_SERVER_ERROR
 
     return wrapper
