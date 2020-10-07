@@ -181,6 +181,15 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
+The `maxhours` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $maxhours 12
+
+⚠️
 
 ## The `lock` and `unlock` commands.
 
