@@ -105,6 +105,83 @@ Whatever you do, don't call the `ping` command!
 
 ✅
 
+## The `maxhours` command.
+
+The `maxhours` command is for superusers. If you are not a superuser:
+
+> $maxhours 12
+
+⚠️
+
+If you are a superuser:
+
+> $maxhours 12
+
+✅
+
+The `maxhours` requires an argument.
+
+> $maxhours
+
+⚠️
+
+The `maxhours` requires the argument be a number between 0 and 24 (inclusive).
+
+> $maxhours foobar
+
+⚠️
+
+If a decimal is passed as an argument, it will converted to a whole number. In these examples, the argument converts to `1`:
+
+> $maxhours 1.123
+
+✅
+
+> $maxhours 1.50
+
+✅
+
+> $maxhours 1.9999
+
+✅
+
+The `maxhours` command caps the number of hours that can be logged in a single post.
+
+> $maxhours 1
+
+✅
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 59m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 1m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
+
 ## The `lock` and `unlock` commands.
 
 
@@ -199,44 +276,4 @@ Once unlocked, the bot cannot be unlocked again.
 ⚠️
 
 NOTE: You can use the `lock` and `unlock` commands to troubleshoot API issues in production.
-
-## The `maxhours` command.
-
-The `maxhours` command is for superusers. If you are not a superuser:
-
-> $maxhours 12
-
-⚠️
-
-If you are a superuser:
-
-> $maxhours 12
-
-✅
-
-The `maxhours` requires an argument.
-
-> $maxhours
-
-⚠️
-
-The `maxhours` requires the argument be a number between 0 and 24 (inclusive).
-
-> $maxhours foobar
-
-⚠️
-
-If a decimal is passed as an argument, it will converted to a whole number. In these examples, the argument converts to `1`:
-
-> $maxhours 1.123
-
-✅
-
-> $maxhours 1.50
-
-✅
-
-> $maxhours 1.9999
-
-✅
 
