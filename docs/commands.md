@@ -52,6 +52,15 @@ The `stats` command will ignore all arguments.
 
 ✅
 
+The `stats` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $stats
+
+⚠️
 
 ## The `cancel` command.
 
@@ -96,6 +105,16 @@ The `cancel` command uses the first argument and ignores the rest.
 > $cancel 5f78de2cbfc4ed66e5c321e2 foobar abc123
 
 ✅
+
+The `cancel` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $cancel 5f78dd28bfc4ed66e5c321df
+
+⚠️
 
 ## The `ping` command.
 
