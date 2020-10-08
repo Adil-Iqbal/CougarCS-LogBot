@@ -107,7 +107,7 @@ Whatever you do, don't call the `ping` command!
 
 ## The `tiprate` command.
 
-**The `tiprate` command is for superusers. **
+**The `tiprate` command is for superusers.**
 
 If you are *not* a superuser:
 
@@ -165,7 +165,7 @@ The `tiprate` command does not work if the `lock` command has been called.
 
 ## The `maxhours` command.
 
-**The `maxhours` command is for superusers. **
+**The `maxhours` command is for superusers.**
 
 If you are *not* a superuser:
 
@@ -262,7 +262,7 @@ The `maxhours` command does not work if the `lock` command has been called.
 ## The `lock` and `unlock` commands.
 
 
-**The `lock` and `unlock` commands are for superusers. **
+**The `lock` and `unlock` commands are for superusers.**
 
 If you are *not* a superuser:
 
