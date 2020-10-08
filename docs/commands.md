@@ -105,9 +105,69 @@ Whatever you do, don't call the `ping` command!
 
 ✅
 
+## The `tiprate` command.
+
+**The `tiprate` command is for superusers. **
+
+If you are *not* a superuser:
+
+> $tiprate 0.15
+
+⚠️
+
+If you are a superuser:
+
+> $tiprate 0.15
+
+✅
+
+The `tiprate` command requires an argument.
+
+> $tiprate
+
+⚠️
+
+The `tiprate` command requires the argument be a decimal between 0 and 1 (inclusive).
+
+> $tiprate foobar
+
+⚠️
+
+> $tiprate 3
+
+⚠️
+
+> $tiprate -0.15
+
+⚠️
+
+The argument is rounded to 3 decimal places. This example is rounded to 0.255:
+
+> $tiprate 0.2549925
+
+✅
+
+The `tiprate` command changes the chance that a pro tip will spawn. This example changes the chances to 15%:
+
+> $tiprate 0.15
+
+✅
+
+The `tiprate` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $tiprate 0.15
+
+⚠️
+
 ## The `maxhours` command.
 
-The `maxhours` command is for superusers. If you are not a superuser:
+**The `maxhours` command is for superusers. **
+
+If you are *not* a superuser:
 
 > $maxhours 12
 
@@ -119,19 +179,27 @@ If you are a superuser:
 
 ✅
 
-The `maxhours` requires an argument.
+The `maxhours` command requires an argument.
 
 > $maxhours
 
 ⚠️
 
-The `maxhours` requires the argument be a number between 0 and 24 (inclusive).
+The `maxhours` command requires the argument be a number between 0 and 24 (inclusive).
 
 > $maxhours foobar
 
 ⚠️
 
-If a decimal is passed as an argument, it will converted to a whole number. In these examples, the argument converts to `1`:
+> $maxhours -3
+
+⚠️
+
+> $maxhours 30
+
+⚠️
+
+If a decimal is passed as an argument, it will be converted to a whole number. In these examples, the argument converts to `1`:
 
 > $maxhours 1.123
 
@@ -194,7 +262,9 @@ The `maxhours` command does not work if the `lock` command has been called.
 ## The `lock` and `unlock` commands.
 
 
-The `lock` and `unlock` commands are for superusers. If you are not a superuser:
+**The `lock` and `unlock` commands are for superusers. **
+
+If you are *not* a superuser:
 
 > $lock
 
