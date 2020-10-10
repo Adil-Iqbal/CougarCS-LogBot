@@ -1,11 +1,13 @@
 const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
+const { UNKNOWN_ISSUE } = require("../copy");
 
 module.exports = {
 	name: 'cooldown',
     description: 'change the default cooldown rate of commands.',
     args: true,
     usage: '<int: seconds>',
+    useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config) => {
         const newValue = parseInt(args[0]);
@@ -15,7 +17,13 @@ module.exports = {
             return;
         }
 
-        const prev = newValue;
+        if (newValue == config.cooldown) {
+            await message.react('⚠️');
+            await message.reply(`*The default cooldown is already set to ${config.cooldown} second(s).*`);
+            return;
+        }
+
+        const prev = config.cooldown;
         config.cooldown = newValue;
 
         const payload = {
@@ -33,6 +41,11 @@ module.exports = {
             await message.react("✅");
             let content = `The default cooldown for commands has been changed to ${newValue} second(s).`;
             await message.channel.send(content);
+            return;
         }
+
+        await message.react("⚠️");
+        await message.author.send(UNKNOWN_ISSUE);
+        return;
 	},
 };

@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 // Utilities.
 const { roll, capitalStr, safeFetch, stampPost } = require('./util');
 const { fields } = require('./fields');
-const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE } = require('./copy');
+const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();
 
@@ -36,28 +36,35 @@ for (const file of commandFiles) {
 const cooldowns = new Discord.Collection();
 
 client.once('ready', async () => {
-    const payload = {
-        method: "GET",
-        headers: { 'Content-Type': 'application/json' }
-    }
-    const respObj = await fetch(`${host}/config`, payload)
-    const response = await respObj.json();
-
-    if (respObj && respObj.ok) {
-        config = await response.body;
-    }
-
     const channel = client.channels.cache.get(String(channelId));
 
-    if (config.debug) {
-        if (respObj && respObj.status)
-            await channel.send(debugText("Server Status", `${respObj.status}: ${respObj.statusText}`));
-        await channel.send(debugText("Configuration", config, "json"));
-    }
-
-    await channel.send(WELCOME);
-    console.log('Ready!');
+    try {
+        const payload = {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        }
+        const respObj = await fetch(`${host}/config`, payload)
+        const response = await respObj.json();
     
+        if (respObj && respObj.ok) {
+            config = await response.body;
+        }
+    
+        if (config.debug) {
+            if (respObj && respObj.status)
+                await channel.send(debugText("Server Status", `${respObj.status}: ${respObj.statusText}`));
+            await channel.send(debugText("Configuration", config, "json"));
+        }
+    
+        await channel.send(WELCOME);
+        console.log('Ready!');
+
+    } catch (e) {
+        await channel.send(API_DOWN);
+        if (config.debug) await channel.send(debugText("Javascript Error", e.stack));
+        console.error(e);
+        return;
+    }
 });
 
 client.on('message', async (message) => {
@@ -77,6 +84,12 @@ client.on('message', async (message) => {
                 await message.reply("*I don't know that command.*");
                 return;
             };
+
+            if (config.lock && command.useApi && !command.lockExempt) {
+                await message.react('⚠️');
+                await message.reply(LOCKED);
+                return;
+            }
 
             // Create command cooldown.
             if (!cooldowns.has(command.name)) {

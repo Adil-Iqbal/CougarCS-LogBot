@@ -12,7 +12,7 @@ const PRO_TIPS = [
     "If your log request is of type \"outreach\", then the \`Duration\` field is ignored.",
     "If your log request is of type \"other\", you must have a \`Comment\` field.",
     "If you send a message with just a question mark and nothing else, I'll send you a direct message with detailed instructions on how to log your hours.",
-    "My code is open source, and you can see it here: https://github.com/Adil-Iqbal/CougarCS-LogBot",
+    "My code is open source, and you can see it here: <https://github.com/Adil-Iqbal/CougarCS-LogBot>",
     "Keeping the \`Name\` field consistent across all your log requests makes it easier to credit you for your work.",
     "Never submit a log request for someone else! If they've helped you, remind them to submit their own request to receive credit.",
     "Did you know that I attach your Discord ID to every log request you submit? It helps us detect any shenanigans and keeps the process fair for everyone.",
@@ -21,8 +21,8 @@ const PRO_TIPS = [
     "When I react to a log request with a warning emoji, it means that there was a problem with the log request. If your log request has a problem, I'll reply with helpful details!",
     `This channel is not the easiest place to have a conversation. Consider moving the discussion to <#${chatChannelId}>? :heart:`,
     "Did you know that the `Duration` field is converted to a decimal representing the logged hours? The following examples all evaluate to 1.5 hours:\n```\nDuration: 1h 30m\nDuration: 30m 1h\nDuration: 90m\n```",
-    "You can get more detailed information about log requests by reading the documentation. Link: https://tinyurl.com/logdocs1",
-    "You can get more detailed information about command requests by reading the documentation. Link: https://tinyurl.com/cmddocs1",
+    "You can get more detailed information about log requests by reading the documentation. Link: <https://tinyurl.com/logdocs1>",
+    "You can get more detailed information about command requests by reading the documentation. Link: <https://tinyurl.com/cmddocs1>",
     "Whenever you post a successful log request, you are given a receipt that has a confirmation number. Did you know that you can cancel that request by using the `cancel` command? For example, if your confirmation number is `5f78dfc4bfc4ed66e5c321e3`, than you can cancel that log request using the following command:\n```\n$cancel 5f78dfc4bfc4ed66e5c321e3\n```",
     "There are certain commands you can run in this channel. Type `$help` and I'll reply with a list of those commands.",
     "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
@@ -82,7 +82,7 @@ ${LR_TEMPLATE}
 - The \`Comment\` field is *always* truncated to 140 characters.
 
 You can get more details about log requests (with examples) by reading the documentation.
-Documentation: https://tinyurl.com/logdocs1
+Documentation: <https://tinyurl.com/logdocs1>
 `;
 
 const NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;

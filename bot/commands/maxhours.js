@@ -1,17 +1,25 @@
 const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
+const { UNKNOWN_ISSUE } = require("../copy");
 
 module.exports = {
 	name: 'maxhours',
     description: 'change the maximum number of hours that can be logged at once.',
     args: true,
     usage: '<int: hours>',
+    useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config) => {
         const newHours = parseInt(args[0]);
         if (newHours < 0 || newHours > 24) {
             await message.react('⚠️');
             await message.reply("*The argument should be a whole number between 0 and 24 (inclusive).*");
+            return;
+        }
+
+        if (newHours == config.maxHours) {
+            await message.react('⚠️');
+            await message.reply(`*The maximum hours per post is already ${config.maxHours} hour(s).*`);
             return;
         }
         
@@ -34,6 +42,11 @@ module.exports = {
             await message.react("✅");
             let content = `The maximum number of hours that can be logged in one post is now ${config.maxHours}.`;
             await message.channel.send(content);
+            return;
         }
+
+        await message.react("⚠️");
+        await message.author.send(UNKNOWN_ISSUE);
+        return;
 	},
 };

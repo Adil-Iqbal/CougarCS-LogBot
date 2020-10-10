@@ -1,11 +1,14 @@
 const { safeFetch } = require("../util");
 const { s } = require('../httpStatusCodes');
+const { UNKNOWN_ISSUE } = require("../copy");
 
 module.exports = {
 	name: 'unlock',
-    description: 'allow bot to take log requests.',
+    description: 'allow bot to interact with api.',
     args: false,
     usage: '',
+    useApi: true,
+    lockExempt: true,
     superuserOnly: true,
 	execute: async (message, args, config) => {
         if (config.lock === false) {
@@ -31,6 +34,11 @@ module.exports = {
             await message.react("✅");
             let content = "@here, Ladies and gentlemen, we're back in business. Request away!";
             await message.channel.send(content);
+            return;
         }
+
+        await message.react("⚠️");
+        await message.author.send(UNKNOWN_ISSUE);
+        return;
 	},
 };

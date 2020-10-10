@@ -1,5 +1,5 @@
 const { safeFetch } = require("../util");
-const { debugText } = require("../copy");
+const { UNKNOWN_ISSUE } = require("../copy");
 const { s } = require('../httpStatusCodes');
 
 module.exports = {
@@ -7,6 +7,7 @@ module.exports = {
     description: 'toggle debug mode.',
     args: false,
     usage: '',
+    useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config) => {
 
@@ -34,6 +35,11 @@ module.exports = {
             if (!config.debug) mode = "de" + mode;
             let content = `\`\`\`\nDebug mode ${mode}\n\`\`\``;
             await message.channel.send(content);
+            return;
         }
+
+        await message.react("⚠️");
+        await message.author.send(UNKNOWN_ISSUE);
+        return;
 	},
 };

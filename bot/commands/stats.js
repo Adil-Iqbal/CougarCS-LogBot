@@ -1,13 +1,13 @@
 const { safeFetch } = require("../util");
-const { UNKNOWN_ISSUE, USER_NOT_FOUND, debugText } = require("../copy");
+const { UNKNOWN_ISSUE, USER_NOT_FOUND } = require("../copy");
 const { s } = require('../httpStatusCodes');
-const bigNumber = 1_000_000;
 
 module.exports = {
 	name: 'stats',
     description: 'lookup cumulative number of hours/outreach done.',
     args: false,
     usage: '',
+    useApi: true,
 	execute: async (message, args, config) => {
         const discordId = message.author.id;
         
