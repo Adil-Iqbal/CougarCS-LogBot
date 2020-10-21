@@ -46,7 +46,7 @@ Copy the template below and paste it into the chat.
 \`\`\`
 ${LR_TEMPLATE}
 \`\`\`
-*This is a BETA test. Make sure to log your hours in <#${754386732312559676}>*`;
+*This is a BETA test. Make sure to log your hours in <#754386732312559676>*`;
 
 const HELP_MESSAGE = `**DO NOT REPLY**
 
@@ -99,7 +99,7 @@ const LOCKED = "*I'm not allowed to do that! I've been locked.* You'll have to a
 
 const USER_NOT_FOUND = "*We didn't find you in our records.* We create a record for users when they make their first log request. You might try making a log request and running this command again."
 
-const LOG_NOT_FOUND = `*We did not find that log in our record!* We create logs when a log request is posted. Are you sure that the log was submitted? Did you receive a confirmation receipt? Perhaps the log has already been deleted? You may need to check with the folks at <#${builderChannelId}>.`;
+const LOG_NOT_FOUND = `*We did not find that log in our record!* Perhaps the log has already been deleted? You may need to check with the folks at <#${builderChannelId}>.`;
 
 const buildReceipt = (post, response) => {
     let duration = post.duration ? post.duration + " hours" : "Exempt";

@@ -9,7 +9,7 @@ module.exports = {
     usage: '',
     useApi: true,
     superuserOnly: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
 
         const prev = config.debug;
         const _new = !prev;

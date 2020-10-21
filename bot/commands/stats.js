@@ -8,10 +8,16 @@ module.exports = {
     args: false,
     usage: '',
     useApi: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         const discordId = message.author.id;
+
+        const payload = {
+            method: "POST",
+            body: "{}",
+            headers: { 'Content-Type': 'application/json' }
+        }
         
-        const [ respObj, response ] = await safeFetch(message, config, `/users/stats/${discordId}`, { method: "GET" });
+        const [ respObj, response ] = await safeFetch(message, config, `/users/stats/${discordId}`, payload);
         if (!respObj && !response) return;
 
         if (respObj.status == s.HTTP_404_NOT_FOUND) {

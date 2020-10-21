@@ -6,6 +6,7 @@ from bson import ObjectId
 from flask import request
 from flask_api import status as s
 from .extensions import mongo
+from datetime import datetime
 
 
 class SerializeMongo(json.JSONEncoder):
@@ -108,3 +109,16 @@ def freeze_if_frozen(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+def create_new_user(data):
+    """ Return new user using metadata. """
+    return {
+                "_id": data["metadata"]["discord_id"],
+                "username": data["metadata"]["username"],
+                "discriminator": data["metadata"]["discriminator"],
+                "cumulative_hours": 0,
+                "outreach_count": 0,
+                "superuser": False,
+                "last_updated": datetime.now(),
+                "frozen": False,
+            }

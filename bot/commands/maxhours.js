@@ -9,7 +9,7 @@ module.exports = {
     usage: '<int: hours>',
     useApi: true,
     superuserOnly: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         const newHours = parseInt(args[0]);
         if (newHours < 0 || newHours > 24) {
             await message.react('⚠️');

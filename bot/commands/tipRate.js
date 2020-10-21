@@ -9,7 +9,7 @@ module.exports = {
     usage: '<float: rate>',
     useApi: true,
     superuserOnly: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         let newRate = Number(args[0]);
 
         if (isNaN(newRate) || newRate < 0 || newRate > 1) {

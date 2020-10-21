@@ -27,6 +27,7 @@ module.exports = {
             let content = `**DO NOT REPLY**\nThe log belonging to <@${user_id}> with the confirmation number \`${log_id}\` has been cancelled`;
             if (user_id != message.author.id) {
                 content += ` by <@${message.author.id}>.`;
+                // TODO: What is bot?
                 const user = await bot.users.fetch(user_id);
                 await user.send(content);
             } else content += ".";

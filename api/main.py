@@ -5,7 +5,7 @@ from flask import json
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import json_response, forward_error, encode, superuser_only, has_metadata
+from .util import json_response, forward_error, encode, superuser_only, has_metadata, create_new_user
 
 app = Blueprint('main', __name__)
 
@@ -67,17 +67,10 @@ def log_request():
 
         # If user does not exist, create new one.
         else:
-            new_user = {
-                "_id": discord_id,
-                "username": data["metadata"]["username"],
-                "discriminator": data["metadata"]["discriminator"],
-                "cumulative_hours": duration_increment,
-                "outreach_count": outreach_increment,
-                "superuser": False,
-                "last_updated": datetime.now(),
-                "frozen": False,
-            }
-            user_col.insert_one(new_user)
+            new_user = create_new_user(data)
+            new_user["cumulative_hours"] = duration_increment
+            new_user["outreach_count"] = outreach_increment
+            result = user_col.insert_one(new_user)
             response_obj["inserted_user"] = result.acknowledged
             response_obj["user_id"] = discord_id
 
@@ -136,7 +129,7 @@ def initialize():
         return json_response(response_obj), s.HTTP_200_OK
 
 
-@app.route('/users/stats/<string:discord_id>', methods=['GET'])
+@app.route('/users/stats/<string:discord_id>', methods=['POST'])
 @forward_error
 def get_user_stats(discord_id):
     user_col = mongo.db.users
@@ -148,7 +141,13 @@ def get_user_stats(discord_id):
 
         # User not found in database.
         if not existing_user:
-            return json_response({"message": "user not found"}), s.HTTP_404_NOT_FOUND
+            # Create new user.
+            new_user = create_new_user(request.json)
+            result = user_col.insert_one(new_user)
+            response_obj["inserted_user"] = result.acknowledged
+            response_obj["user_id"] = discord_id
+            existing_user = new_user
+
 
         response_obj["data_retrieved"] = True
         response_obj["body"] = [

@@ -127,7 +127,7 @@ client.on('message', async (message) => {
                 }
                     
                 // Execute command.
-                await command.execute(message, args, config);
+                await command.execute(message, args, config, client);
                 return;
             } catch (e) {
                 await message.react('⚠️');

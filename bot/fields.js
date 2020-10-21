@@ -33,7 +33,7 @@ exports.fields = [
             return extract("volunteer type", value).trim();
         },
         validate(value) {
-            return !!value.match(/other|text|voice|group|outreach/gi)
+            return !!value.match(/other|text|voice|group|outreach/gi);
         },
         process(value) {
             const words = [

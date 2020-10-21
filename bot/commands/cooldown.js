@@ -9,7 +9,7 @@ module.exports = {
     usage: '<int: seconds>',
     useApi: true,
     superuserOnly: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         const newValue = parseInt(args[0]);
         if (isNaN(newValue) || newValue < 0 || newValue > 86400) {
             await message.react('⚠️');

@@ -3,7 +3,7 @@ module.exports = {
     description: 'Ping!',
     args: false,
     usage: '',
-	execute(message) {
+	execute(message, args, config, client) {
 		message.channel.send('Pong.');
 	},
 };

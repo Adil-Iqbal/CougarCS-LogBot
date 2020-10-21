@@ -10,7 +10,7 @@ module.exports = {
     useApi: true,
     lockExempt: true,
     superuserOnly: true,
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         if (config.lock === true) {
             await message.react('⚠️');
             await message.reply("*I'm already locked.* Did you mean to use `$unlock`?");
