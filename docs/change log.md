@@ -1,8 +1,11 @@
 # Change Log
 
-## Version 1.0.1 BETA - 10/21/2020 *Unreleased*
-  - API now creates new user entry when a non existing user tries to use the $stats command.
+## Version 1.0.1 BETA - *Unreleased*
+  - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.
+  - The `Name` field is now optional for all but the very first log request a user makes.
   - Standardized user object in database.
+  - Fixed blank `Name` field being considered valid.
+  - Fixed the "How to Log your Hours" DM message being affected by $lock and $unlock.
 
 ## Version 1.0.0 BETA - 10/19/2020
   - Beta version deployed.
