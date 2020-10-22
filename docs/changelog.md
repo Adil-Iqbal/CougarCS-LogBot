@@ -5,6 +5,7 @@
   - The `Name` field is now optional for all but the very first log request a user makes.
   - Fixed blank `Name` field being considered valid.
   - Fixed the `?` command being affected by $lock and $unlock.
+  - Fixed the receipt disclaimer being unnecessarily harsh.
   - Polish! Standardized user object in database.
   - Polish! Added $debug, $cooldown, and `?` commands to command docs.
   - Polish! Added new `Name` field functionality to log docs.
