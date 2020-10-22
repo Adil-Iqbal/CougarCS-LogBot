@@ -167,8 +167,9 @@ All arguments are lower cased and then capitalized. These arguments evaluate to 
 ✅
 
 Evaluated names always have leading and trailing spaces removed. These arguments evaluate to the name "Bob Dole":
-
-> $setname          Bob        Dole          
+<pre>
+> $setname          Bob        Dole     
+</pre>     
 
 ✅
 
