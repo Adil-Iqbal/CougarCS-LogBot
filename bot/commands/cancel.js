@@ -9,7 +9,7 @@ module.exports = {
     args: true,
     useApi: true,
     usage: '<string: confirmation number>',
-	execute: async (message, args, config) => {
+	execute: async (message, args, config, client) => {
         let confirmationNumber = String(args[0]);
         if (!!!confirmationNumber.match(/^[0-9a-f]{24}$/i)) {
             await message.react('⚠️');
@@ -27,8 +27,7 @@ module.exports = {
             let content = `**DO NOT REPLY**\nThe log belonging to <@${user_id}> with the confirmation number \`${log_id}\` has been cancelled`;
             if (user_id != message.author.id) {
                 content += ` by <@${message.author.id}>.`;
-                // TODO: What is bot?
-                const user = await bot.users.fetch(user_id);
+                const user = await client.users.fetch(user_id);
                 await user.send(content);
             } else content += ".";
             await message.author.send(content);
