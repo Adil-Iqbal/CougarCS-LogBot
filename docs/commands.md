@@ -124,6 +124,39 @@ Whatever you do, don't call the `ping` command!
 
 ✅
 
+## The `?` command.
+
+
+The `?` command is special, since it stands alone without prefix and without arguments.
+
+> ?
+
+✅
+
+> $?
+
+⚠️
+
+> ? foo 123 
+
+⚠️
+
+NOTE: This command will send you a direct message with instructions on how to log your hours.
+
+The `?` command is not effected by the `$lock` and `$unlock` commands.
+
+> $lock
+
+✅
+
+> ?
+
+✅
+
+NOTE: The `?` command will not be listed by the `$help` command.
+
+NOTE: The `?` command is exempt from any and all cooldowns.
+
 ## The `tiprate` command.
 
 **The `tiprate` command is for superusers.**
@@ -278,8 +311,159 @@ The `maxhours` command does not work if the `lock` command has been called.
 
 ⚠️
 
-## The `lock` and `unlock` commands.
+## The `cooldown` command.
 
+**The `cooldown` command is for superusers.**
+
+If you are *not* a superuser:
+
+> $cooldown 3
+
+⚠️
+
+If you are a superuser:
+
+> $cooldown 3
+
+✅
+
+The `cooldown` command requires an argument.
+
+> $cooldown
+
+⚠️
+
+The `cooldown` command requires the argument be a number between 1 and 86400 (inclusive).
+
+> $cooldown foobar
+
+⚠️
+
+> $maxhours -9
+
+⚠️
+
+> $cooldown 90000
+
+⚠️
+
+If a decimal is passed as an argument, it will be converted to a whole number. In these examples, the argument converts to `1`:
+
+> $cooldown 1.123
+
+✅
+
+> $cooldown 1.50
+
+✅
+
+> $cooldown 1.9999
+
+✅
+
+The `cooldown` command will require the user wait for the specified number of seconds before repeating an action. For example, these commands are preformed in quick succession by User 1.
+
+User 1:
+
+> $stats
+
+✅
+
+User 1:
+
+> $stats
+
+⚠️
+
+The cooldowns are user specific. For example, all of these commands are executed in quick succession by User 1 and User 2:
+
+User 1:
+
+> $stats
+
+✅
+
+User 2:
+
+> $stats
+
+✅
+
+User 1:
+
+> $stats
+
+⚠️
+
+The cooldowns are also action specific. For example, all of these commands are executed in quick succession User 1:
+
+User 1:
+
+> $stats
+
+✅
+
+User 1:
+
+> $cancel 5f7a257cbfc4ed66e5c321e9
+
+✅
+
+User 1:
+
+> $stats
+
+⚠️
+
+## The `debug` command.
+
+**The `debug` command is for superusers.**
+
+If you are *not* a superuser:
+
+> $debug
+
+⚠️
+
+If you are a superuser:
+
+> $debug
+
+✅
+
+The `debug` command ignores all arguments.
+
+> $debug foo 123
+
+✅
+
+NOTE: When debug mode is active, the internal workings of the bot and API will be exposed to the chat.
+
+**The `debug` command toggles the debug state between active and inactive.**
+
+To activate debug mode:
+
+> $debug
+
+✅
+
+To deactivate debug mode:
+
+> $debug
+
+✅
+
+The `debug` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $debug
+
+⚠️
+
+## The `lock` and `unlock` commands.
 
 **The `lock` and `unlock` commands are for superusers.**
 
