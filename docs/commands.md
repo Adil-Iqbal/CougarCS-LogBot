@@ -168,7 +168,7 @@ All arguments are lower cased and then capitalized. These arguments evaluate to 
 
 Evaluated names always have leading and trailing spaces removed. These arguments evaluate to the name "Bob Dole":
 
-> $setname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bob&nbsp;&nbsp;&nbsp;&nbsp;Dole&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+> $setname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bob&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dole&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     
 
 ✅
