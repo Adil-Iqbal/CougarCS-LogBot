@@ -375,6 +375,32 @@ User 1:
 
 ⚠️
 
+The cooldown applies to log requests. For example, all of these commands are executed in quick succession User 1:
+
+User 1:
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+User 1:
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
 The cooldowns are user specific. For example, all of these commands are executed in quick succession by User 1 and User 2:
 
 User 1:
@@ -415,6 +441,16 @@ User 1:
 
 ⚠️
 
+The `cooldown` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $cooldown 3
+
+⚠️
+
 ## The `debug` command.
 
 **The `debug` command is for superusers.**
@@ -438,6 +474,8 @@ The `debug` command ignores all arguments.
 ✅
 
 NOTE: When debug mode is active, the internal workings of the bot and API will be exposed to the chat.
+
+NOTE: You can use debug mode to troubleshoot both bot *and* API issues.
 
 **The `debug` command toggles the debug state between active and inactive.**
 
