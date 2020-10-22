@@ -4,6 +4,8 @@
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
   - The $setname command will now do a security check for metadata before executing.
+  - Fixed $help command accidentally using placing embeds in replies.
+  - Polish! Added $setname command to the command docs.
 
 ## Version 1.0.1 BETA - 10/22/2020
   - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.

@@ -134,7 +134,7 @@ def initialize():
 @app.route('/users/name/<string:discord_id>', methods=['GET', 'UPDATE'])
 @forward_error
 def check_for_name(discord_id):
-    """ Retrieve user's last used name field value. """
+    """ Retrieve and update user's last used name field value. """
     user_col = mongo.db.users
     response_obj = {}
 
@@ -184,8 +184,6 @@ def check_for_name(discord_id):
         
         return json_response(response_obj), s.HTTP_200_OK
         
-
-
 
 @app.route('/users/stats/<string:discord_id>', methods=['POST'])
 @forward_error

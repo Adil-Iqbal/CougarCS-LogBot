@@ -11,7 +11,7 @@ module.exports = {
             data.push('\n*Here\'s a list of all my command names:*\n```');
             data.push(commands.map(command => command.name).join(', '));
             data.push(`\`\`\`\nYou can send \`${config.prefix}help <command name>\` to get info on a specific command!`);
-            data.push("For more detailed info, check out the docs: https://tinyurl.com/cmddocs1");
+            data.push("For more detailed info, check out the docs: <https://tinyurl.com/cmddocs1>");
 
             await message.react('✅');
             await message.reply(data, { split: true });

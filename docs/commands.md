@@ -116,13 +116,113 @@ The `cancel` command does not work if the `lock` command has been called.
 
 ⚠️
 
-## The `ping` command.
+## The `setname` command.
 
-Whatever you do, don't call the `ping` command!
+The `setname` command requires at least one argument.
 
-> $ping
+> $setname
+
+⚠️
+
+All arguments must start with a letter (case insensitive).
+
+> $setname 123
+
+⚠️
+
+> $setname !?#
+
+⚠️
+
+All arguments may contain numbers or letters after the first character.
+
+> $setname bob
 
 ✅
+
+> $setname bob123
+
+✅
+
+> $setname bob!?#
+
+⚠️
+
+If multiple arguments are given, they will evaluate to a name. These arguments evaluate to the name "Bob Dole":
+
+> $setname Bob Dole
+
+✅
+
+If multiple arguments are given, invalid arguments will be omitted from the name. These arguments evaluate to the name "Jenny":
+
+> $setname 12Bob Jenny Dole!
+
+✅
+
+All arguments are lower cased and then capitalized. These arguments evaluate to the name "Bob Dole":
+
+> $setname bOb DOle
+
+✅
+
+Evaluated names always have leading and trailing spaces removed. These arguments evaluate to the name "Bob Dole":
+
+> $setname          Bob        Dole          
+
+✅
+
+NOTE: If *many* or *very long* arguments are given, arguments will be accepted until the next argument would increase the length of the evaluated name beyond 100 characters.
+
+The `setname` command will auto-populate the `Name` field of log requests if the `Name` field is omitted. In the example below, the log request assumes the user's name is "Bob Dole".
+
+> $setname Bob Dole
+
+✅
+
+```
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+The `setname` command is ignored and overridden if the `Name` field is provided. In the example below, both log requests assume the user's name is "Millard Fillmore".
+
+> $setname Bob Dole
+
+✅
+
+```
+Name: Millard Fillmore
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+The `setname` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $setname Bob Dole
+
+⚠️
 
 ## The `?` command.
 
@@ -156,6 +256,14 @@ The `?` command is not effected by the `$lock` and `$unlock` commands.
 NOTE: The `?` command will not be listed by the `$help` command.
 
 NOTE: The `?` command is exempt from any and all cooldowns.
+
+## The `ping` command.
+
+Whatever you do, don't call the `ping` command!
+
+> $ping
+
+✅
 
 ## The `tiprate` command.
 

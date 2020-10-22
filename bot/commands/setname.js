@@ -1,6 +1,7 @@
 const { safeFetch, capitalStr } = require("../util");
 const { s } = require('../httpStatusCodes');
 const { UNKNOWN_ISSUE } = require("../copy");
+const { _ } = require("lodash");
 
 module.exports = {
 	name: 'setname',
@@ -11,12 +12,18 @@ module.exports = {
 	execute: async (message, args, config, client) => {
         let newName = args
             .map(arg => capitalStr(String(arg).toLowerCase()))
-            .filter(arg => !!arg.match(/^[a-z]{1}[\x00-\x7F]*$/i))
+            .filter(arg => !!arg.match(/^[a-z]{1}[a-z0-9]*$/i))
             .join(" ");
+        
+        newName = _.truncate(newName, { 
+            length: 100,
+            separator: ' ',
+            omission: '',
+         });
 
         if (!newName.length) {
             await message.react('⚠️');
-            await message.reply("Names must start with a letter (A-Z) and contain only ASCII characters thereafter.");
+            await message.reply("Names must start with a letter and then have only letter or number characters thereafter.");
             return;
         }
 
