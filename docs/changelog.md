@@ -3,10 +3,12 @@
 ## Version 1.0.1 BETA - *Unreleased*
   - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.
   - The `Name` field is now optional for all but the very first log request a user makes.
-  - Fixed blank `Name` field being considered valid.
+  - Fixed blank `Name` field being considered valid entry.
   - Fixed the `?` command being affected by $lock and $unlock.
   - Fixed the receipt disclaimer being unnecessarily harsh.
   - Fixed $cancel command not appropriately sending DMs when log request is cancelled by superuser.
+  - Fixed catch all error message sent to DM instead of in chat reply.
+  - Fixed method not allowed error when using $stats command as a new user.
   - Polish! Standardized user object in database.
   - Polish! Added $debug, $cooldown, and `?` commands to command docs.
   - Polish! Added new `Name` field functionality to log docs.

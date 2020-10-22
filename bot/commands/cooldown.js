@@ -45,7 +45,7 @@ module.exports = {
         }
 
         await message.react("⚠️");
-        await message.author.send(UNKNOWN_ISSUE);
+        await message.reply(UNKNOWN_ISSUE);
         return;
 	},
 };

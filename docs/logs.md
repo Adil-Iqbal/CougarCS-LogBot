@@ -27,7 +27,7 @@ Name: John Doe
 
 ## The `Name` field
 
-The `Name` field should not be omitted.
+The `Name` field should not be omitted if its your very first log request.
 
 ```
 Date: 03/08/2020
@@ -38,7 +38,28 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Name` field should not exceed 100 characters.
+The `Name` field may optionally be omitted for all subsequent log requests. In that case, the previously submitted value will be used.
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+The `Name` field should never exceed 100 characters.
 
 ```
 Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth Loyd Martin Nero Oliver Jones Doe
@@ -49,6 +70,7 @@ Comment: Helped someone with linked lists.
 
 ⚠️
 ```
+
 
 ## The `Date` field
 
@@ -378,3 +400,4 @@ Comment: Man, I tutored a kid that has no business being a comp sci major. But I
 * Always keep the `Name` field consistent across all of your log requests.
 * Never put in a log request for someone else!
 * If someone helped you, remind them to put in their own log request.
+* Please keep conversation in the logging channel to a minimum.

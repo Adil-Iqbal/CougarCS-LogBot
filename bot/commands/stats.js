@@ -26,7 +26,7 @@ module.exports = {
             return;
         }
         
-        if (respObj.status == s.HTTP_200_OK && response.data_retrieved) {
+        if (respObj.status == s.HTTP_200_OK) {
             const [ totalHours, outreachCount ] = response.body;
             const content = `To date, you have volunteered a total of **${totalHours} hours** and participated in outreach **${outreachCount} ${outreachCount === 1 ? "time" : "times"}**. ${outreachCount || totalHours ? "Thank you!" : ""}`;
             await message.reply(content);
@@ -35,7 +35,7 @@ module.exports = {
         }
 
         await message.react("⚠️");
-        await message.author.send(UNKNOWN_ISSUE);
+        await message.reply(UNKNOWN_ISSUE);
         return;
 	},
 };

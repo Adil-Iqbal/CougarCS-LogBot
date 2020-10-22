@@ -1,7 +1,6 @@
 import dateutil.parser
 from datetime import datetime
 from flask import Blueprint, request, current_app
-from flask import json
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
@@ -160,7 +159,7 @@ def get_user_stats(discord_id):
     user_col = mongo.db.users
     response_obj = {}
 
-    if request.method == "GET":
+    if request.method == "POST":
         existing_user_query = {"_id": {"$eq": discord_id}}
         existing_user = user_col.find_one(existing_user_query)
 
