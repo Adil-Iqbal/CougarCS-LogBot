@@ -3,7 +3,6 @@ module.exports = {
 	description: 'list all of my commands or info about a specific command.',
 	aliases: ['commands'],
 	usage: '<string: command name>',
-	cooldown: 5,
 	execute: async (message, args, config, client) => {
 		const data = [];
         const { commands } = message.client;

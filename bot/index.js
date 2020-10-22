@@ -138,6 +138,13 @@ client.on('message', async (message) => {
             }
         }
 
+        // User has requested instructions.
+        if (message.content === config.requestHelp) { 
+            await message.react("✅");
+            await message.author.send(HELP_MESSAGE);
+            return;
+        }
+
         // When bot is locked, 
         if (config.lock) {
             await message.react('⚠️');
@@ -145,12 +152,27 @@ client.on('message', async (message) => {
             return;
         }
 
-        // User has requested instructions.
-        if (message.content === config.requestHelp) { 
-            await message.react("✅");
-            await message.author.send(HELP_MESSAGE);
-            return;
+        // Log request cooldowns.
+        if (!cooldowns.has(LR_CMD_NAME)) {
+            cooldowns.set(LR_CMD_NAME, new Discord.Collection());
         }
+
+        const now = Date.now();
+        const timestamps = cooldowns.get(LR_CMD_NAME);
+        const cooldownAmount = (config.cooldown) * 1000;
+        
+        if (timestamps.has(message.author.id)) {
+            const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+            if (now < expirationTime) {
+                const timeLeft = (expirationTime - now) / 1000;
+                await message.react('⚠️');
+                return await message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before logging a request.`);
+            }
+        }
+
+        timestamps.set(message.author.id, now);
+        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         let post = {};
         const errors = [];
@@ -180,8 +202,14 @@ client.on('message', async (message) => {
         }
 
         // Must have name:
-        if (!post.hasOwnProperty("name"))
-            errors.push("The \`Name\` field should not be omitted.", )
+        if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !post['name'].length)) {
+            const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, { method: 'GET' });
+            if (respObj === null && response === null) return;
+
+            const [ lastNameUsed ] = response.body;
+            if (lastNameUsed.length) post['name'] = lastNameUsed;
+            else errors.push("The `Name` field should not be omitted if its your very first log request.");
+        }
 
         // If no date is provided, today's date will be used.
         if (!post.hasOwnProperty("date"))
@@ -222,28 +250,6 @@ client.on('message', async (message) => {
             await message.react('⚠️');
             return;
         }
-
-        // Log request cooldowns.
-        if (!cooldowns.has(LR_CMD_NAME)) {
-            cooldowns.set(LR_CMD_NAME, new Discord.Collection());
-        }
-        
-        const now = Date.now();
-        const timestamps = cooldowns.get(LR_CMD_NAME);
-        const cooldownAmount = (config.cooldown) * 1000;
-        
-        if (timestamps.has(message.author.id)) {
-            const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-            if (now < expirationTime) {
-                const timeLeft = (expirationTime - now) / 1000;
-                await message.react('⚠️');
-                return await message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before logging a request.`);
-            }
-        }
-
-        timestamps.set(message.author.id, now);
-        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         post = stampPost(message, post);
 

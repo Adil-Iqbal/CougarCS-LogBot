@@ -62,7 +62,6 @@ def forward_error(func):
 def has_metadata(func):
     """ If user is unknown, refuse service. """
 
-    # noinspection PyBroadException
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         data = request.json
@@ -80,7 +79,6 @@ def has_metadata(func):
 def superuser_only(func):
     """ If user is not a superuser, refuse service. """
 
-    # noinspection PyBroadException
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user_col = mongo.db.users
@@ -97,7 +95,6 @@ def superuser_only(func):
 def freeze_if_frozen(func):
     """ If user is frozen, refuse service. """
 
-    # noinspection PyBroadException
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         user_col = mongo.db.users
@@ -111,7 +108,7 @@ def freeze_if_frozen(func):
     return wrapper
 
 def create_new_user(data):
-    """ Return new user using metadata. """
+    """ Standardized User Object. """
     return {
                 "_id": data["metadata"]["discord_id"],
                 "username": data["metadata"]["username"],
@@ -121,4 +118,5 @@ def create_new_user(data):
                 "superuser": False,
                 "last_updated": datetime.now(),
                 "frozen": False,
+                "last_used_name": ""
             }

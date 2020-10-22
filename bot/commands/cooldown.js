@@ -11,7 +11,7 @@ module.exports = {
     superuserOnly: true,
 	execute: async (message, args, config, client) => {
         const newValue = parseInt(args[0]);
-        if (isNaN(newValue) || newValue < 0 || newValue > 86400) {
+        if (isNaN(newValue) || newValue < 0 || newValue >= 86400) {
             await message.react('⚠️');
             await message.reply("*The argument should be a whole number between 0 and 86400 (inclusive).*");
             return;

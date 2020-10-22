@@ -23,10 +23,12 @@ const PRO_TIPS = [
     "Did you know that the `Duration` field is converted to a decimal representing the logged hours? The following examples all evaluate to 1.5 hours:\n```\nDuration: 1h 30m\nDuration: 30m 1h\nDuration: 90m\n```",
     "You can get more detailed information about log requests by reading the documentation. Link: <https://tinyurl.com/logdocs1>",
     "You can get more detailed information about command requests by reading the documentation. Link: <https://tinyurl.com/cmddocs1>",
+    "You can check the progress of my development in my changelog. It may even reveal upcoming features! Link: <https://tinyurl.com/changelog2>",
     "Whenever you post a successful log request, you are given a receipt that has a confirmation number. Did you know that you can cancel that request by using the `cancel` command? For example, if your confirmation number is `5f78dfc4bfc4ed66e5c321e3`, than you can cancel that log request using the following command:\n```\n$cancel 5f78dfc4bfc4ed66e5c321e3\n```",
     "There are certain commands you can run in this channel. Type `$help` and I'll reply with a list of those commands.",
     "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
     "You'll never win if you're too busy counting the ways you'll lose.",
+    "All progress takes place outside the comfort zone.",
 ]
 
 const LR_TEMPLATE = `Name: John Doe
@@ -35,7 +37,7 @@ Volunteer Type: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.`
 
-const WELCOME = `(version 1.0.0-BETA)
+const WELCOME = `(version 1.0.1-BETA)
 Copyright © 2020 All Rights Reserved.
 
 **How To Log Your Hours**
@@ -66,7 +68,7 @@ ${LR_TEMPLATE}
 - Try to limit conversation in <#${channelId}>.
 
 **Cliff Notes on Log Requests:**
-- The \`Name\` field should not be omitted.
+- The \`Name\` field should not be omitted if its your very first log request.
 - The \`Name\` field should not exceed 100 characters.
 - The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`
 - The \`Date\` field assumes *current year* when the year is omitted.
@@ -119,7 +121,7 @@ const buildReceipt = (post, response) => {
             { name: 'Comment', value: post.comment  },
         )
         .setTimestamp()
-        .setFooter(`CougarCS reserves the right to alter or remove logs at will.`);
+        .setFooter(`CougarCS reserves the right to handle shenanigans as necessary.`);
 }
 
 const serverLog = async (post, response) => `${post.metadata.timestamp.toString()} - POST - ${(await response.id)} ${post.metadata.discord_id} ${post["volunteer type"]} ${post.duration} hours.`;
