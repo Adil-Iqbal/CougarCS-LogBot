@@ -4,7 +4,7 @@ from flask import Blueprint, request, current_app
 from flask_api import status as s
 from bson import ObjectId
 from .extensions import mongo
-from .util import json_response, forward_error, encode, superuser_only, has_metadata, create_new_user
+from .util import json_response, forward_error, encode, superuser_only, has_metadata, _has_metadata, create_new_user
 
 app = Blueprint('main', __name__)
 
@@ -131,7 +131,7 @@ def initialize():
         return json_response(response_obj), s.HTTP_200_OK
 
 
-@app.route('/users/name/<string:discord_id>', methods=['GET'])
+@app.route('/users/name/<string:discord_id>', methods=['GET', 'UPDATE'])
 @forward_error
 def check_for_name(discord_id):
     """ Retrieve user's last used name field value. """
@@ -149,6 +149,42 @@ def check_for_name(discord_id):
             response_obj["body"] = [""]
 
         return json_response(response_obj), s.HTTP_200_OK
+    
+    if request.method == "UPDATE":
+        _has_metadata()
+        existing_user_query = {"_id": {"$eq": discord_id}}
+        existing_user = user_col.find_one(existing_user_query)
+        data = request.json
+
+        if not existing_user:
+            new_user = create_new_user(data)
+            result = user_col.insert_one(new_user)
+            response_obj["inserted_user"] = result.acknowledged
+            response_obj["user_id"] = discord_id
+            response_obj["data_retrieved"] = False
+            existing_user = new_user
+        else:
+            response_obj["data_retrieved"] = True
+
+        if existing_user["frozen"] == True and existing_user["superuser"] == False:
+            return encode({"message": "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+
+        updated_values = {
+            "username": data["metadata"]["username"],
+            "discriminator": data["metadata"]["discriminator"],
+            "last_updated": datetime.now(),
+            "last_used_name": data["new_name"]
+        }
+
+        up_res = user_col.update_one(existing_user_query, {"$set": updated_values})
+        if up_res.modified_count == 1:
+            response_obj["updated_user"] = up_res.acknowledged
+            response_obj["user_id"] = discord_id
+            response_obj["body"] = [updated_values["last_used_name"]]
+        
+        return json_response(response_obj), s.HTTP_200_OK
+        
+
 
 
 @app.route('/users/stats/<string:discord_id>', methods=['POST'])

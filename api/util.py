@@ -59,18 +59,22 @@ def forward_error(func):
     return wrapper
 
 
+def _has_metadata():
+    """ If user is unknown, refuse service. (PRIVATE) """
+    data = request.json
+    if "metadata" not in data.keys():
+        return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+    required_keys = ("discord_id", "username", "discriminator", "timestamp")
+    for key in required_keys:
+        if key not in data["metadata"].keys():
+            return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+
 def has_metadata(func):
     """ If user is unknown, refuse service. """
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        data = request.json
-        if "metadata" not in data.keys():
-            return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
-        required_keys = ("discord_id", "username", "discriminator", "timestamp")
-        for key in required_keys:
-            if key not in data["metadata"].keys():
-                return encode({"message", "Permission denied."}), s.HTTP_401_UNAUTHORIZED
+        _has_metadata()
         return func(*args, **kwargs)
 
     return wrapper
