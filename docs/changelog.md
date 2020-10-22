@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.0.1 BETA - *Unreleased*
+## Version 1.0.1 BETA - 10/22/2020
   - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.
   - The `Name` field is now optional for all but the very first log request a user makes.
   - Fixed blank `Name` field being considered valid entry.
