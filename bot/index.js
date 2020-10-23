@@ -200,8 +200,32 @@ client.on('message', async (message) => {
             await message.react('⚠️');
             return;
         }
+	
+	// If log request only has Name field and nothing else, assume $setname.
+	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
+	    const payload = {
+                method: "UPDATE",
+                body: JSON.stringify({ "new_name": post['name'] }),
+                headers: { 'Content-Type': 'application/json' }
+            }
 
-        // Must have name:
+            const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
+            if (!respObj && !response) return;
+
+            if (respObj.status == s.HTTP_200_OK) {
+                await message.react("✅");
+                const [ updatedName ] = response.body;
+                let content = `Now, when you omit the \`Name\` field, the name in your log requests will auto-populate with **${updatedName}**.\nIf this was not your intention, you might want to read up on how the \`$setname\` command works: <https://tinyurl.com/cmddocs1>`;
+                await message.reply(content);
+                return;
+            }
+	
+	    await message.react("⚠️");
+            await message.reply(UNKNOWN_ISSUE);
+            return;
+	}
+
+        // Must have Name field, and Name field value must not be blank:
         if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !post['name'].length)) {
             const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, { method: 'GET' });
             if (respObj === null && response === null) return;
