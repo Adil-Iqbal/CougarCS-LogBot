@@ -4,7 +4,7 @@
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
   - The $setname command will now do a security check for metadata before executing.
-  - A log request submitted with only the `Name` field will now send request to $setname endpoint.
+  - Implemented standalone `Name` field. When a log request is submitted with only a `Name` field, it will utilize the $setname endpoint.
   - Fixed $help command accidentally using placing embeds in replies.
   - Fixed standalone `Name` field not appropriately checking value length.
   - Polish! Added $setname command to the command docs.
