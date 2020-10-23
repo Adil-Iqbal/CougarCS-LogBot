@@ -203,6 +203,17 @@ client.on('message', async (message) => {
 	
 	// If log request only has Name field and nothing else, assume $setname.
 	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
+
+	    if (errors.length) {
+                let reply = "*I had some trouble parsing your log request.* Keep in mind:";
+                for (let i = 0; i < errors.length; i++)
+                    errors[i] = "  - " + errors[i];
+                reply += "\n" + errors.join("\n");
+                await message.reply(reply);
+                await message.react('⚠️');
+                return;
+            }
+
 	    const payload = {
                 method: "UPDATE",
                 body: JSON.stringify({ "new_name": post['name'] }),
