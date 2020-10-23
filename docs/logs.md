@@ -38,7 +38,7 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Name` field may optionally be omitted for all subsequent log requests. In that case, the previously submitted value will be used.
+The `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
 
 ```
 Name: John Doe
@@ -67,7 +67,7 @@ Name: John Doe
 ✅
 ```
 
-When used as a standalone field, the `Name` field may optionally be omitted for all subsequent log requests. In that case, the previously submitted value will be used.
+When used as a standalone field, the `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
 
 ```
 Name: John Doe
