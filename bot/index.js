@@ -14,6 +14,7 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 
 // Utilities.
+const { s } = require('./httpStatusCodes');
 const { roll, capitalStr, safeFetch, stampPost } = require('./util');
 const { fields } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
@@ -226,7 +227,7 @@ client.on('message', async (message) => {
             if (respObj.status == s.HTTP_200_OK) {
                 await message.react("✅");
                 const [ updatedName ] = response.body;
-                let content = `Now, when you omit the \`Name\` field, the name in your log requests will auto-populate with **${updatedName}**.\nIf this was not your intention, you might want to read up on how the \`$setname\` command works: <https://tinyurl.com/cmddocs1>`;
+                let content = `From now on, if you decide not to use the \`Name\` field, your log requests will assume your name is **${updatedName}**.`;
                 await message.reply(content);
                 return;
             }
