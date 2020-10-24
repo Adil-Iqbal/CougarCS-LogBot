@@ -7,6 +7,7 @@ module.exports = {
     description: 'lookup cumulative number of hours/outreach done.',
     args: false,
     usage: '',
+    example: '',
     useApi: true,
 	execute: async (message, args, config, client) => {
         const discordId = message.author.id;

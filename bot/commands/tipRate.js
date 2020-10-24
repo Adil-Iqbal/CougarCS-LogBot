@@ -7,6 +7,7 @@ module.exports = {
     description: 'change the rate the bot provides random tips.',
     args: true,
     usage: '<float: rate>',
+    example: '0.15',
     useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config, client) => {
@@ -22,7 +23,7 @@ module.exports = {
 
         if (newRate == config.tipRate) {
             await message.react('⚠️');
-            await message.reply(`*The tip rate is already already ${config.tipRate * 100}%.*`);
+            await message.reply(`*The tip rate is already ${config.tipRate * 100}%.*`);
             return;
         }
         

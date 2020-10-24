@@ -4,6 +4,7 @@
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
   - The $setname command will now do a security check for metadata before executing.
+  - The $help command will now print an example of the usage when called with an argument.
   - Fixed $help command accidentally using placing embeds in replies.
   - Polish! Added $setname command to the command docs.
 

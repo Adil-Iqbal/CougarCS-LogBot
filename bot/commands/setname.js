@@ -8,6 +8,7 @@ module.exports = {
     description: 'change the name that auto-populates when the name field is omitted.',
     args: true,
     usage: '<string: name> <string: name> <string: name> ...',
+    example: 'john doe',
     useApi: true,
 	execute: async (message, args, config, client) => {
         let newName = args

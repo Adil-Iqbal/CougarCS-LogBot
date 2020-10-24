@@ -2,7 +2,8 @@ module.exports = {
 	name: 'help',
 	description: 'list all of my commands or info about a specific command.',
 	aliases: ['commands'],
-	usage: '<string: command name>',
+    usage: '<string: command name>',
+    example: 'stats',
 	execute: async (message, args, config, client) => {
 		const data = [];
         const { commands } = message.client;
@@ -30,6 +31,7 @@ module.exports = {
         data.push(`**Command Name:** ${command.name}`);
         if (command.description) data.push(`**Description:** ${command.description}`);
         data.push(`**Usage:** \`${config.prefix}${command.name} ${command.usage ? command.usage : ''}\``);
+        data.push(`**Example:** \`${config.prefix}${command.name} ${command.example ? command.example : ''}\``);
         data.push(`**Cooldown:** ${command.cooldown || config.cooldown} second(s)`);
         if (command.superuserOnly) data.push("*This command is for superusers only.*");
 

@@ -7,6 +7,7 @@ module.exports = {
     description: 'change the default cooldown rate of commands.',
     args: true,
     usage: '<int: seconds>',
+    example: '3',
     useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config, client) => {

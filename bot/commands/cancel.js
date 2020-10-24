@@ -9,6 +9,7 @@ module.exports = {
     args: true,
     useApi: true,
     usage: '<string: confirmation number>',
+    example: '5f9130e8f03101e7e3bcc984',
 	execute: async (message, args, config, client) => {
         let confirmationNumber = String(args[0]);
         if (!!!confirmationNumber.match(/^[0-9a-f]{24}$/i)) {

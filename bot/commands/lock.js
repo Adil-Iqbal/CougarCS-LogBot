@@ -7,6 +7,7 @@ module.exports = {
     description: 'prevent bot from interacting with api.',
     args: false,
     usage: '',
+    example: '',
     useApi: true,
     lockExempt: true,
     superuserOnly: true,

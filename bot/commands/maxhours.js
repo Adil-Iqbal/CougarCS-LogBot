@@ -7,6 +7,7 @@ module.exports = {
     description: 'change the maximum number of hours that can be logged at once.',
     args: true,
     usage: '<int: hours>',
+    example: '12',
     useApi: true,
     superuserOnly: true,
 	execute: async (message, args, config, client) => {
