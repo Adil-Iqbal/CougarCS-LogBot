@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.0.2 BETA - 10/24/2020
+## Version 1.0.2 BETA - *Unreleased*
   - The $help command will now print an example of the usage when called with an argument.
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
