@@ -200,8 +200,43 @@ client.on('message', async (message) => {
             await message.react('⚠️');
             return;
         }
+	
+	// If log request only has Name field and nothing else, assume $setname.
+	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
 
-        // Must have name:
+	    if (errors.length) {
+                let reply = "*I had some trouble parsing your log request.* Keep in mind:";
+                for (let i = 0; i < errors.length; i++)
+                    errors[i] = "  - " + errors[i];
+                reply += "\n" + errors.join("\n");
+                await message.reply(reply);
+                await message.react('⚠️');
+                return;
+            }
+
+	    const payload = {
+                method: "UPDATE",
+                body: JSON.stringify({ "new_name": post['name'] }),
+                headers: { 'Content-Type': 'application/json' }
+            }
+
+            const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
+            if (!respObj && !response) return;
+
+            if (respObj.status == s.HTTP_200_OK) {
+                await message.react("✅");
+                const [ updatedName ] = response.body;
+                let content = `Now, when you omit the \`Name\` field, the name in your log requests will auto-populate with **${updatedName}**.\nIf this was not your intention, you might want to read up on how the \`$setname\` command works: <https://tinyurl.com/cmddocs1>`;
+                await message.reply(content);
+                return;
+            }
+	
+	    await message.react("⚠️");
+            await message.reply(UNKNOWN_ISSUE);
+            return;
+	}
+
+        // Must have Name field, and Name field value must not be blank:
         if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !post['name'].length)) {
             const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, { method: 'GET' });
             if (respObj === null && response === null) return;

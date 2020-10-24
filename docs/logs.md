@@ -38,7 +38,7 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Name` field may optionally be omitted for all subsequent log requests. In that case, the previously submitted value will be used.
+The `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
 
 ```
 Name: John Doe
@@ -59,6 +59,40 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
+The `Name` field can be submitted as a standalone field.
+
+```
+Name: John Doe
+
+✅
+```
+
+When used as a standalone field, the `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
+
+```
+Name: John Doe
+
+✅
+```
+
+```
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+Date: 03/09/2020
+Volunteer Type: voice
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
 The `Name` field should never exceed 100 characters.
 
 ```
@@ -71,6 +105,11 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
+```
+Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth Loyd Martin Nero Oliver Jones Doe
+
+⚠️
+```
 
 ## The `Date` field
 
