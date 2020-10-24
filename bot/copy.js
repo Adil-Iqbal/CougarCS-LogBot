@@ -14,6 +14,7 @@ const PRO_TIPS = [
     "If you send a message with just a question mark and nothing else, I'll send you a direct message with detailed instructions on how to log your hours.",
     "My code is open source, and you can see it here: <https://github.com/Adil-Iqbal/CougarCS-LogBot>",
     "Keeping the \`Name\` field consistent across all your log requests makes it easier to credit you for your work.",
+    "If you decide not to submit a \`Name\` field with your log request, I'll try to use the last name you submitted.", 
     "Never submit a log request for someone else! If they've helped you, remind them to submit their own request to receive credit.",
     "Did you know that I attach your Discord ID to every log request you submit? It helps us detect any shenanigans and keeps the process fair for everyone.",
     `You can help make me better by contributing on the <#${builderChannelId}> channel! Any time spent contributing can be logged for credit.`,
@@ -25,7 +26,7 @@ const PRO_TIPS = [
     "You can get more detailed information about command requests by reading the documentation. Link: <https://tinyurl.com/cmddocs1>",
     "You can check the progress of my development in my changelog. It may even reveal upcoming features! Link: <https://tinyurl.com/changelog2>",
     "Whenever you post a successful log request, you are given a receipt that has a confirmation number. Did you know that you can cancel that request by using the `cancel` command? For example, if your confirmation number is `5f78dfc4bfc4ed66e5c321e3`, than you can cancel that log request using the following command:\n```\n$cancel 5f78dfc4bfc4ed66e5c321e3\n```",
-    "There are certain commands you can run in this channel. Type `$help` and I'll reply with a list of those commands.",
+    "Type `$help` and I'll reply with a list of commands that can be used in this channel.",
     "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
     "You'll never win if you're too busy counting the ways you'll lose.",
     "All progress takes place outside the comfort zone.",
@@ -62,13 +63,14 @@ ${LR_TEMPLATE}
 \`\`\`
 
 **Best Practices**
-- Keep the value of the \`Name\` field consistent across all your requests.
 - Never submit a log request for someone other than yourself.
 - If anyone helped you in your task, remind them that they should submit their own log request.
 - Try to limit conversation in <#${channelId}>.
+- Keep the value of the \`Name\` field consistent across all your requests.
+- When setting your name, prefer using the \`Name\` field instead of the \`$setname\` command.
 
 **Cliff Notes on Log Requests:**
-- The \`Name\` field should not be omitted if its your very first log request.
+- The \`Name\` field should be submitted at least once.
 - The \`Name\` field should not exceed 100 characters.
 - The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`
 - The \`Date\` field assumes *current year* when the year is omitted.

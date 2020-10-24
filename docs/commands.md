@@ -118,6 +118,8 @@ The `cancel` command does not work if the `lock` command has been called.
 
 ## The `setname` command.
 
+NOTE: You may also consider using the `Name` field on its own. 
+
 The `setname` command requires at least one argument.
 
 > $setname

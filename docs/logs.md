@@ -27,7 +27,7 @@ Name: John Doe
 
 ## The `Name` field
 
-The `Name` field should not be omitted if its your very first log request.
+The `Name` field should be submitted at least once.
 
 ```
 Date: 03/08/2020
@@ -38,7 +38,17 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
+```
+Name:
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
+The `Name` field may be omitted if it has been submitted before.
 
 ```
 Name: John Doe
@@ -59,7 +69,16 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
-The `Name` field can be submitted as a standalone field.
+```
+Date: 03/09/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+The `Name` field can be submitted on its own.
 
 ```
 Name: John Doe
@@ -67,7 +86,7 @@ Name: John Doe
 ✅
 ```
 
-When used as a standalone field, the `Name` field may optionally be omitted from all subsequent log requests. In that case, the previously submitted value will be used.
+When submitted on its own, the `Name` field can be omitted thereafter.
 
 ```
 Name: John Doe
@@ -197,7 +216,7 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Volunteer Type` field should contain one of the following key words: text, voice, group, outreach, other
+The `Volunteer Type` field should contain one of the following keywords: text, voice, group, outreach, other
 
 ```
 Name: John Doe
@@ -218,6 +237,16 @@ Comment: Helped someone with linked lists.
 
 ⚠️
 ```
+
+NOTE: Use the **text** keyword when assisting a user using only written correspondence.
+
+NOTE: Use the **voice** keyword when assisting a user via audio or video correspondence.
+
+NOTE: Use the **group** keyword when assisting more than one user simultaneously.
+
+NOTE: Use the **outreach** keyword when advertising CougarCS to other potential users. (The `Duration` field may be omitted)
+
+NOTE: Use the **other** keyword if no other keyword fits your use case. (Use the `Comment` field to describe your actions)
 
 #### The `Volunteer Type` field can handle multiple keywords. 
 
@@ -436,7 +465,8 @@ Comment: Man, I tutored a kid that has no business being a comp sci major. But I
 
 ## Best Practices
 
-* Always keep the `Name` field consistent across all of your log requests.
 * Never put in a log request for someone else!
 * If someone helped you, remind them to put in their own log request.
 * Please keep conversation in the logging channel to a minimum.
+* Always keep the `Name` field consistent across all of your log requests.
+* When setting your name, prefer using the `Name` field instead of the `$setname` command.

@@ -1,15 +1,18 @@
 # Change Log
 
-## Version 1.0.2 BETA - *Unreleased*
+## Version 1.0.2 BETA - 10/24/2020
+  - The $help command will now print an example of the usage when called with an argument.
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
   - The $setname command will now do a security check for metadata before executing.
-  - The $help command will now print an example of the usage when called with an argument.
-  - Implemented standalone `Name` field. When a log request is submitted with only a `Name` field, it will utilize the $setname endpoint.
-  - Fixed standalone `Name` field not appropriately checking value length.
+  - Added $setname command to the command docs.
+  - When `Name` field is used on its own, the bot will use the $setname command's API endpoint.
+  - Added new `Name` field functionality to log docs.
+  - Fixed standalone `Name` field not appropriately handling errors.
+  - Fixed overly complicated wording in `Name` field documentation.
+  - Fixed missing keyword explanations in log docs.
   - Fixed $help command accidentally using placing embeds in replies.
-  - Polish! Added $setname command to the command docs.
-  - Polish! Added new `Name` field functionality to log docs.
+  - Fixed inconsistent wording across errors, tips, docs, and help dm.
 
 ## Version 1.0.1 BETA - 10/22/2020
   - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.

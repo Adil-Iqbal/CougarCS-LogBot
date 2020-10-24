@@ -201,7 +201,7 @@ client.on('message', async (message) => {
             return;
         }
 	
-	// If log request only has Name field and nothing else, assume $setname.
+	// When `Name` field is used on its own, use $setname endpoint.
 	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
 
 	    if (errors.length) {
@@ -243,7 +243,7 @@ client.on('message', async (message) => {
 
             const [ lastNameUsed ] = response.body;
             if (lastNameUsed.length) post['name'] = lastNameUsed;
-            else errors.push("The `Name` field should not be omitted if its your very first log request.");
+            else errors.push("The `Name` field should be submitted at least once.");
         }
 
         // If no date is provided, today's date will be used.
