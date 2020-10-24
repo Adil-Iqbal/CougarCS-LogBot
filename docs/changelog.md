@@ -11,7 +11,7 @@
   - Fixed standalone `Name` field not appropriately handling errors.
   - Fixed overly complicated wording in `Name` field documentation.
   - Fixed missing keyword explanations in log docs.
-  - Fixed $help command accidentally using placing embeds in replies.
+  - Fixed $help command accidentally using embeds in replies.
   - Fixed inconsistent wording across errors, tips, docs, and help dm.
 
 ## Version 1.0.1 BETA - 10/22/2020
