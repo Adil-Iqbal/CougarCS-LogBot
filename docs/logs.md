@@ -50,7 +50,7 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
-Field names are case insensitive. *(Unreleased Feature)*
+Field names are case insensitive.
 
 ```
 nAMe: John Doe
@@ -62,7 +62,7 @@ CoMMenT: Helped someone with linked lists.
 ✅
 ```
 
-Field names can be abbreviated, like so:  *(Unreleased Feature)*
+Field names can be abbreviated, like so: 
 
 ```
 n: John Doe
