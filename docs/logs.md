@@ -341,12 +341,12 @@ NOTE: Use the **other** keyword if no other keyword fits your use case. (Use the
 
 #### The `Volunteer Type` field can handle multiple keywords. 
 
-Evaluates to `text`.
+Evaluates to `other`.
 
 ```
 Name: John Doe
 Date: 3/8/2020
-Volunteer Type: other text
+Volunteer Type:
 Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
@@ -358,7 +358,7 @@ Evaluates to `text`.
 ```
 Name: John Doe
 Date: 3/8/2020
-Volunteer Type: text other
+Volunteer Type: other text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
@@ -406,19 +406,7 @@ Evaluates to `outreach`.
 ```
 Name: John Doe
 Date: 3/8/2020
-Volunteer Type: other text voice group outreach
-Duration: 1h 30m
-Comment: Helped someone with linked lists.
-
-✅
-```
-
-Evaluates to `outreach`.
-
-```
-Name: John Doe
-Date: 3/8/2020
-Volunteer Type: outreach group voice text other
+Volunteer Type: other outreach voice group text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
