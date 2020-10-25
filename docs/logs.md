@@ -12,6 +12,7 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
+
 The order of the fields do not matter.
 
 ```
@@ -21,6 +22,54 @@ Date: 03/08/2020
 Volunteer Type: text
 Name: John Doe
 
+
+✅
+```
+
+You cannot have two fields on the same line.
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: text   Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
+Duplicate fields are ignored. In this example, the `Date` field is still set to `03/08/2020`.
+
+```
+Name: John Doe
+Date: 03/08/2020
+Date: 12/31/1999
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+Field names are case insensitive. *(Unreleased Feature)*
+
+```
+nAMe: John Doe
+DaTe: 03/08/2020
+VOluntEEr TyPE: text
+dURaTIoN: 1h 30m
+CoMMenT: Helped someone with linked lists.
+
+✅
+```
+
+Field names can be abbreviated, like so:  *(Unreleased Feature)*
+
+```
+n: John Doe
+dt: 03/08/2020
+v: text
+dr: 1h 30m
+c: Helped someone with linked lists.
 
 ✅
 ```
@@ -130,6 +179,24 @@ Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth 
 ⚠️
 ```
 
+The `Name` field can be abbreviated to the letter `n` (case insensitive).
+
+```
+n: John Doe
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+```
+n: John Doe
+
+✅
+```
+
 ## The `Date` field
 
 The `Date` field accepts `mm/dd/yyyy` format.
@@ -191,7 +258,7 @@ Comment: Helped someone with linked lists.
 ✅
 ```
 
-The `Date` field requires that  a forward slash (`/`) separate days, months, and years.
+The `Date` field requires that a forward slash (`/`) separate days, months, and years.
 
 ```
 Name: John Doe
@@ -201,6 +268,18 @@ Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
 ⚠️
+```
+
+The `Date` field can be abbreviated to the letters `dt` (case insensitive).
+
+```
+Name: John Doe
+dt: 3/8/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
 ```
 
 ## The `Volunteer Type` field
@@ -238,7 +317,19 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-NOTE: Use the **text** keyword when assisting a user using only written correspondence.
+The `Volunteer Type` field detects keywords in a case insensitive manner.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: oUtREaCh
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+NOTE: Use the **text** keyword when assisting a user via written correspondence.
 
 NOTE: Use the **voice** keyword when assisting a user via audio or video correspondence.
 
@@ -328,6 +419,18 @@ Evaluates to `outreach`.
 Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach group voice text other
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
+The `Volunteer Type` field can be abbreviated to the letter `v` (case insensitive).
+
+```
+Name: John Doe
+Date: 3/8/2020
+v: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
@@ -427,6 +530,18 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
+The `Duration` field can be abbreviated to the letters `dr` (case insensitive).
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+dr: 1h 30m
+Comment: Helped someone with linked lists.
+
+✅
+```
+
 ## The `Comment` field
 
 The `Comment` field is optional for most volunteer types.
@@ -459,6 +574,18 @@ Date: 3/8/2020
 Volunteer Type: other
 Duration: 1h 30m
 Comment: Man, I tutored a kid that has no business being a comp sci major. But I tried my best to be patient and really showed him the ropes on these linked lists. I'm logging like 90 minutes, but really, I deserve like 4 hours on this tutoring sesh. He was a wierdo too, kind of. I forget his name, I think it was Bill? Bill gates? Not quite sure.
+
+✅
+```
+
+The `Comment` field can be abbreviated to the letter `c` (case insensitive).
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 1h 30m
+c: Helped someone with linked lists.
 
 ✅
 ```

@@ -182,16 +182,25 @@ client.on('message', async (message) => {
             errors.push("The template should be updated with your info.");
 
         // Parse log request from #logging.
+        for (let i = 0; i < fields.length; i++) fields[i].found = false;
         for (let line of message.content.split("\n")) {
-            for (let field of fields) {
-                const { label, prepare, validate, process, error } = field;
-                if (line.startsWith(capitalStr(label) + ':')) {
-                    post[label] = undefined;
-                    let value = prepare(line);
-                    if (validate(value)) post[label] = process(value);
-                    else errors.push(error);
-                    break;
+            for (let i = 0; i < fields.length; i++) {
+                if (fields[i].found) continue;
+                const { labels, prepare, validate, process, error } = fields[i];
+                let nextLine = false;
+                for (let label of labels) {
+                    const regex = new RegExp(`^${label}:`, 'i');
+                    if (!!line.match(regex)) {
+                        post[label] = undefined;
+                        let value = prepare(line);
+                        if (validate(value)) post[labels[0]] = process(value);
+                        else errors.push(error);
+                        fields[i].found = true;
+                        nextLine = true;
+                        break;
+                    }
                 }
+                if (nextLine) break;
             }
         }
 
@@ -206,35 +215,35 @@ client.on('message', async (message) => {
 	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
 
 	    if (errors.length) {
-                let reply = "*I had some trouble parsing your log request.* Keep in mind:";
-                for (let i = 0; i < errors.length; i++)
-                    errors[i] = "  - " + errors[i];
-                reply += "\n" + errors.join("\n");
-                await message.reply(reply);
-                await message.react('⚠️');
-                return;
-            }
+            let reply = "*I had some trouble parsing your log request.* Keep in mind:";
+            for (let i = 0; i < errors.length; i++)
+                errors[i] = "  - " + errors[i];
+            reply += "\n" + errors.join("\n");
+            await message.reply(reply);
+            await message.react('⚠️');
+            return;
+        }
 
 	    const payload = {
-                method: "UPDATE",
-                body: JSON.stringify({ "new_name": post['name'] }),
-                headers: { 'Content-Type': 'application/json' }
-            }
+            method: "UPDATE",
+            body: JSON.stringify({ "new_name": post['name'] }),
+            headers: { 'Content-Type': 'application/json' }
+        }
 
-            const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
-            if (!respObj && !response) return;
+        const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
+        if (!respObj && !response) return;
 
-            if (respObj.status == s.HTTP_200_OK) {
-                await message.react("✅");
-                const [ updatedName ] = response.body;
-                let content = `From now on, if you decide not to use the \`Name\` field, your log requests will assume your name is **${updatedName}**.`;
-                await message.reply(content);
-                return;
-            }
+        if (respObj.status == s.HTTP_200_OK) {
+            await message.react("✅");
+            const [ updatedName ] = response.body;
+            let content = `From now on, if you decide not to use the \`Name\` field, your log requests will assume your name is **${updatedName}**.`;
+            await message.reply(content);
+            return;
+        }
 	
 	    await message.react("⚠️");
-            await message.reply(UNKNOWN_ISSUE);
-            return;
+        await message.reply(UNKNOWN_ISSUE);
+        return;
 	}
 
         // Must have Name field, and Name field value must not be blank:

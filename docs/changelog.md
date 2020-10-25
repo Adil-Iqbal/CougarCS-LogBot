@@ -1,5 +1,15 @@
 # Change Log
 
+## Version 1.0.3 BETA - *Unreleased*
+  - Field names are now parsed in a case insensitive manner.
+  - Field names now have designated abbreviations.
+  - Form parsing algorithm has been optimized.
+  - Form parsing algorithm now ignores duplicate fields.
+  - Added pre-initialization check for duplicate field names.
+  - Added new log request functionality to log docs.
+  - Fixed missing keyword definitions in log docs.
+  - Fixed missing keyword definitions in help dm.
+
 ## Version 1.0.2 BETA - 10/24/2020
   - The $help command will now print an example of the usage when called with an argument.
   - Added $setname command, that will allow users to modify how their name appears in log requests.

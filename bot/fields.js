@@ -1,8 +1,8 @@
 const { extract, convertTime, getDate, truncateString } = require('./util');
 
-exports.fields = [
+const fields = [
     {
-        label: "name",
+        labels: ["name", "n"],
         prepare(value) {
             return extract("name", value).trim();
         },
@@ -13,9 +13,10 @@ exports.fields = [
             return value;
         },
         error: "The \`Name\` field should not exceed 100 characters.",
+        found: false,
     },
     {
-        label: "date",
+        labels: ["date", "dt"],
         prepare(value) {
             return extract("date", value).trim();
         },
@@ -26,9 +27,10 @@ exports.fields = [
             return getDate(value);
         },
         error: "The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`",
+        found: false,
     },
     {
-        label: "volunteer type",
+        labels: ["volunteer type", "v"],
         prepare(value) {
             return extract("volunteer type", value).trim();
         },
@@ -67,9 +69,10 @@ exports.fields = [
             }
         },
         error: "The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.",
+        found: false,
     },
     {
-        label: "duration",
+        labels: ["duration", "dr"],
         prepare(value) {
             return extract("duration", value).trim().toLowerCase();
         },
@@ -80,9 +83,10 @@ exports.fields = [
             return convertTime(value);
         },
         error: "The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)",
+        found: false,
     },
     {
-        label: "comment",
+        labels: ["comment", "c"],
         prepare(value) {
             return extract("comment", value).trim();
         },
@@ -93,5 +97,20 @@ exports.fields = [
             return truncateString(value, 140);
         },
         error: "You should never see this error.",
+        found: false,
     },
 ];
+
+let arr = [];
+for (let field of fields) arr = arr.concat(field.labels);
+let set = new Set(arr);
+if (set.size < arr.length) {
+    for (let s of set) arr.splice(arr.indexOf(s), 1);
+    let duplicates = Array.from(new Set(arr)).join(", ");
+    throw `Duplicate field labels have been detected: ${duplicates}`;
+}
+
+
+module.exports = {
+    fields,
+}
