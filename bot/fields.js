@@ -3,8 +3,8 @@ const { extract, convertTime, getDate, truncateString } = require('./util');
 const fields = [
     {
         labels: ["name", "n"],
-        prepare(value) {
-            return extract("name", value).trim();
+        prepare(value, label) {
+            return extract(label, value).trim();
         },
         validate(value) {
             return value.length <= 100;
@@ -17,8 +17,8 @@ const fields = [
     },
     {
         labels: ["date", "dt"],
-        prepare(value) {
-            return extract("date", value).trim();
+        prepare(value, label) {
+            return extract(label, value).trim();
         },
         validate(value) {
             return !!value.match(/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1|2]\d|3[0|1])(\/(19|20)?\d\d)?$/g);
@@ -31,8 +31,8 @@ const fields = [
     },
     {
         labels: ["volunteer type", "v"],
-        prepare(value) {
-            return extract("volunteer type", value).trim();
+        prepare(value, label) {
+            return extract(label, value).trim();
         },
         validate(value) {
             return !!value.match(/other|text|voice|group|outreach/gi);
@@ -73,8 +73,8 @@ const fields = [
     },
     {
         labels: ["duration", "dr"],
-        prepare(value) {
-            return extract("duration", value).trim().toLowerCase();
+        prepare(value, label) {
+            return extract(label, value).trim().toLowerCase();
         },
         validate(value) {
             return !!value.match(/^(\d*[h|m] {1})?\d*[h|m]$/g);
@@ -87,8 +87,8 @@ const fields = [
     },
     {
         labels: ["comment", "c"],
-        prepare(value) {
-            return extract("comment", value).trim();
+        prepare(value, label) {
+            return extract(label, value).trim();
         },
         validate(value) {
             return true;

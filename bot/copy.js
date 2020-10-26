@@ -1,6 +1,7 @@
 require('dotenv').config();
 const _ = require('lodash');
 const Discord = require('discord.js');
+const package = require("../package.json");
 
 // Environment variables.
 const channelId = process.env.CHANNEL_ID;
@@ -38,7 +39,7 @@ Volunteer Type: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.`
 
-const WELCOME = `(version 1.0.2-BETA)
+const WELCOME = `(version ${package.version}-BETA)
 Copyright © 2020 All Rights Reserved.
 
 **How To Log Your Hours**

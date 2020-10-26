@@ -191,8 +191,8 @@ client.on('message', async (message) => {
                 for (let label of labels) {
                     const regex = new RegExp(`^${label}:`, 'i');
                     if (!!line.match(regex)) {
-                        post[label] = undefined;
-                        let value = prepare(line);
+                        post[labels[0]] = undefined;
+                        let value = prepare(line, label);
                         if (validate(value)) post[labels[0]] = process(value);
                         else errors.push(error);
                         fields[i].found = true;

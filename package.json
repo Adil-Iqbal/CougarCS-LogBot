@@ -1,14 +1,14 @@
 {
   "name": "CougarCS-LogBot",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.3",
+  "description": "A chat bot to help CougarCS log volunteer hours.",
   "main": "index.js",
   "scripts": {
     "run": "node bot/index.js",
     "serve": "flask run"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["Discord", "Houston", "CougarCS", "Volunteer", "University of Houston"],
+  "author": "Adil Iqbal",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.3.1",

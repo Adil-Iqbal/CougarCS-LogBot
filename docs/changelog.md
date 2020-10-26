@@ -1,12 +1,15 @@
 # Change Log
 
-## Version 1.0.3 BETA - *Unreleased*
+## Version 1.0.3 BETA - 10/26/2020
   - Field names are now parsed in a case insensitive manner.
   - Field names now have designated abbreviations.
   - Form parsing algorithm has been optimized.
   - Form parsing algorithm now ignores duplicate fields.
   - Added pre-initialization check for duplicate field names.
   - Added new log request functionality to log docs.
+  - Centralized versioning of the bot to its `package.json` file.
+  - Added $version command to quickly determine bot's version.
+  - Added $version command to the command docs.
   - Fixed missing keyword definitions in log docs.
   - Fixed missing keyword definitions in help dm.
 

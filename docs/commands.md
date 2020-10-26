@@ -227,6 +227,30 @@ The `setname` command does not work if the `lock` command has been called.
 
 ⚠️
 
+## The `version` command.
+
+The `version` command ignores all arguments.
+
+> $version foo 123
+
+✅
+
+The `version` command will print the current version of the bot.
+
+> $version
+
+✅
+
+The `version` command is *not* affected by `lock` and `unlock` commands.
+
+> $lock
+
+✅
+
+> $version
+
+✅
+
 ## The `?` command.
 
 
