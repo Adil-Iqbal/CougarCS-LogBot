@@ -71,29 +71,21 @@ ${LR_TEMPLATE}
 - When setting your name, prefer using the \`Name\` field instead of the \`$setname\` command.
 
 **Cliff Notes on Log Requests:**
-- The \`Name\` field should be submitted at least once.
 - The \`Name\` field should not exceed 100 characters.
 - The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`
-- The \`Date\` field assumes *current year* when the year is omitted.
-- The \`Date\` field assumes *today* when its omitted entirely.
 - The \`Date\` field requires that a forward slash (\`/\`) separate days, months, and years.
 - The \`Volunteer Type\` field should not be omitted.
 - The \`Volunteer Type\` field should contain one of the following keywords: text, voice, group, outreach, other.
 - The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)
-- The \`Duration\` field can be omitted if the \`Volunteer Type\` field evaluates to "outreach".
-- The \`Duration\` field should *not* be omitted if the \`Volunteer Type\` field does not evaluate to "outreach".
-- The \`Comment\` field is optional for most volunteer types.
 - The \`Comment\` field is mandatory if the \`Volunteer Type\` field evaluates to "other".
-- The \`Comment\` field is *always* truncated to 140 characters.
 
 **Volunteer Type Keywords**
 - Use the **text** keyword when assisting a user via written correspondence.
 - Use the **voice** keyword when assisting a user via audio or video correspondence.
 - Use the **group** keyword when assisting more than one user simultaneously.
-- Use the **outreach** keyword when advertising CougarCS to other potential users. (The \`Duration\` field may be omitted)
-- Use the **other** keyword if no other keyword fits your use case. (Use the \`Comment\` field to describe your actions)
+- Use the **outreach** keyword when advertising CougarCS to other potential users.
+- Use the **other** keyword if no other keyword fits your use case.
 
-You can get more details about log requests (with examples) by reading the documentation.
 Documentation: <https://tinyurl.com/logdocs1>
 `;
 

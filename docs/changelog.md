@@ -12,6 +12,7 @@
   - Added $version command to the command docs.
   - Fixed missing keyword definitions in log docs.
   - Fixed missing keyword definitions in help dm.
+  - Fixed issue preventing help dm from being sent.
 
 ## Version 1.0.2 BETA - 10/24/2020
   - The $help command will now print an example of the usage when called with an argument.
