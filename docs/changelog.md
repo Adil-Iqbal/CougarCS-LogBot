@@ -1,6 +1,9 @@
 # Change Log
 
-## Version 1.0.3 BETA - 10/26/2020
+## Version 1.0.4 Beta
+  - Fixed bot attempting to parse non-user messages.
+
+## Version 1.0.3 Beta - 10/26/2020
   - Field names are now parsed in a case insensitive manner.
   - Field names now have designated abbreviations.
   - Form parsing algorithm has been optimized.
@@ -14,7 +17,7 @@
   - Fixed missing keyword definitions in help dm.
   - Fixed issue preventing help dm from being sent.
 
-## Version 1.0.2 BETA - 10/24/2020
+## Version 1.0.2 Beta - 10/24/2020
   - The $help command will now print an example of the usage when called with an argument.
   - Added $setname command, that will allow users to modify how their name appears in log requests.
   - The $setname command will now add a user entry in database if called by a new user.
@@ -28,7 +31,7 @@
   - Fixed $help command accidentally using embeds in replies.
   - Fixed inconsistent wording across errors, tips, docs, and help dm.
 
-## Version 1.0.1 BETA - 10/22/2020
+## Version 1.0.1 Beta - 10/22/2020
   - When a new user uses the $stats command, API now creates a user entry and reports zero contributions.
   - The `Name` field is now optional for all but the very first log request a user makes.
   - Fixed blank `Name` field being considered valid entry.

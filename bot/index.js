@@ -70,8 +70,10 @@ client.once('ready', async () => {
 
 client.on('message', async (message) => {
     try {
-        // Restrict bot to specific discord channel, ignore bot posts, ignore comments, and ignore commands.
-        if (message.channel.id !== channelId || message.author.bot || message.content.startsWith(config.commentPrefix) ) return;
+        if (message.channel.id !== channelId ||                     // Restrict bot to target channel
+            message.content.startsWith(config.commentPrefix) ||     // Ignore comments.
+            message.author.bot ||                                   // Ignore bot.
+            message.type != 'DEFAULT') return;                      // Ignore non-user messages.
 
         // Parse commands.
         if (message.content.startsWith(config.prefix)) {

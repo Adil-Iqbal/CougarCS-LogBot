@@ -1,6 +1,6 @@
 {
   "name": "CougarCS-LogBot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A chat bot to help CougarCS log volunteer hours.",
   "main": "index.js",
   "scripts": {
