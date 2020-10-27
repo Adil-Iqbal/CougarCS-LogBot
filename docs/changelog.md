@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.0.4 Beta
+## Version 1.0.4 Beta - *Unreleased*
   - Fixed bot attempting to parse non-user messages.
 
 ## Version 1.0.3 Beta - 10/26/2020
