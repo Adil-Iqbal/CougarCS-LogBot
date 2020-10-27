@@ -39,7 +39,7 @@ Volunteer Type: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.`
 
-const WELCOME = `(version ${package.version}-BETA)
+const WELCOME = `(version ${package.version})
 Copyright © 2020 All Rights Reserved.
 
 **How To Log Your Hours**
