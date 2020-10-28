@@ -1,28 +1,26 @@
 const { extract, convertTime, getDate, truncateString } = require('./util');
 
-const BEFORE_ALL = 0; // Not implemented.
-const PRE_PROCESS = 1;
-const POST_PROCESS = 2;
-const AFTER_ALL = 3; // Not implemented.
-
 const fields = [
     {
         labels: ["name", "n"],
         prepare(value, label) {
             return extract(label, value).trim();
         },
-        validate: [
-            {
-                type: PRE_PROCESS,
-                condition: (value) => value.length <= 100,
-                error: "The \`Name\` field should not exceed 100 characters.",
-            },
-            {
-                type: PRE_PROCESS,
-                condition: (value) => !!value.match(/[\w ]+/gi),
-                error: "The `Name` field only accepts letters, numbers, spaces, and underscores.",
-            },
-        ],
+        validate: {
+            input: [
+                {
+                    condition: (value) => value.length <= 100,
+                    error: "The \`Name\` field should not exceed 100 characters.",
+                },
+                {
+                    condition: (value) => !!value.match(/[\w ]+/gi),
+                    error: "The `Name` field only accepts letters, numbers, spaces, and underscores.",
+                },
+            ],
+            data: [],
+            structure: [],
+
+        },
         process(value) {
             return value;
         },
@@ -34,13 +32,29 @@ const fields = [
         prepare(value, label) {
             return extract(label, value).trim();
         },
-        validate: [
-            {
-                type: PRE_PROCESS,
-                condition: (value) => !!value.match(/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1|2]\d|3[0|1])(\/(19|20)?\d\d)?$/g),
-                error: "The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`",
-            },
-        ],
+        validate: {
+            input: [
+                {
+                    condition: (value) => !!value.match(/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1|2]\d|3[0|1])(\/(19|20)?\d\d)?$/g),
+                    error: "The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`",
+                },
+            ],
+            data: [
+                {
+                    condition: (label, post) => {
+                        return;
+                    },
+                    error: "The \`Date\` field date may not occur *before* xx/xx/xxxx",
+                },
+                {
+                    condition: (label, post) => {
+                        return post[label] > new Date()
+                    },
+                    error: "The \`Date\` field date may not occur *after* xx/xx/xxxx",
+                },
+            ],
+            structure: [],
+        },
         process(value) {
             return getDate(value);
         },
@@ -52,13 +66,16 @@ const fields = [
         prepare(value, label) {
             return extract(label, value).trim();
         },
-        validate: [
-            {
-                type: PRE_PROCESS,
-                condition: (value) => !!value.match(/other|text|voice|group|outreach/gi),
-                error: "The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.",
-            }
-        ],
+        validate: {
+            input: [
+                {
+                    condition: (value) => !!value.match(/other|text|voice|group|outreach/gi),
+                    error: "The \`Volunteer Type\` field should contain one of the following key words: text, voice, group, outreach, other.",
+                },
+            ],
+            data: [],
+            structure: [],
+        },
         process(value) {
             const words = [
                 { key: !!value.match(/other/gi), weight: 1 },
@@ -98,13 +115,16 @@ const fields = [
         prepare(value, label) {
             return extract(label, value).trim().toLowerCase();
         },
-        validate: [
-            {
-                type: PRE_PROCESS,
-                condition: (value) => !!value.match(/^(\d*[h|m] {1})?\d*[h|m]$/g),
-                error: "The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)",
-            }
-        ],
+        validate: {
+            input: [
+                {
+                    condition: (value) => !!value.match(/^(\d*[h|m] {1})?\d*[h|m]$/g),
+                    error: "The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)",
+                },
+            ],
+            data: [],
+            structure: [],
+        },
         process(value) {
             return convertTime(value);
         },
@@ -116,7 +136,11 @@ const fields = [
         prepare(value, label) {
             return extract(label, value).trim();
         },
-        validate: [],
+        validate: {
+            input: [],
+            data: [],
+            structure: [],
+        },
         process(value) {
             return truncateString(value, 140);
         },
@@ -137,8 +161,4 @@ if (set.size < arr.length) {
 
 module.exports = {
     fields,
-    BEFORE_ALL,
-    PRE_PROCESS,
-    POST_PROCESS,
-    AFTER_ALL,
 }

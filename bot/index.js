@@ -211,12 +211,11 @@ client.on('message', async (message) => {
                         let value = prepare(line, label);
 
                         // Pre-process validation.
-                        for (let obj of validate) {
-                            if (obj.type == PRE_PROCESS) {
-                                fields[i].valid = fields[i].valid && obj.condition(value);
-                                if (!obj.condition(value))
-                                    errors.push(obj.error);
-                            }
+                        for (let val of validate.input) {
+                            const condition = val.condition(value);
+                            fields[i].valid = fields[i].valid && condition;
+                            if (!condition)
+                                errors.push(val.error);
                         }
 
                         // Fields are populated only if their value has been validated.
@@ -224,11 +223,9 @@ client.on('message', async (message) => {
                             post[labels[0]] = process(value);
 
                             // Once processed, post process validation is run.
-                            for (let obj of validate) {
-                                if (obj.type == POST_PROCESS) {
-                                    if (!obj.condition(value))
-                                        errors.push(obj.error);
-                                }
+                            for (let val of validate.data) {
+                                if (!val.condition(labels[0], post))
+                                    errors.push(val.error);
                             }
                         }
 
