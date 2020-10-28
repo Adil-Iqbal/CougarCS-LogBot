@@ -4,11 +4,19 @@
   - Parsing algorithm updated to allow multiple internal validations.
   - Parsing algorithm updated to allow a post-processing validation step.
   - Field structure updated to allow multiple pre & post processing validations.
+  - Parsing algorithm optimized when validating during different validation steps.
   - Added pro tips on *relevant* Discord fundamentals.
-  - Added code comments for form parsing algorithm.
-  - The `Name` field now only accepts letters, numbers, spaces, and underscores.
+  - The `$setname` command has been removed due to redundancy.
+  - Added the `$credits` command which sends user a dm of contributors.
+  - The `Name` field now only accepts letters, numbers, and spaces.
   - Fixed standalone `Name` field allowing blank entries.
+  - Fixed `Date` field taking dates outside of the 20th and 21st century.
+  - Fixed `Duration` field allowing multiple minutes and hours per entry.
+  - Fixed `Duration` field allowing user to log zero hours.
   - Fixed bot attempting to parse non-user messages.
+  - Updated log docs with `Name`, `Date`, and `Duration` changes.
+  - Removed `$setname` command from command docs, log docs, and best practices.
+  - Added the `$credits` command to the command docs and pro tips!
 
 ## Version 1.0.3 Beta - 10/26/2020
   - Field names are now parsed in a case insensitive manner.

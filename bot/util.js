@@ -37,6 +37,7 @@ exports.getDate = (string) => {
     month = Number(month);
     day = Number(day);
   
+    // TODO: Figure out date range.
     if (isNaN(year) || (year < 1951 && year >= 100)) year = new Date().getFullYear();
     if (year <= 50) year += 2000;
     if (year < 100 && year > 50) year += 1900;

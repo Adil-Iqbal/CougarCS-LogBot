@@ -15,8 +15,8 @@ const fetch = require('node-fetch');
 
 // Utilities.
 const { s } = require('./httpStatusCodes');
-const { roll, capitalStr, safeFetch, stampPost } = require('./util');
-const { fields, PRE_PROCESS, POST_PROCESS } = require('./fields');
+const { roll, safeFetch, stampPost } = require('./util');
+const { fields } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();
@@ -187,8 +187,8 @@ client.on('message', async (message) => {
 
         // Begin by resetting field structure.
         for (let i = 0; i < fields.length; i++) {
+            fields[i].valid = true;
             fields[i].found = false;
-            fields[i].valid = false;
         }
 
         // Start parsing form, line by line.
@@ -223,10 +223,10 @@ client.on('message', async (message) => {
                             post[labels[0]] = process(value);
 
                             // Once processed, post process validation is run.
-                            for (let val of validate.data) {
-                                if (!val.condition(labels[0], post))
-                                    errors.push(val.error);
-                            }
+                            // for (let val of validate.data) {
+                            //     if (!val.condition(labels[0], post))
+                            //         errors.push(val.error);
+                            // }
                         }
 
                         // Mark field as used and proceed to the next line in the form.
@@ -250,7 +250,7 @@ client.on('message', async (message) => {
         
         // When `Name` field is used on its own, use $setname endpoint.
         if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
-            if (post["name"] === "") errors.push("Standalone `Name` field should not be empty.");
+            if (post["name"] === "") errors.push("The `Name` field should not be empty.");
 
             if (errors.length) {
                 let reply = "*I had some trouble parsing your log request.* Keep in mind:";
@@ -309,6 +309,10 @@ client.on('message', async (message) => {
         // Duration must not exceed max hours.
         if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > config.maxHours)
             errors.push(`The \`Duration\` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
+
+        // Duration must be a non-zero value if not null.
+        if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] === 0)
+            errors.push("The \`Duration\` field should evaluate to a non-zero number of hours.");
 
         // If post is not of type outreach, must have duration.
         if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))

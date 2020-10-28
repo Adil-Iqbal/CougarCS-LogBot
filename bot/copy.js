@@ -33,6 +33,7 @@ const PRO_TIPS = [
     "All progress takes place outside the comfort zone.",
     "If you hold `SHIFT` while pressing `ENTER`, you'll add a newline character to your chat message.",
     "It's probably a good idea to mute this channel.",
+    "If you use the `$credits` command, I'll send you a direct message with a list of my parents!",
 ]
 
 const LR_TEMPLATE = `Name: John Doe
@@ -43,11 +44,12 @@ Comment: Helped someone with linked lists.`
 
 const WELCOME = `(version ${package.version})
 Copyright © 2020 All Rights Reserved.
+*The "**By the People, For the People**" update!*
 
 **How To Log Your Hours**
 
 Copy the template below and paste it into the chat. 
-*IMPORTANT: Remember to update the info for your situation!*
+IMPORTANT: Remember to update the info for your situation!
 
 \`\`\`
 ${LR_TEMPLATE}
@@ -70,7 +72,6 @@ ${LR_TEMPLATE}
 - If anyone helped you in your task, remind them that they should submit their own log request.
 - Please keep conversation in the <#${channelId}> channel to a minimum.
 - Keep the value of the \`Name\` field consistent across all your requests.
-- When setting your name, prefer using the \`Name\` field instead of the \`$setname\` command.
 
 **Cliff Notes on Log Requests:**
 - The \`Name\` field should not exceed 100 characters.
@@ -154,6 +155,7 @@ module.exports = {
     HELP_MESSAGE,
     NOT_A_REQUEST,
     API_DOWN,
+    CONTRIBUTORS,
     DATABASE_DOWN,
     PERMISSION_DENIED,
     LOCKED,

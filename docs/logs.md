@@ -190,7 +190,7 @@ Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth 
 ⚠️
 ```
 
-The `Name` field only accepts letters, numbers, spaces, and underscores.
+The `Name` field only accepts letters, numbers, and spaces.
 
 ```
 Name: John Doe! 👍 
@@ -238,6 +238,18 @@ Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
 ✅
+```
+
+The `Date` field should be in the 20th or 21st century. (1900's or 2000's)
+
+```
+Name: John Doe
+Date: 03/08/2799
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
 ```
 
 The `Date` field does not need leading zeros for days or months.
@@ -468,6 +480,28 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
+The `Duration` field should have no more than one `h` value or `m` value.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 1h 1h
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 30m 30m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
 The `Duration` field converts to a decimal representing hours. The following is 1.5 hours.
 
 ```
@@ -502,6 +536,18 @@ Duration: 90m
 Comment: Helped someone with linked lists.
 
 ✅
+```
+
+The `Duration` field should evaluate to a non-zero number of hours.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: text
+Duration: 0h 0m
+Comment: Helped someone with linked lists.
+
+⚠️
 ```
 
 The `Duration` field has a maximum hours cap set by moderators.
@@ -613,4 +659,3 @@ c: Helped someone with linked lists.
 * If someone helped you, remind them to put in their own log request.
 * Please keep conversation in the logging channel to a minimum.
 * Always keep the `Name` field consistent across all of your log requests.
-* When setting your name, prefer using the `Name` field instead of the `$setname` command.

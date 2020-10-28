@@ -1,4 +1,5 @@
 const { extract, convertTime, getDate, truncateString } = require('./util');
+const { _ } = require('lodash');
 
 const fields = [
     {
@@ -13,8 +14,8 @@ const fields = [
                     error: "The \`Name\` field should not exceed 100 characters.",
                 },
                 {
-                    condition: (value) => !!value.match(/[\w ]+/gi),
-                    error: "The `Name` field only accepts letters, numbers, spaces, and underscores.",
+                    condition: (value) => !!value.match(/^[a-z0-9 ]{1,100}$/i),
+                    error: "The `Name` field only accepts letters, numbers, and spaces.",
                 },
             ],
             data: [],
@@ -25,7 +26,7 @@ const fields = [
             return value;
         },
         found: false,
-        valid: false,
+        valid: true,
     },
     {
         labels: ["date", "dt"],
@@ -35,31 +36,22 @@ const fields = [
         validate: {
             input: [
                 {
+                    condition: (value) => !!!value.match(/(19\d\d|20\d\d)$/g),
+                    error: "The \`Date\` field should be in the 20th or 21st century. (1900's or 2000's)",
+                },
+                {
                     condition: (value) => !!value.match(/^(0?[1-9]|1[0-2])\/(0?[1-9]|[1|2]\d|3[0|1])(\/(19|20)?\d\d)?$/g),
                     error: "The \`Date\` field accepts the following formats: \`mm/dd/yyyy\`, \`mm/dd/yy\`, \`mm/dd\`",
                 },
             ],
-            data: [
-                {
-                    condition: (label, post) => {
-                        return;
-                    },
-                    error: "The \`Date\` field date may not occur *before* xx/xx/xxxx",
-                },
-                {
-                    condition: (label, post) => {
-                        return post[label] > new Date()
-                    },
-                    error: "The \`Date\` field date may not occur *after* xx/xx/xxxx",
-                },
-            ],
+            data: [],
             structure: [],
         },
         process(value) {
             return getDate(value);
         },
         found: false,
-        valid: false,
+        valid: true,
     },
     {
         labels: ["volunteer type", "v"],
@@ -108,7 +100,7 @@ const fields = [
             }
         },
         found: false,
-        valid: false,
+        valid: true,
     },
     {
         labels: ["duration", "dr"],
@@ -118,7 +110,14 @@ const fields = [
         validate: {
             input: [
                 {
-                    condition: (value) => !!value.match(/^(\d*[h|m] {1})?\d*[h|m]$/g),
+                    condition: (value) => {
+                        const counted = _.countBy(value);
+                        return counted['h'] <= 1 && counted['m'] <= 1;
+                    },
+                    error: "The `Duration` field should have no more than one `h` value or `m` value."
+                },
+                {
+                    condition: (value) => !!value.match(/^(\d*[h|m] )?\d*[h|m]$/g),
                     error: "The \`Duration\` field requires \`Xh Ym\` format. (X and Y are whole numbers representing hours and minutes respectively)",
                 },
             ],
@@ -129,7 +128,7 @@ const fields = [
             return convertTime(value);
         },
         found: false,
-        valid: false,
+        valid: true,
     },
     {
         labels: ["comment", "c"],
@@ -145,7 +144,7 @@ const fields = [
             return truncateString(value, 140);
         },
         found: false,
-        valid: false,
+        valid: true,
     },
 ];
 
