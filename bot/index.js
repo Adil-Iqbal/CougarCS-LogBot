@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 // Utilities.
 const { s } = require('./httpStatusCodes');
 const { roll, capitalStr, safeFetch, stampPost } = require('./util');
-const { fields } = require('./fields');
+const { fields, PRE_PROCESS, POST_PROCESS } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();
@@ -183,20 +183,56 @@ client.on('message', async (message) => {
         if (message.content === LR_TEMPLATE && !config.debug) 
             errors.push("The template should be updated with your info.");
 
-        // Parse log request from #logging.
-        for (let i = 0; i < fields.length; i++) fields[i].found = false;
+        // --- START FORM PARSING ALGORITHM ---
+
+        // Begin by resetting field structure.
+        for (let i = 0; i < fields.length; i++) {
+            fields[i].found = false;
+            fields[i].valid = false;
+        }
+
+        // Start parsing form, line by line.
         for (let line of message.content.split("\n")) {
+
+            // Compare each line against all fields.
             for (let i = 0; i < fields.length; i++) {
+
+                // Skip fields that have already been used.
                 if (fields[i].found) continue;
-                const { labels, prepare, validate, process, error } = fields[i];
+
+                const { labels, prepare, validate, process } = fields[i];
                 let nextLine = false;
+
+                // Check against all labels.
                 for (let label of labels) {
                     const regex = new RegExp(`^${label}:`, 'i');
                     if (!!line.match(regex)) {
                         post[labels[0]] = undefined;
                         let value = prepare(line, label);
-                        if (validate(value)) post[labels[0]] = process(value);
-                        else errors.push(error);
+
+                        // Pre-process validation.
+                        for (let obj of validate) {
+                            if (obj.type == PRE_PROCESS) {
+                                fields[i].valid = fields[i].valid && obj.condition(value);
+                                if (!obj.condition(value))
+                                    errors.push(obj.error);
+                            }
+                        }
+
+                        // Fields are populated only if their value has been validated.
+                        if (fields[i].valid) {
+                            post[labels[0]] = process(value);
+
+                            // Once processed, post process validation is run.
+                            for (let obj of validate) {
+                                if (obj.type == POST_PROCESS) {
+                                    if (!obj.condition(value))
+                                        errors.push(obj.error);
+                                }
+                            }
+                        }
+
+                        // Mark field as used and proceed to the next line in the form.
                         fields[i].found = true;
                         nextLine = true;
                         break;
@@ -206,47 +242,50 @@ client.on('message', async (message) => {
             }
         }
 
+        // --- END FORM PARSING ALGORITHM ---
+
         // Illegal chatting.
         if (_.isEmpty(post)) {
             await message.reply(NOT_A_REQUEST);
             await message.react('⚠️');
             return;
         }
-	
-	// When `Name` field is used on its own, use $setname endpoint.
-	if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
+        
+        // When `Name` field is used on its own, use $setname endpoint.
+        if (post.hasOwnProperty("name") && Object.getOwnPropertyNames(post).length == 1) {
+            if (post["name"] === "") errors.push("Standalone `Name` field should not be empty.");
 
-	    if (errors.length) {
-            let reply = "*I had some trouble parsing your log request.* Keep in mind:";
-            for (let i = 0; i < errors.length; i++)
-                errors[i] = "  - " + errors[i];
-            reply += "\n" + errors.join("\n");
-            await message.reply(reply);
-            await message.react('⚠️');
+            if (errors.length) {
+                let reply = "*I had some trouble parsing your log request.* Keep in mind:";
+                for (let i = 0; i < errors.length; i++)
+                    errors[i] = "  - " + errors[i];
+                reply += "\n" + errors.join("\n");
+                await message.reply(reply);
+                await message.react('⚠️');
+                return;
+            }
+
+            const payload = {
+                method: "UPDATE",
+                body: JSON.stringify({ "new_name": post['name'] }),
+                headers: { 'Content-Type': 'application/json' }
+            }
+
+            const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
+            if (!respObj && !response) return;
+
+            if (respObj.status == s.HTTP_200_OK) {
+                await message.react("✅");
+                const [ updatedName ] = response.body;
+                let content = `From now on, if you decide not to use the \`Name\` field, your log requests will assume your name is **${updatedName}**.`;
+                await message.reply(content);
+                return;
+            }
+        
+            await message.react("⚠️");
+            await message.reply(UNKNOWN_ISSUE);
             return;
         }
-
-	    const payload = {
-            method: "UPDATE",
-            body: JSON.stringify({ "new_name": post['name'] }),
-            headers: { 'Content-Type': 'application/json' }
-        }
-
-        const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, payload);
-        if (!respObj && !response) return;
-
-        if (respObj.status == s.HTTP_200_OK) {
-            await message.react("✅");
-            const [ updatedName ] = response.body;
-            let content = `From now on, if you decide not to use the \`Name\` field, your log requests will assume your name is **${updatedName}**.`;
-            await message.reply(content);
-            return;
-        }
-	
-	    await message.react("⚠️");
-        await message.reply(UNKNOWN_ISSUE);
-        return;
-	}
 
         // Must have Name field, and Name field value must not be blank:
         if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !post['name'].length)) {

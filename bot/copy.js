@@ -31,6 +31,8 @@ const PRO_TIPS = [
     "You can check how many volunteer hours you've accrued and how many times you've reached out by using the `$stats` command in the chat.",
     "You'll never win if you're too busy counting the ways you'll lose.",
     "All progress takes place outside the comfort zone.",
+    "If you hold `SHIFT` while pressing `ENTER`, you'll add a newline character to your chat message.",
+    "It's probably a good idea to mute this channel.",
 ]
 
 const LR_TEMPLATE = `Name: John Doe
@@ -87,6 +89,17 @@ ${LR_TEMPLATE}
 - Use the **other** keyword if no other keyword fits your use case.
 
 Documentation: <https://tinyurl.com/logdocs1>
+`;
+
+const CONTRIBUTORS = `**DO NOT REPLY**
+
+***Meet my Parents!***
+
+<@593491742255218718> (Adil I)
+<@403106061076267019> (Nykolas F)
+<@559058273370898434> (Braian P)
+<@66009594610069504> (Jacob H)
+
 `;
 
 const NOT_A_REQUEST = `*Hmm... that doesn't look like a log request.* Send the message "?" (without quotations) and I'll privately message you some instructions on how to log your hours. If you start your message with two forward slashes, I'll ignore that message completely. Alternatively, you can move your convo to <#${chatChannelId}>.`;

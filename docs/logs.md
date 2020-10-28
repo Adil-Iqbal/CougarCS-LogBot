@@ -37,7 +37,7 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-Duplicate fields are ignored. In this example, the `Date` field is still set to `03/08/2020`.
+Duplicate fields are always ignored. In these examples, only the first `Date` field is used.
 
 ```
 Name: John Doe
@@ -48,6 +48,17 @@ Duration: 1h 30m
 Comment: Helped someone with linked lists.
 
 ✅
+```
+
+```
+Name: John Doe
+Date: INVALID ENTRY!
+Date: 12/31/1999
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
 ```
 
 Field names are case insensitive.
@@ -175,6 +186,24 @@ Comment: Helped someone with linked lists.
 
 ```
 Name: John Blaine Charles David Earl Frederick Gerald Hubert Irvim John Kenneth Loyd Martin Nero Oliver Jones Doe
+
+⚠️
+```
+
+The `Name` field only accepts letters, numbers, spaces, and underscores.
+
+```
+Name: John Doe! 👍 
+Date: 03/08/2020
+Volunteer Type: text
+Duration: 1h 30m
+Comment: Helped someone with linked lists.
+
+⚠️
+```
+
+```
+Name: John Doe! 👍
 
 ⚠️
 ```

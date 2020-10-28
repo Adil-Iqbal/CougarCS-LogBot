@@ -1,6 +1,13 @@
 # Change Log
 
 ## Version 1.0.4 Beta - *Unreleased*
+  - Parsing algorithm updated to allow multiple internal validations.
+  - Parsing algorithm updated to allow a post-processing validation step.
+  - Field structure updated to allow multiple pre & post processing validations.
+  - Added pro tips on *relevant* Discord fundamentals.
+  - Added code comments for form parsing algorithm.
+  - The `Name` field now only accepts letters, numbers, spaces, and underscores.
+  - Fixed standalone `Name` field allowing blank entries.
   - Fixed bot attempting to parse non-user messages.
 
 ## Version 1.0.3 Beta - 10/26/2020
