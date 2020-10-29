@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.0.5 Beta = *Unreleased*
+## Version 1.0.5 Beta - *Unreleased*
   - Fixed `$credits` command not properly reacting to user message.
 
 ## Version 1.0.4 Beta - 10/28/2020
