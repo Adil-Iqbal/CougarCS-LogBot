@@ -8,6 +8,8 @@ module.exports = {
 	usage: '',
 	example: '',
 	execute: async (message, args, config, client) => {
-		await message.author.send(CONTRIBUTORS);
+        await message.react("✅");
+        await message.author.send(CONTRIBUTORS);
+        return;
 	},
 };
