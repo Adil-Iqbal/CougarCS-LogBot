@@ -94,12 +94,20 @@ Documentation: <https://tinyurl.com/logdocs1>
 
 const CONTRIBUTORS = `**DO NOT REPLY**
 
-***Meet my Parents!***
+:sunflower: :rosette: :rose: ***Meet my Parents!*** :tulip: :rose: :sunflower: 
 
 <@593491742255218718> (Adil I)
 <@403106061076267019> (Nykolas F)
 <@559058273370898434> (Braian P)
+<@529779221573271554> (Aryan N)
+<@358703489020461066> (Ibrahim K)
+<@670065013368815617> (Loveleen T)
+<@131626920738684928> (Bryan N)
+<@288918080590053386> (Seth L)
+<@181268691432898560> (Shaheer K)
 <@66009594610069504> (Jacob H)
+<@416849441857994753> (Samir S)
+<@569887884669353984> (Nhat B)
 
 `;
 

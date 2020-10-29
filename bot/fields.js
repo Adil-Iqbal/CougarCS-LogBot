@@ -36,7 +36,7 @@ const fields = [
         validate: {
             input: [
                 {
-                    condition: (value) => !!!value.match(/(19\d\d|20\d\d)$/g),
+                    condition: (value) => !!value.match(/\d{4}$/) ? !!value.match(/(19\d\d|20\d\d)$/g) : true,
                     error: "The \`Date\` field should be in the 20th or 21st century. (1900's or 2000's)",
                 },
                 {
@@ -112,6 +112,8 @@ const fields = [
                 {
                     condition: (value) => {
                         const counted = _.countBy(value);
+                        if (!counted.hasOwnProperty('h')) counted['h'] = 0;
+                        if (!counted.hasOwnProperty('m')) counted['m'] = 0;
                         return counted['h'] <= 1 && counted['m'] <= 1;
                     },
                     error: "The `Duration` field should have no more than one `h` value or `m` value."
