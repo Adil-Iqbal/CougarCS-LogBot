@@ -285,7 +285,7 @@ client.on('message', async (message) => {
         }
 
         // Must have Name field, and Name field value must not be blank:
-        if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !post['name'].length)) {
+        if (!post.hasOwnProperty("name") || (post.hasOwnProperty("name") && !!post['name'] && !post['name'].length)) {
             const [ respObj, response ] = await safeFetch(message, config, `/users/name/${message.author.id}`, { method: 'GET' });
             if (respObj === null && response === null) return;
 

@@ -2,6 +2,8 @@
 
 ## Version 1.0.5 Beta - *Unreleased*
   - Fixed `$credits` command not properly reacting to user message.
+  - Fixed `$stats` command not properly rounding floating point numbers.
+  - Fixed stand alone `Name` field not looking up previous name when blank.
 
 ## Version 1.0.4 Beta - 10/28/2020
   - Parsing algorithm updated to allow multiple internal validations.
