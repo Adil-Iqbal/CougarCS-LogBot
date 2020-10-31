@@ -55,8 +55,8 @@ def log_request():
             updated_values = {
                 "username": data["metadata"]["username"],
                 "discriminator": data["metadata"]["discriminator"],
-                "cumulative_hours": existing_user["cumulative_hours"] + duration_increment,
-                "outreach_count": existing_user["outreach_count"] + outreach_increment,
+                "cumulative_hours": round(existing_user["cumulative_hours"] + duration_increment, 2),
+                "outreach_count": int(round(existing_user["outreach_count"] + outreach_increment, 0)),
                 "last_updated": datetime.now(),
                 "last_used_name": data["name"]
             }

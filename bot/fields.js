@@ -1,4 +1,4 @@
-const { extract, convertTime, getDate, truncateString } = require('./util');
+const { extract, convertTime, getDate, truncateString, capitalStr } = require('./util');
 const { _ } = require('lodash');
 
 const fields = [
@@ -19,7 +19,7 @@ const fields = [
                 },
             ],
             data: [],
-            structure: [],
+            external: [],
 
         },
         process(value) {
@@ -45,7 +45,7 @@ const fields = [
                 },
             ],
             data: [],
-            structure: [],
+            external: [],
         },
         process(value) {
             return getDate(value);
@@ -66,7 +66,13 @@ const fields = [
                 },
             ],
             data: [],
-            structure: [],
+            external: [
+                // {
+                //     priority: 1,
+                //     condition: (labels, post) => !post.hasOwnProperty(labels[0]),
+                //     error: `The \`${capitalStr(labels[0])}\` field should not be omitted.`,
+                // },
+            ],
         },
         process(value) {
             const words = [
@@ -124,7 +130,7 @@ const fields = [
                 },
             ],
             data: [],
-            structure: [],
+            external: [],
         },
         process(value) {
             return convertTime(value);
@@ -140,7 +146,7 @@ const fields = [
         validate: {
             input: [],
             data: [],
-            structure: [],
+            external: [],
         },
         process(value) {
             return truncateString(value, 140);
@@ -150,6 +156,7 @@ const fields = [
     },
 ];
 
+// Check for duplicate fields.
 let arr = [];
 for (let field of fields) arr = arr.concat(field.labels);
 let set = new Set(arr);
@@ -159,7 +166,20 @@ if (set.size < arr.length) {
     throw `Duplicate field labels have been detected: ${duplicates}`;
 }
 
+// // Generate external validation.
+// const externalValidation = [];
+// for (let field of fields) {
+//     for (let val of field.validate.external) {
+//         val.labels = fields.labels;
+//         if (!val.hasOwnProperty("priority")) val.priority = Infinity;
+//         externalValidation.push(val);
+//     }
+// }
+
+// externalValidation.sort((a, b) => a.priority - b.priority);
+
 
 module.exports = {
     fields,
+    externalValidation,
 }

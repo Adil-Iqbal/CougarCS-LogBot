@@ -34,6 +34,9 @@ const PRO_TIPS = [
     "If you hold `SHIFT` while pressing `ENTER`, you'll add a newline character to your chat message.",
     "It's probably a good idea to mute this channel.",
     "If you use the `$credits` command, I'll send you a direct message with a list of my parents!",
+    "Whenever you submit a request with a \`Name\` field, I'll remember the name and use it! Even if you leave the \`Name\` field out for all other log requests.",
+    "You can submit the \`Name\` field on its own.",
+    "Whatever you do, don't use the `$ping` command!"
 ]
 
 const LR_TEMPLATE = `Name: John Doe

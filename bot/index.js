@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 // Utilities.
 const { s } = require('./httpStatusCodes');
 const { roll, safeFetch, stampPost } = require('./util');
-const { fields } = require('./fields');
+const { fields, externalValidation } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();
@@ -294,6 +294,12 @@ client.on('message', async (message) => {
             else errors.push("The `Name` field should be submitted at least once.");
         }
 
+        // for (let val of externalValidation) {
+        //     let { labels, condition, error } = val;
+        //     if (condition(labels, post))
+        //         errors.push(error);
+        // }
+
         // If no date is provided, today's date will be used.
         if (!post.hasOwnProperty("date"))
             post.date = new Date();
@@ -310,9 +316,11 @@ client.on('message', async (message) => {
         if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > config.maxHours)
             errors.push(`The \`Duration\` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
 
-        // Duration must be a non-zero value if not null.
-        if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] === 0)
-            errors.push("The \`Duration\` field should evaluate to a non-zero number of hours.");
+        // Duration must be a non-zero value if not null. Duration should be rounded to 2 decimal places.
+        if (post.hasOwnProperty("duration") && post["duration"] !== null) {
+            if (post["duration"] === 0) errors.push("The \`Duration\` field should evaluate to a non-zero number of hours.");
+            else post["duration"] = Number(post["duration"].toFixed(2));
+        }
 
         // If post is not of type outreach, must have duration.
         if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach" && !post.hasOwnProperty("duration"))
