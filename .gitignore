@@ -4,6 +4,7 @@ venv
 .vscode
 server
 *.pyc 
+api/populate_db
 
 
 

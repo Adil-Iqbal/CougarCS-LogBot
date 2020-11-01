@@ -9,6 +9,33 @@ from .util import json_response, forward_error, encode, superuser_only, has_meta
 app = Blueprint('main', __name__)
 
 
+# @app.route('/seed', methods=['POST'])
+# def seed_db():
+#     """ Seed database with values. """
+#     if request.method == 'POST':
+
+#         response_obj = {}
+#         data = request.json
+
+#         log_col = mongo.db.logs
+#         user_col = mongo.db.users
+
+#         if 'users' in data.keys() and type(data['users']) is list and len(data['users']) > 0:
+#             for i, user in enumerate(data['users']):
+#                 user['last_updated'] = datetime.fromisoformat(user['last_updated'])
+#                 data['users'][i] = user
+#             user_col.insert_many(data['users'])
+
+#         if 'logs' in data.keys() and type(data['logs']) is list and len(data['logs']) > 0:
+#             for i, log in enumerate(data['logs']):
+#                 log['date'] = datetime.fromisoformat(log['date'])
+#                 log['submitted'] = datetime.fromisoformat(log['submitted'])
+#                 data['logs'][i] = log
+#             log_col.insert_many(data['logs'])
+        
+#         return json_response(response_obj), s.HTTP_200_OK
+
+
 @app.route('/logs', methods=['POST'])
 @forward_error
 @has_metadata
@@ -57,7 +84,7 @@ def log_request():
                 "discriminator": data["metadata"]["discriminator"],
                 "cumulative_hours": round(existing_user["cumulative_hours"] + duration_increment, 2),
                 "outreach_count": int(round(existing_user["outreach_count"] + outreach_increment, 0)),
-                "last_updated": datetime.now(),
+                "last_updated": datetime.utcnow(),
                 "last_used_name": data["name"]
             }
             up_res = user_col.update_one(existing_user_query, {"$set": updated_values})
@@ -172,7 +199,7 @@ def check_for_name(discord_id):
         updated_values = {
             "username": data["metadata"]["username"],
             "discriminator": data["metadata"]["discriminator"],
-            "last_updated": datetime.now(),
+            "last_updated": datetime.utcnow(),
             "last_used_name": data["new_name"]
         }
 
