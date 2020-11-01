@@ -45,19 +45,10 @@ Volunteer Type: text
 Duration: 1h 30m
 Comment: Helped someone with linked lists.`
 
-const WELCOME = `(version ${package.version})
+const WELCOME = `Version ${package.version}
 Copyright © 2020 All Rights Reserved.
-*The "**By the People, For the People**" update!*
 
-**How To Log Your Hours**
-
-Copy the template below and paste it into the chat. 
-IMPORTANT: Remember to update the info for your situation!
-
-\`\`\`
-${LR_TEMPLATE}
-\`\`\`
-*This is a BETA test. Make sure to log your hours in <#754386732312559676>*`;
+**Type "?" (without quotations) for instructions on how to log your hours.**`;
 
 const HELP_MESSAGE = `**DO NOT REPLY**
 
