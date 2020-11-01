@@ -5,6 +5,7 @@
   - Fixed `$stats` command not properly rounding floating point numbers.
   - Fixed `Name` field not looking up previous name when processed to undefined value.
   - Fixed log request API endpoint not properly rounding request duration when updating user data.
+  - Seeded database with user's hours and outreach count in both user objects and log requests.
 
 ## Version 1.0.4 Beta - 10/28/2020
   - Parsing algorithm updated to allow multiple internal validations.
