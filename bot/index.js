@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 // Utilities.
 const { s } = require('./httpStatusCodes');
 const { roll, safeFetch, stampPost } = require('./util');
-const { fields, externalValidation } = require('./fields');
+const { fields } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();

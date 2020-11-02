@@ -1,11 +1,15 @@
 # Change Log
 
-## Version 1.0.5 Beta - *Unreleased*
+## Version 1.0.5 - *Unreleased*
+  - Seeded databases with user's hours and outreach count in both user objects and log requests.
+  - Added hidden route to seed database. (Not active in production)
+  - The `$version` command now also reports the development environment.
+  - Fixed production and development environment variables not being properly separated.
   - Fixed `$credits` command not properly reacting to user message.
   - Fixed `$stats` command not properly rounding floating point numbers.
   - Fixed `Name` field not looking up previous name when processed to undefined value.
   - Fixed log request API endpoint not properly rounding request duration when updating user data.
-  - Seeded database with user's hours and outreach count in both user objects and log requests.
+  - Completed last round of performance testing before launch.
 
 ## Version 1.0.4 Beta - 10/28/2020
   - Parsing algorithm updated to allow multiple internal validations.

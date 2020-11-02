@@ -28,7 +28,7 @@ module.exports = {
         }
         
         if (respObj.status == s.HTTP_200_OK) {
-            const [ totalHours, outreachCount ] = response.body;
+            let [ totalHours, outreachCount ] = response.body;
             totalHours = Number(Number(totalHours).toFixed(2));
             const content = `To date, you have volunteered a total of **${totalHours} hours** and participated in outreach **${outreachCount} ${outreachCount === 1 ? "time" : "times"}**. ${outreachCount || totalHours ? "Thank you!" : ""}`;
             await message.reply(content);
