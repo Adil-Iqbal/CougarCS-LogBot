@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.0.5 - *Unreleased*
+## Version 1.0.5 - 11/2/2020
   - Seeded databases with user's hours and outreach count in both user objects and log requests.
   - Added hidden route to seed database. (Not active in production)
   - The `$version` command now also reports the development environment.
@@ -10,6 +10,7 @@
   - Fixed `Name` field not looking up previous name when processed to undefined value.
   - Fixed log request API endpoint not properly rounding request duration when updating user data.
   - Completed last round of performance testing before launch.
+  - Launched production bot!
 
 ## Version 1.0.4 Beta - 10/28/2020
   - Parsing algorithm updated to allow multiple internal validations.
