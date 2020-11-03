@@ -1,5 +1,13 @@
 # Change Log
 
+## Version 1.1.0 - *Unreleased*
+  - Added `Outreach Count` field.
+  - Added external validation for `Outreach Count` field.
+  - Added embed field for `Outreach Count` field.
+  - If `Volunteer Type` and `Duration` fields are omitted, but `Outreach Count` is not, the volunteer type is assumed to be "outreach".
+  - The API can now handle more than outreaches at a time.
+  - Fixed `Outreach Count` field accepting zero as a valid value.
+
 ## Version 1.0.5 - 11/2/2020
   - Seeded databases with user's hours and outreach count in both user objects and log requests.
   - Added hidden route to seed database. (Not active in production)

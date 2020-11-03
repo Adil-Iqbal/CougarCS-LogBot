@@ -376,9 +376,15 @@ NOTE: Use the **voice** keyword when assisting a user via audio or video corresp
 
 NOTE: Use the **group** keyword when assisting more than one user simultaneously.
 
-NOTE: Use the **outreach** keyword when advertising CougarCS to other potential users. (The `Duration` field may be omitted)
+NOTE: Use the **outreach** keyword when advertising CougarCS to other potential users. 
 
-NOTE: Use the **other** keyword if no other keyword fits your use case. (Use the `Comment` field to describe your actions)
+NOTE: Use the **other** keyword if no other keyword fits your use case. 
+
+NOTE: When using the **other** keyword, the `Comment` field must be submitted.
+
+NOTE: When using the **outreach** keyword, the `Duration` field may be omitted.
+
+NOTE: When using the **outreach** keyword, the `Outreach Field` may be used to modify your log request.
 
 #### The `Volunteer Type` field can handle multiple keywords. 
 
@@ -562,18 +568,7 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
-The `Duration` field can be omitted if the `Volunteer Type` field evaluates to "outreach".
-
-```
-Name: John Doe
-Date: 3/8/2020
-Volunteer Type: outreach
-Comment: Helped someone with linked lists.
-
-✅
-```
-
-The `Duration` field should *not* be omitted if the `Volunteer Type` field does not evaluate to "outreach".
+The `Duration` field is required for *most* `Volunteer Type` keywords.
 
 ```
 Name: John Doe
@@ -593,6 +588,17 @@ Comment: Helped someone with linked lists.
 ⚠️
 ```
 
+The `Duration` field can be omitted if the `Volunteer Type` field evaluates to "outreach".
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Comment: Helped someone with linked lists.
+
+✅
+```
+
 The `Duration` field can be abbreviated to the letters `dr` (case insensitive).
 
 ```
@@ -601,6 +607,87 @@ Date: 3/8/2020
 Volunteer Type: text
 dr: 1h 30m
 Comment: Helped someone with linked lists.
+
+✅
+```
+
+## The `Outreach Count` field
+
+If the `Volunteer Type` field evaluates to "outreach," the *outreach count* is set to 1.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Comment: COSC-1306.
+
+✅
+```
+
+The `Outreach Count` field will allow you to log more than 1 outreaches in a single log request.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 3
+Comment: COSC-1306, COSC-1460, COSC-2430
+
+✅
+```
+
+The `Outreach Count` field must be a non-zero whole number between 1-99 (inclusive).
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 10000000
+Comment: Superbowl commercial
+
+⚠️
+```
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 0
+Comment: Huh?
+
+⚠️
+```
+
+If the `Outreach Count` field is greater than 1, the `Comment` field is required.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 3
+
+⚠️
+```
+
+If the `Outreach Count` field is present while both the `Volunteer Type` and `Duration` fields are omitted, then it is assumed that the `Volunteer Type` evaluates to "outreach"
+
+```
+Name: John Doe
+Date: 3/8/2020
+Outreach Count: 3
+Comment: COSC-1306, COSC-1460, COSC-2430
+
+✅
+```
+
+The `Outreach Count` field can be abbreviated to the letter `o` (case insensitive).
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+o: 3
+Comment: COSC-1306, COSC-1460, COSC-2430
 
 ✅
 ```
@@ -625,6 +712,17 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: other
 Duration: 1h 30m
+
+⚠️
+```
+
+The `Comment` field is mandatory if the `Outreach Count` field is greater than 1.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 3
 
 ⚠️
 ```

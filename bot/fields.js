@@ -154,6 +154,27 @@ const fields = [
         found: false,
         valid: true,
     },
+    {
+        labels: ["outreach count", "o"],
+        prepare(value, label) {
+            return extract(label, value).trim();
+        },
+        validate: {
+            input: [
+                {
+                    condition: (value) => !!value.match(/^\d?\d$/g),
+                    error: "The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).",
+                },
+            ],
+            data: [],
+            external: [],
+        },
+        process(value) {
+            return parseInt(value);
+        },
+        found: false,
+        valid: true,
+    },
 ];
 
 // Check for duplicate fields.

@@ -304,16 +304,38 @@ client.on('message', async (message) => {
         if (!post.hasOwnProperty("date"))
             post.date = new Date();
 
+        // If duration and volunteer type are omitted, but outreach count is not, make assumptions...
+        if (!post.hasOwnProperty("volunteer type") && !post.hasOwnProperty("duration") && post.hasOwnProperty("outreach count")) {
+            post["volunteer type"] = "outreach";
+        }
+        
         // Must have volunteer type.
         if (!post.hasOwnProperty("volunteer type"))
             errors.push("The \`Volunteer Type\` field should not be omitted.");
 
         // If post is of type outreach, duration is ignored.
-        if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "outreach")
+        if (post.hasOwnProperty("volunteer type") && post["volunteer type"] === "outreach") {
             post.duration = null;
 
+            // If an outreach count is not declared, then it is set to 1.
+            if (!post.hasOwnProperty("outreach count"))
+                post["outreach count"] = 1;
+            
+            // Comment required if outreach is greater than one.
+            else if (post["outreach count"] > 1 && !post.hasOwnProperty("comment"))
+                errors.push("If the `Outreach Count` field is greater than 1, the `Comment` field is required.")
+            
+            if (post.hasOwnProperty("outreach count") && post["outreach count"] === 0)
+                errors.push("The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).")
+        }
+
+        // If post is not of type 'outreach', then outreach count is ignored.
+        if (post.hasOwnProperty("volunteer type") && post["volunteer type"] !== "outreach") {
+            post["outreach count"] = 0;
+        }
+
         // Duration must not exceed max hours.
-        if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] > config.maxHours)
+        if (post.hasOwnProperty("duration") && post["duration"] !== null && post["duration"] >= config.maxHours)
             errors.push(`The \`Duration\` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
 
         // Duration must be a non-zero value if not null. Duration should be rounded to 2 decimal places.

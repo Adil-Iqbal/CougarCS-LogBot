@@ -122,7 +122,10 @@ const USER_NOT_FOUND = "*We didn't find you in our records.* We create a record 
 const LOG_NOT_FOUND = `*We did not find that log in our record!* Perhaps the log has already been deleted? You may need to check with the folks at <#${builderChannelId}>.`;
 
 const buildReceipt = (post, response) => {
-    let duration = post.duration ? post.duration + " hours" : "Exempt";
+    // let duration = post.duration ? post.duration + " hours" : "Exempt";
+    const orCount = post["outreach count"];
+    const durationField = { name: 'Duration', value: `${post.duration} hour${post.duration == 1 ? '' : 's'}`, inline: true };
+    const outreachField = { name: 'Outreach Count', value: `${orCount} time${orCount == 1 ? '' : 's'}`, inline: true };
     return new Discord.MessageEmbed()
         .setColor('#c8102e')
         .setTitle('Confirmation Receipt')
@@ -133,7 +136,7 @@ const buildReceipt = (post, response) => {
             { name: 'Name', value: post.name, inline: true },
             { name: 'Discord ID', value: post.metadata.discord_id, inline: true },
             { name: 'Date', value: post.date.toDateString(), inline: true },
-            { name: 'Duration', value: duration, inline: true },
+            post.duration ? durationField : outreachField,
             { name: 'Volunteer Type', value: post["volunteer type"], inline: true },
             { name: '\u200B', value: '\u200B', inline: true },
             { name: 'Comment', value: post.comment  },

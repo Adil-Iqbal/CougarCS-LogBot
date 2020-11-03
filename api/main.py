@@ -54,7 +54,7 @@ def log_request():
 
         # Process duration and outreach.
         duration_increment = data["duration"] if data["duration"] is not None else 0
-        outreach_increment = 1 if data["volunteer type"] == "outreach" else 0
+        outreach_increment = data["outreach count"]
 
         # Create new log.
         log = {
