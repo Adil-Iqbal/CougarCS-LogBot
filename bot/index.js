@@ -325,8 +325,14 @@ client.on('message', async (message) => {
             else if (post["outreach count"] > 1 && !post.hasOwnProperty("comment"))
                 errors.push("If the `Outreach Count` field is greater than 1, the `Comment` field is required.")
             
-            if (post.hasOwnProperty("outreach count") && post["outreach count"] === 0)
-                errors.push("The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).")
+            if (post.hasOwnProperty("outreach count")) {
+                if (post["outreach count"] === 0)
+                    errors.push("The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).")
+
+                if (post["outreach count"] >= config.maxOutreach)
+                    errors.push(`The \`Outreach Count\` field has a maximum count cap set by moderators. *Currently set to ${config.maxOutreach}.*`)
+            }
+            
         }
 
         // If post is not of type 'outreach', then outreach count is ignored.

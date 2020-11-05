@@ -4,8 +4,12 @@
   - Added `Outreach Count` field.
   - Added external validation for `Outreach Count` field.
   - Added embed field for `Outreach Count` field.
-  - If `Volunteer Type` and `Duration` fields are omitted, but `Outreach Count` is not, the volunteer type is assumed to be "outreach".
-  - The API can now handle more than outreaches at a time.
+  - Added `Outreach Count` field documentation.
+  - The `Outreach Count` field now makes assumption about log type when used implicitly.
+  - Added `$maxoutreach` command that limits the maximum outreach count.
+  - Added `$maxoutreach` command to documentation. (REVIEW PLZ)
+  - Implemented new log request structure based on outreach count feature.
+  - Hidden API route configured to update existing log requests to new structure.
   - Fixed `Outreach Count` field accepting zero as a valid value.
 
 ## Version 1.0.5 - 11/2/2020
