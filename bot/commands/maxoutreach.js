@@ -12,7 +12,7 @@ module.exports = {
     superuserOnly: true,
 	execute: async (message, args, config, client) => {
         const newOutreach = parseInt(args[0]);
-        if (newOutreach < 1 || newOutreach > 99) {
+        if (newOutreach < 1 || newOutreach > 99 || isNaN(newOutreach)) {
             await message.react('⚠️');
             await message.reply("*The argument should be a whole number between 1 and 99 (inclusive).*");
             return;

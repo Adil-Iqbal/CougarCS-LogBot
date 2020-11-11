@@ -15,7 +15,8 @@
   - Hidden API route configured to update existing log requests to new structure.
   - Fixed `Outreach Count` field accepting zero as a valid value.
   - Fixed `Duration` field not printing errors when given unusable value.
-  - Fixed `$ping` and `$config` command not properly reacting to messages.
+  - Fixed `$ping` and `$config` commands not properly reacting to messages.
+  - Fixed `$maxHours` and `$maxOutreach` commands accepting non-number values.
 
 ## Version 1.0.5 - 11/2/2020
   - Seeded databases with user's hours and outreach count in both user objects and log requests.

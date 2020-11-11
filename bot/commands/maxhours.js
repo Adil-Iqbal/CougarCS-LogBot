@@ -12,7 +12,7 @@ module.exports = {
     superuserOnly: true,
 	execute: async (message, args, config, client) => {
         const newHours = parseInt(args[0]);
-        if (newHours < 0 || newHours > 24) {
+        if (newHours < 0 || newHours > 24 || isNaN(newHours)) {
             await message.react('⚠️');
             await message.reply("*The argument should be a whole number between 0 and 24 (inclusive).*");
             return;
