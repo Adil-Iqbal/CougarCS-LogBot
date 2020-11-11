@@ -164,6 +164,30 @@ The `version` command is *not* affected by `lock` and `unlock` commands.
 
 ✅
 
+## The `config` command.
+
+The `config` command ignores all arguments.
+
+> $config foo 123
+
+✅
+
+The `config` command will print out a list of the bot's current configuration settings..
+
+> $config
+
+✅
+
+The `config` command is *not* affected by `lock` and `unlock` commands.
+
+> $lock
+
+✅
+
+> $config
+
+✅
+
 ## The `?` command.
 
 
@@ -356,6 +380,102 @@ The `maxhours` command does not work if the `lock` command has been called.
 ✅
 
 > $maxhours 12
+
+⚠️
+
+## The `maxoutreach` command.
+
+**The `maxoutreach` command is for superusers.**
+
+If you are *not* a superuser:
+
+> $maxoutreach 6
+
+⚠️
+
+If you are a superuser:
+
+> $maxoutreach 6
+
+✅
+
+The `maxoutreach` command requires an argument.
+
+> $maxoutreach
+
+⚠️
+
+The `maxoutreach` command requires the argument be a number between 1 and 99 (inclusive).
+
+> $maxoutreach foobar
+
+⚠️
+
+> $maxoutreach -3
+
+⚠️
+
+> $maxoutreach 300
+
+⚠️
+
+If a decimal is passed as an argument, it will be converted to a whole number. In these examples, the argument converts to `1`:
+
+> $maxoutreach 1.123
+
+✅
+
+> $maxoutreach 1.50
+
+✅
+
+> $maxoutreach 1.9999
+
+✅
+
+The `maxoutreach` command caps the outreach count that can be logged in a single post.
+
+> $maxoutreach 3
+
+✅
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: outreach
+Outreach Count: 2
+Comment: COSC-1306, COSC-1430.
+
+✅
+```
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: outreach
+Outreach Count: 3
+Comment: COSC-1306, COSC-1430, COSC-2430.
+
+✅
+```
+
+```
+Name: John Doe
+Date: 03/08/2020
+Volunteer Type: outreach
+Outreach Count: 4
+Comment: COSC-1306, COSC-1430, COSC-2430, COSC-2440.
+
+⚠️
+```
+
+The `maxoutreach` command does not work if the `lock` command has been called.
+
+> $lock
+
+✅
+
+> $maxoutreach 6
 
 ⚠️
 

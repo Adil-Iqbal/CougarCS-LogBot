@@ -4,7 +4,8 @@ module.exports = {
     args: false,
 	usage: '',
 	example: '',
-	execute(message, args, config, client) {
-		message.channel.send('Pong.');
+	execute: async (message, args, config, client) => {
+		await message.react("✅");
+		await message.channel.send('Pong.');
 	},
 };

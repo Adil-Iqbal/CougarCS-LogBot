@@ -329,7 +329,7 @@ client.on('message', async (message) => {
                 if (post["outreach count"] === 0)
                     errors.push("The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).")
 
-                if (post["outreach count"] >= config.maxOutreach)
+                if (post["outreach count"] > config.maxOutreach)
                     errors.push(`The \`Outreach Count\` field has a maximum count cap set by moderators. *Currently set to ${config.maxOutreach}.*`)
             }
             
@@ -345,7 +345,7 @@ client.on('message', async (message) => {
             errors.push(`The \`Duration\` field has a maximum hours cap set by moderators. *Currently, the cap is ${config.maxHours} hours.*`);
 
         // Duration must be a non-zero value if not null. Duration should be rounded to 2 decimal places.
-        if (post.hasOwnProperty("duration") && post["duration"] !== null) {
+        if (post.hasOwnProperty("duration") && post["duration"] && post["duration"] !== null) {
             if (post["duration"] === 0) errors.push("The \`Duration\` field should evaluate to a non-zero number of hours.");
             else post["duration"] = Number(post["duration"].toFixed(2));
         }

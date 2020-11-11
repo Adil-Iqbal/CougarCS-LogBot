@@ -163,7 +163,7 @@ const fields = [
             input: [
                 {
                     condition: (value) => !!value.match(/^\d?\d$/g),
-                    error: "The `Outreach Count` field must be a non-zero whole number between 1 - 99 (inclusive).",
+                    error: "The `Outreach Count` field must be a 1 or 2 digit non-zero whole number.",
                 },
             ],
             data: [],

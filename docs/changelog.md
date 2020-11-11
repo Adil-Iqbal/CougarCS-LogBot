@@ -7,10 +7,15 @@
   - Added `Outreach Count` field documentation.
   - The `Outreach Count` field now makes assumption about log type when used implicitly.
   - Added `$maxoutreach` command that limits the maximum outreach count.
-  - Added `$maxoutreach` command to documentation. (REVIEW PLZ)
+  - Added `$maxoutreach` command to documentation.
+  - The `$maxoutreach` setting is now persistent.
+  - Added `$config` command that prints out current config settings in chat.
+  - Added `$config` command to documentation.
   - Implemented new log request structure based on outreach count feature.
   - Hidden API route configured to update existing log requests to new structure.
   - Fixed `Outreach Count` field accepting zero as a valid value.
+  - Fixed `Duration` field not printing errors when given unusable value.
+  - Fixed `$ping` and `$config` command not properly reacting to messages.
 
 ## Version 1.0.5 - 11/2/2020
   - Seeded databases with user's hours and outreach count in both user objects and log requests.

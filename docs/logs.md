@@ -636,7 +636,7 @@ Comment: COSC-1306, COSC-1460, COSC-2430
 ✅
 ```
 
-The `Outreach Count` field must be a non-zero whole number between 1-99 (inclusive).
+The `Outreach Count` field must be a 1 or 2 digit non-zero whole number.
 
 ```
 Name: John Doe
@@ -658,6 +658,18 @@ Comment: Huh?
 ⚠️
 ```
 
+The `Outreach Count` field has a maximum count cap set by moderators.
+
+```
+Name: John Doe
+Date: 3/8/2020
+Volunteer Type: outreach
+Outreach Count: 69
+Comment: Twirled a sign at an intersection.
+
+⚠️
+```
+
 If the `Outreach Count` field is greater than 1, the `Comment` field is required.
 
 ```
@@ -669,7 +681,7 @@ Outreach Count: 3
 ⚠️
 ```
 
-If the `Outreach Count` field is present while both the `Volunteer Type` and `Duration` fields are omitted, then it is assumed that the `Volunteer Type` evaluates to "outreach"
+When the `Outreach Count` field is present while both the `Volunteer Type` and `Duration` fields are omitted, then it is assumed that the `Volunteer Type` evaluates to "outreach"
 
 ```
 Name: John Doe

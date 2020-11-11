@@ -36,7 +36,10 @@ const PRO_TIPS = [
     "If you use the `$credits` command, I'll send you a direct message with a list of my parents!",
     "Whenever you submit a request with a \`Name\` field, I'll remember the name and use it! Even if you leave the \`Name\` field out for all other log requests.",
     "You can submit the \`Name\` field on its own.",
-    "Whatever you do, don't use the `$ping` command!"
+    "Whatever you do, don't use the `$ping` command!",
+    "If you reached out more than once, instead of posting several log requests, use the \`Outreach Count\` field.",
+    "Did you know that if you use the `Outreach Count` field without stating the volunteer type, the log request will *assume* it's an outreach log?",
+    "A relationship should complement you, not complete you. You can’t expect someone to love you until you love yourself.",
 ]
 
 const LR_TEMPLATE = `Name: John Doe
