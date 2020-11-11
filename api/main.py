@@ -9,34 +9,34 @@ from .util import json_response, forward_error, encode, superuser_only, has_meta
 app = Blueprint('main', __name__)
 
 
-@app.route('/seed', methods=['POST', 'GET'])
-def seed_db():
-    """ Seed database with values. """
-    response_obj = {}
-    log_col = mongo.db.logs
-    # if request.method == 'POST':
-    #     data = request.json
-    #     user_col = mongo.db.users
-    #     if 'users' in data.keys() and type(data['users']) is list and len(data['users']) > 0:
-    #         for i, user in enumerate(data['users']):
-    #             user['last_updated'] = datetime.fromisoformat(user['last_updated'])
-    #             data['users'][i] = user
-    #         user_col.insert_many(data['users'])
+# @app.route('/seed', methods=['POST', 'GET'])
+# def seed_db():
+#     """ Seed database with values. """
+#     response_obj = {}
+#     log_col = mongo.db.logs
+#     if request.method == 'POST':
+#         data = request.json
+#         user_col = mongo.db.users
+#         if 'users' in data.keys() and type(data['users']) is list and len(data['users']) > 0:
+#             for i, user in enumerate(data['users']):
+#                 user['last_updated'] = datetime.fromisoformat(user['last_updated'])
+#                 data['users'][i] = user
+#             user_col.insert_many(data['users'])
 
-    #     if 'logs' in data.keys() and type(data['logs']) is list and len(data['logs']) > 0:
-    #         for i, log in enumerate(data['logs']):
-    #             log['date'] = datetime.fromisoformat(log['date'])
-    #             log['submitted'] = datetime.fromisoformat(log['submitted'])
-    #             data['logs'][i] = log
-    #         log_col.insert_many(data['logs'])
+#         if 'logs' in data.keys() and type(data['logs']) is list and len(data['logs']) > 0:
+#             for i, log in enumerate(data['logs']):
+#                 log['date'] = datetime.fromisoformat(log['date'])
+#                 log['submitted'] = datetime.fromisoformat(log['submitted'])
+#                 data['logs'][i] = log
+#             log_col.insert_many(data['logs'])
     
-    if request.method == 'GET':
-        outreach_logs = {"volunteer type":{"$eq":"outreach"}}
-        not_outreach_logs = {"volunteer type":{"$ne":"outreach"}}
-        log_col.update_many(outreach_logs, {"$set":{"outreach count": 1}})
-        log_col.update_many(not_outreach_logs, {"$set":{"outreach count": 0}})
+#     if request.method == 'GET':
+#         outreach_logs = {"volunteer type":{"$eq":"outreach"}}
+#         not_outreach_logs = {"volunteer type":{"$ne":"outreach"}}
+#         log_col.update_many(outreach_logs, {"$set":{"outreach count": 1}})
+#         log_col.update_many(not_outreach_logs, {"$set":{"outreach count": 0}})
         
-    return json_response(response_obj), s.HTTP_200_OK
+#     return json_response(response_obj), s.HTTP_200_OK
 
 
 @app.route('/logs', methods=['POST'])

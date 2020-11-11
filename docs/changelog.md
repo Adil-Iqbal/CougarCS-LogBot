@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 1.1.0 - *Unreleased*
+## Version 1.1.0 - 11/11/2020
   - Added `Outreach Count` field.
   - Added external validation for `Outreach Count` field.
   - Added embed field for `Outreach Count` field.
