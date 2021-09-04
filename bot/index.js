@@ -20,9 +20,10 @@ const { fields } = require('./fields');
 const { WELCOME, HELP_MESSAGE, PRO_TIPS, NOT_A_REQUEST, LOCKED, buildReceipt, serverLog, debugText, LR_TEMPLATE, API_DOWN } = require('./copy');
 
 const client = new Discord.Client();
+const superusers = [];
+const LR_CMD_NAME = 'log request';
 
 // Retrieve commands.
-const LR_CMD_NAME = 'log request';
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync(path.resolve(__dirname, "./commands")).filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -32,6 +33,18 @@ for (const file of commandFiles) {
         continue;
     }
 	client.commands.set(command.name, command);
+}
+
+// Retrieve superuser commands.
+client.sudoCommands = new Discord.Collection();
+const sudoCommandFiles = fs.readdirSync(path.resolve(__dirname, "./commands/sudo")).filter(file => file.endsWith('.js'));
+for (const file of sudoCommandFiles) {
+    const sudoCommand = require(`./commands/sudo/${file}`);
+    if (sudoCommand.name == LR_CMD_NAME) {
+        console.error(`A command cannot be named "${LR_CMD_NAME}" since that is reserved for log requests. Your "${LR_CMD_NAME}" command has been ignored.`);
+        continue;
+    }
+	client.sudoCommands.set(sudoCommand.name, sudoCommand);
 }
 
 const cooldowns = new Discord.Collection();
@@ -48,7 +61,8 @@ client.once('ready', async () => {
         const response = await respObj.json();
     
         if (respObj && respObj.ok) {
-            config = await response.body;
+            config = await response.body.config;
+            for (let userId of response.body.superusers) superusers.push(userId);
         }
     
         if (config.debug) {
@@ -70,6 +84,59 @@ client.once('ready', async () => {
 
 client.on('message', async (message) => {
     try {
+        if (message.author.bot) return;
+
+        if (message.channel.type === "dm") {
+            if (!superusers.length) return;
+            if (!superusers.includes(message.author.id)) return;
+
+            // Parse commands.
+            if (message.content.startsWith(config.prefix)) {
+                const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+                const commandName = args.shift().toLowerCase();
+                const command = client.sudoCommands.get(commandName);
+
+                // Command not found.
+                if (!client.sudoCommands.has(commandName)) {
+                    await message.react('⚠️');
+                    await message.reply("*I don't know that command.*");
+                    return;
+                };
+
+                if (config.lock && command.useApi && !command.lockExempt) {
+                    await message.react('⚠️');
+                    await message.reply(LOCKED);
+                    return;
+                }
+                
+            
+                try {
+                    // Retrieve command.
+                    const command = client.sudoCommands.get(commandName);
+
+                    // Required argument verification.
+                    if (command.args && !args.length) {
+                        let reply = "*You didn't provide any arguments.* "
+                        if (command.usage) reply += `The proper usage is: \n\`\`\`\n${config.prefix}${command.name} ${command.usage}\n\`\`\``;
+                        await message.react('⚠️');
+                        await message.reply(reply);
+                        return;
+                    }
+
+                    // Execute command.
+                    await command.execute(message, args, config, client);
+                    return;
+                } catch (e) {
+                    await message.react('⚠️');
+                    if (config.debug) await message.reply(debugText("Javascript Error", e.stack));
+                    await message.reply('*I had trouble trying to execute that command.*');
+                    console.error(e.stack);
+                    return;
+                }
+            }
+
+        }
+
         if (message.channel.id !== channelId ||                     // Restrict bot to target channel
             message.content.startsWith(config.commentPrefix) ||     // Ignore comments.
             message.author.bot ||                                   // Ignore bot.

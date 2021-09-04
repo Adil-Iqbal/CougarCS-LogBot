@@ -1,5 +1,15 @@
 # Change Log
 
+## Version 1.1.1 - *Unreleased*
+  - Created scaffolding for *sudo* commands.
+  - Sudo commands can only be accessed via DM by superusers.
+  - Sudo commands will not affect logbot configuration.
+  - Sudo commands will allow administrative interaction with database.
+  - API now has `/recognize` endpoint that will run statistical analysis on tutor activity.
+  - Fixed issue with `$cancel` command not properly deleting outreach log.
+  - Fixed issue with outreach type log request not being able to be cancelled.
+  
+
 ## Version 1.1.0 - 11/11/2020
   - Added `Outreach Count` field.
   - Added external validation for `Outreach Count` field.

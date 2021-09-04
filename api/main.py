@@ -1,5 +1,5 @@
 import dateutil.parser
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, request, current_app
 from flask_api import status as s
 from bson import ObjectId
@@ -38,6 +38,104 @@ app = Blueprint('main', __name__)
         
 #     return json_response(response_obj), s.HTTP_200_OK
 
+@app.route('/recognize', methods=['GET'])
+@forward_error
+@superuser_only
+def recognize():
+    response_obj = {}
+    if request.method == "GET":
+        log_col = mongo.db.logs
+
+        time_interval = 14
+        steady_threshold = 0.05
+
+        end = datetime.today()
+        tdelta = timedelta(days=time_interval)
+        start = end - tdelta
+        prev_start = start - tdelta
+        next = end + tdelta
+
+        users = list(mongo.db.users.find({}))
+
+        improved_users = []
+        steady_users = []
+        remaining_users = []
+
+        def sort_user(user, prev_hr, curr_hr):
+            """ Sort users into separate categories. """
+            if prev_hr == 0 and curr_hr == 0:
+                return
+            
+            delta = round((curr_hr - prev_hr) / (prev_hr + 0.01), 4)
+            entry = {
+                "user": user,
+                "prev_hours": prev_hr,
+                "curr_hours": curr_hr,
+                "delta": delta * 100
+            },
+            if delta >= -steady_threshold and delta <= steady_threshold:
+                steady_users.append(entry)
+            elif delta > steady_threshold:
+                improved_users.append(entry)
+            else:
+                remaining_users.append(entry)
+
+        prev_data = []
+        curr_data = []
+
+        for user in users:
+            base = { 
+                "discord_id": {"$eq": user["_id"]},
+                "duration": {"$gt": 0} 
+            }
+            start_to_end = { "date": {"$gte": start, "$lt": end } }
+            prev_to_start = { "date": {"$gte": prev_start, "$lt": start } }
+
+            pte_results = list(log_col.find({**base, **prev_to_start}))
+            ste_results = list(log_col.find({**base, **start_to_end}))
+
+            curr_hours = 0
+            for ste_log in ste_results:
+                curr_hours += ste_log["duration"]
+            
+            prev_hours = 0
+            for pte_log in pte_results:
+                prev_hours += pte_log["duration"]
+            
+            curr_data.append(curr_hours)
+            prev_data.append(prev_hours)
+
+            sort_user(user, prev_hours, curr_hours)
+
+        sort_by_delta = lambda e : e['delta'] if type(e) is dict else e[0]['delta']
+        sort_by_abs_delta = lambda e : abs(e['delta']) if type(e) is dict else abs(e[0]['delta'])
+        sort_by_hours = lambda e : e['curr_hours'] if type(e) is dict else e[0]['curr_hours']
+        max_users = [*steady_users, *improved_users, *remaining_users]
+
+        steady_users.sort(key=sort_by_abs_delta)
+        improved_users.sort(reverse=True, key=sort_by_delta)
+        remaining_users.sort(reverse=True, key=sort_by_delta)
+        max_users.sort(reverse=True, key=sort_by_hours)
+        max_users = max_users[0:10]
+
+        response_obj['body'] = {
+            'steady_users': steady_users,
+            'improved_users': improved_users,
+            'remaining_users': remaining_users,
+            'max_users': max_users,
+            'prev_data': prev_data,
+            'curr_data': curr_data,
+            'dates': {
+                'start': start,
+                'prev_start': prev_start,
+                'next': next,
+                'end': end
+            }
+        }
+        
+        return json_response(response_obj), s.HTTP_200_OK
+        
+
 
 @app.route('/logs', methods=['POST'])
 @forward_error
@@ -64,7 +162,7 @@ def log_request():
             "name": data["name"],
             "date": dateutil.parser.isoparse(data["date"]),
             "volunteer type": data["volunteer type"],
-            "duration": data["duration"],
+            "duration": 0 if data["duration"] is None else data["duration"],
             "outreach count": outreach_increment,
             "comment": data["comment"],
             "discord_id": discord_id,
@@ -144,6 +242,8 @@ def configuration():
 def initialize():
     """ Retrieve existing log bot configuration. """
     config_col = mongo.db.config
+    user_col = mongo.db.users
+
     response_obj = {}
 
     if request.method == "GET":
@@ -153,11 +253,19 @@ def initialize():
         config_query = {"_id": {"$eq": config_id}}
         config = config_col.find_one(config_query)
 
+        # Get all superusers.
+        superuser_query = {"superuser": {"$eq": True}}
+        superusers = list(user_col.find(superuser_query))
+        superuser_id_list = [user["_id"] for user in superusers]
+
         # Remove sensitive data.
         del config['_id']
 
         # Send config.
-        response_obj['body'] = config
+        response_obj['body'] = {
+            "config": config,
+            "superusers": superuser_id_list
+        }
         response_obj['message'] = 'config retrieved'
         return json_response(response_obj), s.HTTP_200_OK
 
@@ -280,7 +388,8 @@ def delete_log(discord_id, conf_num):
                 return json_response({"message": "Permission Denied"}), s.HTTP_401_UNAUTHORIZED
         
         # Prime user object to update stats.
-        existing_user["cumulative_hours"] -= existing_log["duration"]
+        if existing_log["duration"] is not None:
+            existing_user["cumulative_hours"] -= 0 if existing_log["duration"] is None else existing_log["duration"]
         existing_user["outreach_count"] -= 1 if existing_log["volunteer type"] == "outreach" else 0
 
         # Delete log.

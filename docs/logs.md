@@ -66,9 +66,9 @@ Field names are case insensitive.
 ```
 nAMe: John Doe
 DaTe: 03/08/2020
-VOluntEEr TyPE: text
-dURaTIoN: 1h 30m
-CoMMenT: Helped someone with linked lists.
+VOluntEEr TyPE: outreach
+oUTrEaCH CouNT: 2
+CoMMenT: cosc-1306, cosc-1430.
 
 ✅
 ```
@@ -81,6 +81,16 @@ dt: 03/08/2020
 v: text
 dr: 1h 30m
 c: Helped someone with linked lists.
+
+✅
+```
+
+```
+n: John Doe
+dt: 03/08/2020
+v: outreach
+o: 2
+c: cosc-1306, cosc-1430.
 
 ✅
 ```
@@ -619,7 +629,7 @@ If the `Volunteer Type` field evaluates to "outreach," the *outreach count* is s
 Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach
-Comment: COSC-1306.
+Comment: cosc-1306.
 
 ✅
 ```
@@ -631,7 +641,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach
 Outreach Count: 3
-Comment: COSC-1306, COSC-1460, COSC-2430
+Comment: cosc-1306, cosc-1460, cosc-2430
 
 ✅
 ```
@@ -687,7 +697,7 @@ When the `Outreach Count` field is present while both the `Volunteer Type` and `
 Name: John Doe
 Date: 3/8/2020
 Outreach Count: 3
-Comment: COSC-1306, COSC-1460, COSC-2430
+Comment: cosc-1306, cosc-1460, cosc-2430
 
 ✅
 ```
@@ -699,7 +709,7 @@ Name: John Doe
 Date: 3/8/2020
 Volunteer Type: outreach
 o: 3
-Comment: COSC-1306, COSC-1460, COSC-2430
+Comment: cosc-1306, cosc-1460, cosc-2430
 
 ✅
 ```
